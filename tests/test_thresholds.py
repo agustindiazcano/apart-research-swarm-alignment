@@ -1,6 +1,6 @@
 """Tests for decision threshold utilities."""
-from collections.abc import Mapping
 import json
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
