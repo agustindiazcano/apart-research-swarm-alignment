@@ -35,7 +35,7 @@ Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.m
 | # | Light | ID | Task | Depends on | Status |
 |---|---|---|---|---|---|
 | 1 | 🔴 | T00 | Merge the redesign docs PR (human approves) | none | branch `docs/redesign-infected-swarm` |
-| 2 | 🔴 | T01 | Package skeleton, config, CLI stub, CI (ruff, mypy, pytest), lane A | T00 | open |
+| 2 | 🔴 | T01 | Package skeleton, config, CLI stub, CI (ruff, mypy, pytest) and the frozen `schema.py` contract, lane A | T00 | open |
 | 3 | 🔴 | T05 | Event schema, extraction and statistics, lane B | T00 | open |
 | 4 | 🔴 | T02 | LLM client with logprobs option and budget guard, lane A | T01 | open |
 | 5 | 🔴 | T03 | World generator and ground-truth rules, lane A | T01 | open |
