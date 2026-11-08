@@ -18,7 +18,7 @@ src/swarmlab/
     ground_truth.py    # labels and rules as pure functions over the event log and gt.json
   swarm/
     agent.py           # prompt assembly, JSON action parsing, parse-failure accounting
-    prompts.py         # honest-agent prompts, infected worm playbooks (3 styles), verifier protocol
+    prompts.py         # standard-agent prompts, infected worm playbooks (3 styles), verifier protocol
     board.py           # message store and delivery
     topology.py        # visibility and valid targets: ring, complete
     tools.py           # post, write_report, send_external (outbox), noop

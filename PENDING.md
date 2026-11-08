@@ -11,7 +11,7 @@ Last updated: 2026-11-08
 | 🔴 | Blocking or urgent. Nothing downstream can finish without it. |
 | 🟡 | Next. Do it once the blockers are clear. |
 | 🟢 | Later. Needed before submission but not blocking now. |
-| ⚪ | Backlog. Nice to have, drop first if time runs out. |
+| ⚪ | Backlog. Optional; dropped first if time runs out. |
 
 ## Phase codes
 

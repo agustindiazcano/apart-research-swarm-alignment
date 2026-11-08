@@ -38,7 +38,7 @@ After the human merges the redesign PR: open lane A (T01 skeleton, then T02, T03
 - Approve opening the redesign PR (rules: ask first).
 - Close PR #13 (obsolete, Groq decision)?
 - Stop the Docker project `swarmexp` (leftover from the dropped MCP stack)?
-- Which provider and model for the swarm agents, and which cheap model for the guardrail (G1)?
+- Which provider and model for the swarm agents, and which low-cost model for the guardrail (G1)?
 
 ## Notes
 

@@ -17,7 +17,7 @@ The project has three parts, in this order:
 2. **Detectors against that flow.** A ladder: a lexical logistic regression (D1); a micro-LLM guardrail that answers with one token and is scored from its logprobs (D2); a graph-contextual cascade that adds the suspicion of what the sender received one round earlier (D3); a cascade of three isolated micro-verifiers with a veto gate (D4); and a layered filter that puts the logistic regression in front of the guardrail so only doubtful messages reach the LLM (D5). Measured offline (can they tell recruitment and leak messages from clean ones, and chains from clean runs) and online (does gating messages reduce exfiltration, and at what cost to the legitimate task).
 3. **Immunity threshold (stretch).** A threshold for the fraction of verifying agents is derived from the free-flow R0 before any immunity run, then tested if time remains.
 
-The reason this is not a toy: the attack needs a chain. The credential is split into three fragments held by three different agents, so no single message or single agent does the harm. That is the case the talks identified as open (Kitaoka: split attacks evade per-agent monitors).
+Design choice: the attack needs a chain. The credential is split into three fragments held by three different agents, so no single message or single agent does the harm. That is the case the talks identified as open (Kitaoka: split attacks evade per-agent monitors).
 
 ## 2. Research questions
 
@@ -78,4 +78,4 @@ By the deadline: the free-flow arm and the detector arms run at the preregistere
 
 ## 9. Dual use
 
-Everything runs locally with synthetic data and a fake credential. The infected playbooks are ordinary persuasion with no exploit content. The public report publishes rates, classes and conditions, not tuned message text. The playbook texts stay in `experiments/payloads/` and are redacted from any public release. The repository stays private until judging ends.
+Everything runs locally with synthetic data and a fake credential. The infected playbooks are persuasion text without exploit content. The public report publishes rates, classes and conditions, not tuned message text. The playbook texts stay in `experiments/payloads/` and are redacted from any public release. The repository stays private until judging ends.
