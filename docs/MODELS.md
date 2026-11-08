@@ -12,9 +12,12 @@ One small call per model (at most 16 output tokens), asking for logprobs. The re
 | Google Vertex AI (Gemini, project and location from the environment, Application Default Credentials) | `gemini-3.8-flash` | accepted | not available | HTTP 400 INVALID_ARGUMENT: logprobs is not supported for this model |
 | Google Vertex AI | `gemini-4-argon` | accepted | not available | Same error as above |
 | Adaption (`adaption` SDK, Responses API) | `gemma-4-31b-it` | accepted | not available | The SDK method `responses.create` rejects the arguments `include`, `top_logprobs` and `logprobs` (TypeError: unexpected keyword argument). A call without them returned text. |
-| Modal (DeepSeek, Qwen) | not checked | not checked | not checked | `TODO(verify)`: the endpoint URL and the way the token is sent are not recorded in this repository. |
 
-Consequence for the design: D2 uses its rubric mode by default (a short JSON object with three integer scores, normalized to [0, 1], plus 0.05 times the D1 score to break ties). The logprob mode stays implemented for a provider that supports it; Modal is the candidate if its endpoint accepts logprobs for a non-reasoning model.
+Adaption also serves `deepseek-v4-flash` (models listed by the SDK: `glm-53-flash`, `glm-5.2`, `qwen3.5-397b`, `gemma-4-26b-a4b-it`, `qwen3.8-27b`, `deepseek-v4-flash`, `gemma-4-31b-it`). Checked on 2026-11-08 with a rubric prompt: `deepseek-v4-flash` is a model that reasons before answering. With `max_output_tokens` of 40 it returned empty text (the budget was used up); with 600 it returned a JSON object after a response time between 1 and 3 seconds, sometimes preceded by a few words, so the parser extracts the first JSON object. Extra arguments `top_logprobs`, `logprobs` and `include` through `extra_body` were accepted without error and returned no logprobs. The `reasoning` argument is rejected by the SDK. The `temperature` argument is accepted.
+
+Modal is not used (decision of the author, 2026-11-08).
+
+Consequence for the design: D2 uses its rubric mode by default (a short JSON object with three integer scores, normalized to [0, 1], plus 0.05 times the D1 score to break ties). The logprob mode stays implemented for a provider that supports it. Guardrail model for D2: `deepseek-v4-flash` on Adaption, rubric mode, `max_output_tokens` 600.
 
 ## Still to enter (human)
 
@@ -22,5 +25,4 @@ Consequence for the design: D2 uses its rubric mode by default (a short JSON obj
 |---|---|
 | Model id, price and per-minute limit of the swarm model | pilot (T07) |
 | Model id, price and per-minute limit of the guardrail model | detectors fit and A3 |
-| Modal endpoint URL and token usage | D2 decision (logprob or rubric) |
 | Spend cap per provider (`*_BUDGET_USD` in `.env`) | any real run |
