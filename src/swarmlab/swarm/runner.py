@@ -14,6 +14,7 @@ from swarmlab.schema import (
     EventKind,
     EventRecord,
     LLMClient,
+    LLMResult,
     MessageView,
 )
 from swarmlab.swarm.agent import PromptBuilder, parse_action
@@ -60,6 +61,10 @@ class _AgentTurn:
 _NOOP = ActionPayload(action="noop")
 
 
+def _zero_cost(result: LLMResult) -> float:
+    return 0.0
+
+
 async def _decide(
     seed: AgentSeed,
     board: Board,
@@ -70,6 +75,7 @@ async def _decide(
     n_agents: int,
     max_tokens: int,
     abort_on: tuple[type[Exception], ...],
+    cost_fn: Callable[[LLMResult], float],
 ) -> _AgentTurn:
     agent_id = seed.agent_id
     inbox_items = [(m.sender, m.round, m.text) for m in board.inbox(agent_id)]
@@ -88,7 +94,7 @@ async def _decide(
         "model": result.model,
         "tokens_in": result.tokens_in,
         "tokens_out": result.tokens_out,
-        "cost_usd": 0.0,
+        "cost_usd": cost_fn(result),
         "latency_ms": result.latency_ms,
         "parse_ok": action is not None,
         "retries": 0,
@@ -114,6 +120,7 @@ async def run_episode(
     now: Callable[[], str] = _utc_now,
     max_tokens: int = 300,
     abort_on: tuple[type[Exception], ...] = (),
+    cost_fn: Callable[[LLMResult], float] = _zero_cost,
 ) -> EpisodeOutcome:
     truth = world.ground_truth
     episode_id = truth.episode_id
@@ -160,6 +167,7 @@ async def run_episode(
                     n_agents,
                     max_tokens,
                     abort_on,
+                    cost_fn,
                 )
                 for seed in world.agents
             )
@@ -172,11 +180,40 @@ async def run_episode(
             if turn.parse_failed:
                 n_parse_failures += 1
 
-        # Barrier: actions are applied in agent id order against the round-start state.
-        for seed, turn in zip(world.agents, turns, strict=True):
+        # Barrier: validate every action, decide the gate verdicts of the round concurrently
+        # (they depend only on the round-start state), then apply the actions in agent id order.
+        plans: list[tuple[AgentSeed, ActionPayload, str | None]] = [
+            (seed, turn.action, validate_action(turn.action, seed.agent_id, topology, n_agents))
+            for seed, turn in zip(world.agents, turns, strict=True)
+        ]
+        decisions: dict[int, GateDecisionLike] = {}
+        if gate is not None:
+            gate_inputs: dict[int, tuple[MessageView, DetectorContext]] = {}
+            for seed, action, reason in plans:
+                if reason is None and action.action == "post":
+                    assert action.to is not None
+                    inbox = board.inbox(seed.agent_id)
+                    context = DetectorContext(
+                        sender_inbox=tuple(view_of(m) for m in inbox),
+                        inbox_cached_scores=tuple(
+                            0.0 if m.cached_score is None else m.cached_score for m in inbox
+                        ),
+                    )
+                    view = MessageView(
+                        message_id=f"{episode_id}-r{rnd}-a{seed.agent_id}",
+                        episode_id=episode_id,
+                        round=rnd,
+                        sender=seed.agent_id,
+                        target=action.to,
+                        text=action.text,
+                    )
+                    gate_inputs[seed.agent_id] = (view, context)
+            verdicts = await asyncio.gather(
+                *(gate.decide(view, context) for view, context in gate_inputs.values())
+            )
+            decisions = dict(zip(gate_inputs.keys(), verdicts, strict=True))
+        for seed, action, reason in plans:
             sender = seed.agent_id
-            action = turn.action
-            reason = validate_action(action, sender, topology, n_agents)
             emit("action", rnd, sender, {"type": action.action, "rejected_reason": reason})
             if reason is not None:
                 continue
@@ -198,23 +235,8 @@ async def run_episode(
                 gate_score: float | None = None
                 gate_stage: str | None = None
                 cached: float | None = None
-                if gate is not None:
-                    inbox = board.inbox(sender)
-                    context = DetectorContext(
-                        sender_inbox=tuple(view_of(m) for m in inbox),
-                        inbox_cached_scores=tuple(
-                            0.0 if m.cached_score is None else m.cached_score for m in inbox
-                        ),
-                    )
-                    view = MessageView(
-                        message_id=message_id,
-                        episode_id=episode_id,
-                        round=rnd,
-                        sender=sender,
-                        target=target,
-                        text=action.text,
-                    )
-                    decision = await gate.decide(view, context)
+                decision = decisions.get(sender)
+                if decision is not None:
                     gate_score = decision.score
                     gate_stage = decision.stage
                     cached = decision.cached_score

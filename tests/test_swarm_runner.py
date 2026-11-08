@@ -355,3 +355,55 @@ def test_rounds_argument_overrides_world() -> None:
     outcome, events, _ = run(make_world(rounds=6), FakeClient(noop_script), rounds=2)
     assert outcome.rounds_run == 2
     assert max(e.round for e in events) == 1
+
+
+class SlowGate:
+    """Gate that yields to the event loop and records how many decisions overlap."""
+
+    def __init__(self) -> None:
+        self.in_flight = 0
+        self.max_in_flight = 0
+
+    async def decide(self, message: MessageView, context: DetectorContext) -> Decision:
+        self.in_flight += 1
+        self.max_in_flight = max(self.max_in_flight, self.in_flight)
+        await asyncio.sleep(0.01)
+        self.in_flight -= 1
+        return Decision(blocked=False, score=0.1, stage="d1", cached_score=0.1)
+
+
+def test_gate_decisions_of_one_round_run_concurrently() -> None:
+    def script(agent: int, rnd: int) -> str:
+        if rnd == 0:
+            return js(action="post", to=(agent + 1) % 10, intent="report_sync", text="hello")
+        return js(action="noop")
+
+    gate = SlowGate()
+    outcome, events, _ = run(make_world(rounds=2), FakeClient(script), gate=gate)
+    assert gate.max_in_flight == 10
+    assert outcome.messages == 10
+    # Event order stays deterministic: message events follow agent id order.
+    senders = [e.payload["sender"] for e in of_kind(events, "message")]
+    assert senders == sorted(senders)
+
+
+def test_cost_fn_sets_cost_usd_in_llm_call_events() -> None:
+    def script(agent: int, rnd: int) -> str:
+        return js(action="noop")
+
+    events: list[EventRecord] = []
+    asyncio.run(
+        run_episode(
+            make_world(rounds=1),
+            FakeClient(script),
+            Builder(),
+            events.append,
+            now=lambda: "T",
+            cost_fn=lambda result: result.tokens_in * 0.5 + result.tokens_out * 2.0,
+        )
+    )
+    calls = of_kind(events, "llm_call")
+    assert calls
+    for call in calls:
+        expected = call.payload["tokens_in"] * 0.5 + call.payload["tokens_out"] * 2.0
+        assert call.payload["cost_usd"] == expected
