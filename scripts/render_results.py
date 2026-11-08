@@ -1,13 +1,13 @@
 """Render results into Markdown files from result files."""
 
 import argparse
-from collections.abc import Sequence
 import csv
 import hashlib
 import json
-from pathlib import Path
 import re
 import sys
+from collections.abc import Sequence
+from pathlib import Path
 from typing import Any
 
 BEGIN_PATTERN = re.compile(r"^<!--\s*RESULTS:BEGIN\s+(\S+)\s*-->$")
@@ -46,7 +46,7 @@ def render_table_block(
     source_bytes = source_path.read_bytes()
     sha256_hex = hashlib.sha256(source_bytes).hexdigest()
 
-    with open(source_path, "r", encoding="utf-8", newline="") as f:
+    with open(source_path, encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         fieldnames = reader.fieldnames or []
         rows = list(reader)
@@ -59,9 +59,8 @@ def render_table_block(
     ]
 
     for row in rows:
-        row_cells = [
-            str(row.get(col, "") if row.get(col) is not None else "") for col in cols
-        ]
+        # A pipe inside a cell would split the Markdown cell; escape it, change nothing else.
+        row_cells = [(row.get(col) or "").replace("|", "\\|") for col in cols]
         lines.append(f"| {' | '.join(row_cells)} |")
 
     lines.append("")
@@ -90,7 +89,9 @@ def render_value_block(
                 f"key '{key}' not found in '{source_rel}'"
             )
 
-    return f"{cur} (source: {source_rel}, SHA-256 {short_hex})"
+    # JSON literals (true, null, numbers as written) rather than Python repr.
+    text = cur if isinstance(cur, str) else json.dumps(cur, ensure_ascii=False)
+    return f"{text} (source: {source_rel}, SHA-256 {short_hex})"
 
 
 def render_block(
@@ -145,7 +146,7 @@ def process_markdown_file(
         sys.stderr.write(f"error: file not found: {file_rel}\n")
         return 2, [], []
 
-    with open(target_path, "r", encoding="utf-8", newline="") as f:
+    with open(target_path, encoding="utf-8", newline="") as f:
         original_text = f.read()
 
     newline_char = "\r\n" if "\r\n" in original_text else "\n"
@@ -155,7 +156,7 @@ def process_markdown_file(
     end_positions: dict[str, list[int]] = {}
 
     for idx, line in enumerate(lines):
-        line_stripped = line.rstrip("\r\n")
+        line_stripped = line.strip()
         m_begin = BEGIN_PATTERN.match(line_stripped)
         if m_begin:
             name = m_begin.group(1)
@@ -242,7 +243,7 @@ def process_markdown_file(
         return 0, [], outdated_blocks
 
     # Apply replacements from bottom to top
-    for begin_idx, end_idx, block, content, source_exists in reversed(block_records):
+    for begin_idx, end_idx, _block, content, _exists in reversed(block_records):
         new_inner_lines = [f"{line}{newline_char}" for line in content.split("\n")]
         lines[begin_idx + 1 : end_idx] = new_inner_lines
 
@@ -275,7 +276,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
 
     try:
-        with open(manifest_path, "r", encoding="utf-8") as f:
+        with open(manifest_path, encoding="utf-8") as f:
             manifest_data = json.load(f)
     except Exception as exc:
         sys.stderr.write(f"error: failed to read manifest {manifest_path}: {exc}\n")

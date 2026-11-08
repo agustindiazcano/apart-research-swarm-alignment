@@ -1,11 +1,12 @@
 import hashlib
 import importlib.util
 import json
-from pathlib import Path
 import subprocess
 import sys
 import time
+from pathlib import Path
 from typing import Any
+
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -106,7 +107,11 @@ def test_table_rendering_exact_markdown(tmp_path: Path) -> None:
         "| --- | --- |\n\n"
         f"Source: `results/empty.csv` (SHA-256 `{empty_hash}`)."
     )
-    assert f"<!-- RESULTS:BEGIN empty_block -->\n{expected_empty_table}\n<!-- RESULTS:END empty_block -->" in doc_file.read_text(encoding="utf-8")
+    expected_block = (
+        f"<!-- RESULTS:BEGIN empty_block -->\n{expected_empty_table}\n"
+        "<!-- RESULTS:END empty_block -->"
+    )
+    assert expected_block in doc_file.read_text(encoding="utf-8")
 
 
 def test_columns_selection_and_ordering(tmp_path: Path) -> None:
@@ -405,7 +410,11 @@ def test_unlisted_markers_warning(tmp_path: Path, capsys: pytest.CaptureFixture[
     assert "unlisted_item" in captured.err
 
     content = doc_file.read_text(encoding="utf-8")
-    assert "<!-- RESULTS:BEGIN unlisted_item -->\nkeep unchanged\n<!-- RESULTS:END unlisted_item -->" in content
+    unlisted_block = (
+        "<!-- RESULTS:BEGIN unlisted_item -->\nkeep unchanged\n"
+        "<!-- RESULTS:END unlisted_item -->"
+    )
+    assert unlisted_block in content
     assert f"Source: `results/data.csv` (SHA-256 `{expected_hash}`)." in content
 
 
@@ -418,7 +427,10 @@ def test_crlf_preservation(tmp_path: Path) -> None:
     json_file.write_text('{"score": 99}', encoding="utf-8")
 
     doc_file = tmp_path / "README.md"
-    crlf_bytes = b"# CRLF Doc\r\n\r\n<!-- RESULTS:BEGIN val -->\r\nold\r\n<!-- RESULTS:END val -->\r\n"
+    crlf_bytes = (
+        b"# CRLF Doc\r\n\r\n<!-- RESULTS:BEGIN val -->\r\nold\r\n"
+        b"<!-- RESULTS:END val -->\r\n"
+    )
     doc_file.write_bytes(crlf_bytes)
 
     manifest_file = results_dir / "render_manifest.json"
@@ -483,7 +495,8 @@ def test_cli_executable_as_script(tmp_path: Path) -> None:
     )
     assert result.returncode == 0
     assert "rendered script_test in README.md from results/val.json" in result.stdout
-    assert f"7 (source: results/val.json, SHA-256 {short_hash})" in doc_file.read_text(encoding="utf-8")
+    expected_line = f"7 (source: results/val.json, SHA-256 {short_hash})"
+    assert expected_line in doc_file.read_text(encoding="utf-8")
 
 
 def test_file_not_rewritten_when_unmodified(tmp_path: Path) -> None:
@@ -560,4 +573,52 @@ def test_custom_manifest_path(tmp_path: Path) -> None:
         ["--root", str(tmp_path), "--manifest", "custom/manifest.json"]
     )
     assert exit_code == 0
-    assert f"100 (source: custom/stat.json, SHA-256 {short_hash})" in doc_file.read_text(encoding="utf-8")
+    expected_line = f"100 (source: custom/stat.json, SHA-256 {short_hash})"
+    assert expected_line in doc_file.read_text(encoding="utf-8")
+
+
+def _render(
+    tmp_path: Path, doc_text: str, blocks: list[dict[str, Any]], files: dict[str, bytes]
+) -> str:
+    """Write fixture files, run the renderer and return the rewritten document text."""
+    renderer = get_renderer_module()
+    for rel, data in files.items():
+        target = tmp_path / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+    (tmp_path / "README.md").write_text(doc_text, encoding="utf-8")
+    manifest = tmp_path / "results" / "render_manifest.json"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps({"blocks": blocks}), encoding="utf-8")
+    assert renderer.main(["--root", str(tmp_path)]) == 0
+    return (tmp_path / "README.md").read_text(encoding="utf-8")
+
+
+def test_marker_lines_with_trailing_spaces_are_recognized(tmp_path: Path) -> None:
+    doc = "<!-- RESULTS:BEGIN t -->   \nold\n<!-- RESULTS:END t -->  \n"
+    block = {"name": "t", "file": "README.md", "source": "results/t.csv", "kind": "table"}
+    out = _render(tmp_path, doc, [block], {"results/t.csv": b"a\n1\n"})
+    assert "old" not in out
+    assert "| a |" in out
+
+
+def test_pipe_in_csv_cell_is_escaped(tmp_path: Path) -> None:
+    doc = "<!-- RESULTS:BEGIN t -->\nold\n<!-- RESULTS:END t -->\n"
+    block = {"name": "t", "file": "README.md", "source": "results/t.csv", "kind": "table"}
+    out = _render(tmp_path, doc, [block], {"results/t.csv": b'a,b\nx|y,2\n'})
+    assert "| x\|y | 2 |" in out
+
+
+def test_value_block_renders_json_literals(tmp_path: Path) -> None:
+    doc = (
+        "<!-- RESULTS:BEGIN flag -->\nold\n<!-- RESULTS:END flag -->\n"
+        "<!-- RESULTS:BEGIN none -->\nold\n<!-- RESULTS:END none -->\n"
+    )
+    source = json.dumps({"flag": True, "none": None}).encode("utf-8")
+    blocks = [
+        {"name": n, "file": "README.md", "source": "results/s.json", "kind": "value", "key": n}
+        for n in ("flag", "none")
+    ]
+    out = _render(tmp_path, doc, blocks, {"results/s.json": source})
+    assert "\ntrue (source:" in out
+    assert "\nnull (source:" in out
