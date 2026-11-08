@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Mapping, Sequence
 from datetime import datetime
-from typing import Any
 
 import pytest
 
