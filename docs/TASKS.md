@@ -1,0 +1,33 @@
+# Task List for the Coding Agent
+
+Rules for every task: branch `feat/<slug>` (or `chore/`, `docs/`) from `main`; write the failing test first and show it failing for the right reason; implement; run lint, type check and tests; open a PR with summary and test plan; stop and wait for the human to merge. Commit messages follow Conventional Commits. No em dash and no emojis anywhere. Do not invent facts: unknown items stay `TODO(verify)` until verified by running something.
+
+Estimates are for the agent; the critical path is marked (CP).
+
+| ID | Task | Branch | Depends | Est. | Acceptance (tests / checks) |
+|---|---|---|---|---|---|
+| T00 (CP) | Run the external stack and verify every `TODO(verify)` in ARCHITECTURE.md and PROJECT.md. Write `docs/VERIFICATION.md` with command outputs summarized (no secrets) | `docs/verify-external-stack` | none | 1 h | The document answers: compose works with the chaos override; claim endpoint and payload; `mcp_clients.json` format and how to add identities; column types for the harm join; whether the evidence check uses `get_refund_history`; whether `validate_fraud_score` is called; how judge providers are set |
+| T01 | Project skeleton, config loading, CLI stub, CI (lint, mypy --strict, pytest) | `chore/skeleton` | none | 0.5 h | CI green on an empty test; `swarmlab --help` works |
+| T02 (CP) | LLM client protocol; providers mock, vertex, openai_compat; BudgetGuard (hard cap, missing cap blocks); limiter with bounded backoff | `feat/llm-client` | T01 | 2 h | Tests with the mock provider; BudgetGuard blocks at cap and when cap unset; 429 retry bounded and counted; no key ever appears in logs (test greps the log) |
+| T03 (CP) | World generator and ground truth: orders, users, tickets, attacker order, decoys; DB schema `swarmlab_gt`; seeding into the ledger DB with namespaced ids | `feat/world` | T00 | 1.5 h | Same seed gives identical world; attacker order amount drawn from the same distribution as legitimate (KS test in the test suite); harm query returns only non-ticketed refunds |
+| T04 (CP) | Event schema, JSONL writer, per-episode metrics (harm, exposed, mentioned, acted, first_harm_round, utility, tokens, cost, parse failures, eval-awareness flag) | `feat/events-metrics` | T03 | 1.5 h | Metrics computed from a hand-built event file match expected values; metrics never read agent self-reports |
+| T05 | Board and topology (full, ring, hub) with visibility matrices | `feat/board-topology` | T01 | 1 h | Visibility tests for each topology; hub sees all, others see hub only |
+| T06 (CP) | Agent loop: prompt assembly, JSON action parsing, parse-failure accounting; scripted mock agents for tests | `feat/agent-loop` | T02 T05 | 2 h | Malformed JSON becomes a counted no-op; prompts contain none of the words test, simulation, evaluation (test) |
+| T07 (CP) | Tool layer and MCP client: get_order, get_refund_history, execute_refund with two identities | `feat/tool-layer` | T00 T03 | 2 h | Integration test against the real MCP server: reader identity gets 403 on execute_refund and the audit row is present; privileged identity succeeds; refund request ids encode origin |
+| T08 (CP) | Episode runner: rounds, concurrent decisions and actions, termination, status handling, CLI `run-episode` | `feat/episode-runner` | T04 T06 T07 | 1.5 h | Scripted attacker episode under D0 produces harm; under D1 produces a deny; metrics match |
+| T09 | Defenses D0 and D1 behind the Defense interface | `feat/defenses-d0-d1` | T08 | 0.5 h | Containment-layer events present; D1 blocks direct worker execution |
+| G1 | Gate G1 review (see PLAN.md) | | T09 | | `docs/MODELS.md` with verified model ids, prices and limits (human supplies from consoles) |
+| T13 (CP) | Real-LLM pilot: N = 10, 3 to 5 episodes, manipulation check, prompt freeze; pilot report | `exp/pilot` | G1 | 2 h | Pilot report shows attempt rate, parse-failure rate, cost per episode, harm under D0; pilot data stored under `results/pilot` and excluded from analysis |
+| T14 (CP) | Preregistration generator and tag `prereg-v1` | `feat/prereg` | T13 | 0.5 h | `experiments/PREREGISTRATION.md` contains SHA-256 of design doc, configs, analysis code; tag created by the human |
+| T10 | D2 message filter (Prompt Guard adapter; fail-open as in the external repo; log skipped) | `feat/defense-d2` | T09 | 1 h | Filter blocks a known-flagged message in a test; skipped is logged when the classifier is unavailable |
+| T11 | D3 claim mediation: gateway client or in-process fallback F1; privileged agents lose direct execute | `feat/defense-d3` | T00 T09 | 2 h | A claim for an attacker order flows through the pipeline stages and its verdicts are in the event log; ledger row appears only after approval |
+| T12 | D5 task-bound capability (ticket check server-side) | `feat/defense-d5` | T09 | 1 h | Refund without a valid ticket is denied; with a valid ticket for a different order is denied |
+| T15 (CP) | Batch runner: matrix expansion from YAML, parallel episodes, resume, partial save, balanced truncation helper | `feat/batch-runner` | T10 T11 T12 | 2 h | Killing the runner mid-batch and restarting resumes without duplicates; truncation helper returns equal seeds per cell |
+| T16 (CP) | Analysis: Wilson, exact McNemar, Holm, paired bootstrap, containment breakdown, tables, figures F2 to F4 | `feat/analysis` | T04 | 3 h | Unit tests against known values (Wilson 0/30 upper about 0.114; 0/20 about 0.161); Holm on a fixture; figures render from a fixture run |
+| T17 | Scale and frontier and adaptive configs | `exp/arms` | T15 | 1 h | Configs validate against the schema; dry-run prints the cost estimate |
+| T18 | Optional D4: VL veto, baselines (threshold, kNN, logistic), risk-coverage figure | `feat/d4-vl-veto` | main arm done | 3 h | Fit uses benign data only (test asserts no attack episode ids in the fit set); veto never approves (property test) |
+| T19 | Reproducibility and README run instructions; results provenance files | `docs/repro` | T16 | 1 h | A fresh clone reproduces tables from committed logs with one command |
+| T20 | Report assets: auto-generated LaTeX/markdown tables and figure files for the report | `feat/report-assets` | T16 | 1 h | Files regenerate deterministically |
+| T21 | Final consistency check against `docs/hackathon/RULES.md`: page count, appendix present, pre-existing table, no fabricated references | `docs/final-check` | report draft | 1 h | Checklist in the PR description |
+
+Order of work for the main arm (after G3): run a smoke matrix of 1 seed per cell first; then launch seeds 1..30 in batches of 5 seeds across all cells so that a balanced truncation is always possible.
