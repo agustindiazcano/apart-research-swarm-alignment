@@ -54,7 +54,7 @@ Full rules: docs/hackathon/RULES.md
 
 | Path | Origin | Notes |
 |---|---|---|
-| `mcp-transactional-agent` (external repository, not copied here) | PRE-EXISTING | Direct dependency and system under test for D1 and D3. Run without modifying its code, configuration only. https://github.com/agustindiazcano/mcp-transactional-agent |
+| `mcp-transactional-agent` (external repository, not copied here) | PRE-EXISTING | Direct dependency and system under test for D1 and D3. Run without modifying its code, configuration only. Same author, MIT license. https://github.com/agustindiazcano/mcp-transactional-agent |
 | AFAW (anti-fragile agentic workflow) | PRE-EXISTING | Working method only (branch per task, TDD, CI, human approval). No code used. https://github.com/agustindiazcano/afaw-anti-fragile-agentic-workflow |
 | AFAW Engine | PRE-EXISTING | Earlier context. No code used. https://github.com/agustindiazcano/afaw-engine-gitlab |
 | Waggle Hive (`waggle-agents-meta-muse`) | PRE-EXISTING | Evaluation conventions only (dangerous error first, Wilson intervals, separate counting units). No code used. https://github.com/agustindiazcano/waggle-agents-meta-muse |

@@ -2,7 +2,7 @@
 
 Status: written 2026-11-08 from the author's own list. This is the source for the pre-existing work declaration in the README and in the report. Rule: building on existing work is allowed; it must be disclosed in both places (see `RULES.md`, section 4). Only sprint work is judged.
 
-All four items are earlier work by the same author (Agustin Diaz-Cano).
+All four items are earlier work by the same author (Agustin Diaz-Cano), who owns all four repositories. `mcp-transactional-agent` is under the MIT license (stated by the author; matches the MIT badge in its README).
 
 ## Declared prior work
 
@@ -17,7 +17,8 @@ All four items are earlier work by the same author (Agustin Diaz-Cano).
 
 - Pre-existing and external to this repository. It is run as a separate Docker Compose stack; nothing from it is copied here.
 - Code changes: none. Configuration changes only (compose override, MCP client registry entries). Every change is listed in `docs/VERIFICATION.md`, section 8.
-- Version verified on 2026-11-08: branch `feat/front-desk-eval`, commit `37f6d72`. `TODO(verify)`: pin the exact commit used for the final runs and record the license.
+- Version verified on 2026-11-08: branch `feat/front-desk-eval`, commit `37f6d72`. `TODO(verify)`: pin the exact commit used for the final runs.
+- License: MIT. The author owns the repository.
 - Role in the experiment: the MCP security boundary (identity-based tool permissions) is the defense under test in D1; the claim pipeline (evidence check, judges, deterministic executor) is the defense under test in D3.
 
 ## Disclosure text to reuse
