@@ -26,3 +26,7 @@ Thumbs.db
 # Local result dumps: TODO(confirm whether runs/ and outputs/ should be committed)
 runs/
 outputs/
+
+# Playbook texts stay out of the public repository (AGENTS.md invariant 8)
+experiments/payloads/*
+!experiments/payloads/README.md
