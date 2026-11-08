@@ -865,6 +865,39 @@ def test_episode_summary_includes_offspring_means() -> None:
         assert summary[key] == stats[key]
 
 
+def test_episode_summary_preserves_unknown_cost_and_credit_units() -> None:
+    gt = _make_gt()
+    payloads = [
+        {"cost_usd": None, "cost_credits": 0.2, "billing_unit": "credits"},
+        {"cost_usd": None, "cost_credits": None, "billing_unit": "credits"},
+        {"cost_usd": 0.1, "billing_unit": "usd"},
+    ]
+    events = [EventRecord(
+        ts="t", episode_id=gt.episode_id, round=0, agent_id=0, kind="llm_call", payload=payload
+    ) for payload in payloads]
+    summary = episode_summary(events, gt)
+    assert summary["cost_usd"] is None
+    assert summary["known_cost_usd"] == sum(
+        payload["cost_usd"] for payload in payloads if payload["cost_usd"] is not None
+    )
+    assert summary["calls_with_unknown_cost_usd"] == sum(
+        payload["cost_usd"] is None for payload in payloads
+    )
+    assert summary["cost_credits"] is None
+    assert summary["known_cost_credits"] == payloads[0]["cost_credits"]
+    assert summary["calls_with_unknown_cost_credits"] == 1
+
+
+def test_episode_summary_usd_only_has_no_unknown_credit_calls() -> None:
+    gt = _make_gt()
+    event = EventRecord(ts="t", episode_id=gt.episode_id, round=0, agent_id=0,
+                        kind="llm_call", payload={"cost_usd": 0.1})
+    summary = episode_summary([event], gt)
+    assert summary["cost_usd"] == event.payload["cost_usd"]
+    assert summary["cost_credits"] is None
+    assert summary["calls_with_unknown_cost_credits"] == 0
+
+
 @pytest.mark.parametrize("unknown", [{"retries": None}, {}])
 def test_summary_preserves_unknown_retry_counts(unknown: dict[str, Any]) -> None:
     gt = _make_gt()
