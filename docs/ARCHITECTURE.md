@@ -99,7 +99,7 @@ No metric reads an agent self-report or an LLM judgment.
 
 Interface: `score(message, context) -> float` in [0, 1]. `context` carries sender, round, and the sender's inbox from the previous round (D3 and D4).
 
-- D2 logprobs: one output token, `top_logprobs` on, softmax over the SAFE and UNSAFE logprobs, temperature scale fit on TRAIN. If a provider returns no logprobs, the declared fallback in EXPERIMENT_DESIGN.md section 5 applies.
+- D2: rubric mode is the default (short JSON with three integer scores, normalized, plus 0.05 times the D1 score); logprob mode (one output token, `top_logprobs` on, softmax over the SAFE and UNSAFE logprobs, temperature scale fit on TRAIN) is used only for a provider that returns logprobs. No provider checked on 2026-11-08 does (`docs/MODELS.md`).
 - D3: one line over the stored cached scores S~ with a relevance gate on the outgoing message (EXPERIMENT_DESIGN.md section 5), no extra model call.
 - D5: keeps the surrogate graph state: for each message it stores S~ (S_D2 if the LLM ran, else the calibrated D1 probability), so D3 always finds the previous-round inbox scores. D5 runs D1 first; only gray-zone messages call the LLM (D2 and D3). The log records which stage decided each message, so the share of messages that reached the LLM is a query.
 - D4: three isolated prompts (each sees a different projection of the state), run in parallel; veto aggregation; weights, gamma and thresholds fit on TRAIN.
