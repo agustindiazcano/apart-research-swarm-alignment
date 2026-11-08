@@ -1,7 +1,7 @@
-from collections.abc import Sequence
+import itertools
 import math
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -42,7 +42,7 @@ def test_logit() -> None:
     # Monotonicity check
     p_vals = [0.1, 0.3, 0.5, 0.7, 0.9]
     logit_vals = [logit(p) for p in p_vals]
-    assert all(x < y for x, y in zip(logit_vals[:-1], logit_vals[1:]))
+    assert all(x < y for x, y in itertools.pairwise(logit_vals))
 
     # Symmetry check: logit(p) == -logit(1 - p)
     for p in [0.1, 0.25, 0.4, 0.7]:
@@ -100,8 +100,10 @@ def test_holm_adjust_example() -> None:
     #    index 2: 0.03
     #    index 1: 0.04
     # 3. Step 1 (rank 0): multiplier = 3 - 0 = 3; candidate = 3 * 0.01 = 0.03; adj = 0.03.
-    # 4. Step 2 (rank 1): multiplier = 3 - 1 = 2; candidate = 2 * 0.03 = 0.06; adj = max(0.03, 0.06) = 0.06.
-    # 5. Step 3 (rank 2): multiplier = 3 - 2 = 1; candidate = 1 * 0.04 = 0.04; adj = max(0.06, 0.04) = 0.06.
+    # 4. Step 2 (rank 1): multiplier = 3 - 1 = 2; candidate = 2 * 0.03 = 0.06;
+    #    adj = max(0.03, 0.06) = 0.06.
+    # 5. Step 3 (rank 2): multiplier = 3 - 2 = 1; candidate = 1 * 0.04 = 0.04;
+    #    adj = max(0.06, 0.04) = 0.06.
     # 6. Map back to original indices [0, 1, 2]:
     #    index 0: 0.03
     #    index 1: 0.06
@@ -125,15 +127,15 @@ def test_holm_adjust_properties() -> None:
     assert len(adj) == len(raw)
 
     # 2. Each adjusted value is at least its raw value
-    assert all(a >= r for a, r in zip(adj, raw))
+    assert all(a >= r for a, r in zip(adj, raw, strict=True))
 
     # 3. Capped at 1.0
     assert all(a <= 1.0 for a in adj)
 
     # 4. Monotone non-decreasing in the sorted order of raw p-values
-    sorted_pairs = sorted(zip(raw, adj), key=lambda x: x[0])
+    sorted_pairs = sorted(zip(raw, adj, strict=True), key=lambda x: x[0])
     sorted_adj = [pair[1] for pair in sorted_pairs]
-    assert all(x <= y for x, y in zip(sorted_adj[:-1], sorted_adj[1:]))
+    assert all(x <= y for x, y in itertools.pairwise(sorted_adj))
 
 
 def test_auroc() -> None:
@@ -317,3 +319,17 @@ def test_cusum_episode_score() -> None:
 
     # All logits below tau0
     assert cusum_episode_score([-2.0, -1.0, 0.0], tau0=0.5) == 0.0
+
+
+def test_threshold_at_fpr_rejects_fpr_outside_unit_interval() -> None:
+    for bad in (-0.1, 1.1):
+        with pytest.raises(ValueError):
+            threshold_at_fpr([0.1, 0.2, 0.3], bad)
+
+
+def test_bootstrap_ci_rejects_alpha_outside_unit_interval() -> None:
+    for bad in (0.0, 1.0, -0.5):
+        with pytest.raises(ValueError):
+            bootstrap_ci([1.0, 2.0, 3.0], alpha=bad)
+        with pytest.raises(ValueError):
+            paired_bootstrap_diff_ci([1.0, 2.0], [0.5, 1.5], alpha=bad)

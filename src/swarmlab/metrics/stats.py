@@ -1,5 +1,6 @@
-from collections.abc import Callable, Sequence
+"""Pure statistical functions used by the analysis (no I/O, no global state)."""
 import math
+from collections.abc import Callable, Sequence
 
 import numpy as np
 import scipy.stats as st
@@ -63,6 +64,11 @@ def holm_adjust(p_values: Sequence[float]) -> list[float]:
     return result
 
 
+def _check_alpha(alpha: float) -> None:
+    if not 0.0 < alpha < 1.0:
+        raise ValueError(f"alpha must be in (0, 1), got {alpha}")
+
+
 def bootstrap_ci(
     values: Sequence[float],
     stat: Callable[[np.ndarray], float] = np.mean,
@@ -78,7 +84,8 @@ def bootstrap_ci(
     rng = np.random.default_rng(seed)
     indices = rng.integers(0, n, size=(n_resamples, n))
     resamples = arr[indices]
-    if stat is np.mean or stat == np.mean:
+    _check_alpha(alpha)
+    if stat is np.mean:
         estimates = np.mean(resamples, axis=1)
     else:
         estimates = np.fromiter(
@@ -101,6 +108,7 @@ def paired_bootstrap_diff_ci(
     seed: int = 0,
 ) -> tuple[float, float, float]:
     """Compute a paired bootstrap confidence interval for mean(a - b)."""
+    _check_alpha(alpha)
     arr_a = np.asarray(a, dtype=float)
     arr_b = np.asarray(b, dtype=float)
     if len(arr_a) != len(arr_b):
@@ -141,6 +149,8 @@ def auroc(
 
 def threshold_at_fpr(negative_scores: Sequence[float], fpr: float) -> float:
     """Find the smallest threshold achieving false positive rate at most fpr."""
+    if not 0.0 <= fpr <= 1.0:
+        raise ValueError(f"fpr must be in [0, 1], got {fpr}")
     arr = np.asarray(negative_scores, dtype=float)
     n = len(arr)
     if n == 0:
@@ -194,4 +204,4 @@ def smoothed_threshold_at_fpr(
 
 def cusum_episode_score(logits: Sequence[float], tau0: float) -> float:
     """Compute CUSUM score as sum over max(0, logit - tau0)."""
-    return float(sum(max(0.0, float(l) - tau0) for l in logits))
+    return float(sum(max(0.0, float(value) - tau0) for value in logits))
