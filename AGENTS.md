@@ -2,6 +2,18 @@
 
 Single source of truth for agent instructions in this repository. `CLAUDE.md` is a symlink to this file.
 
+## Data Integrity
+
+No result is typed by hand. Every number in the README, in `docs/` and in the report (rates, counts, intervals, R0, AUROC, costs, table cells) is produced by a script from the committed event logs and `gt.json`, and is inserted into the file by a script. Two causes of error are removed this way: transcription mistakes by a person, and numbers produced by an AI model that were never measured.
+
+- Generated content sits between markers: `<!-- RESULTS:BEGIN <name> -->` and `<!-- RESULTS:END <name> -->`. Nothing inside a marked block is edited by hand.
+- `scripts/render_results.py` (task T14) reads `results/`, rewrites the marked blocks, and prints the source file and its SHA-256 next to each table.
+- A value with no source file is written as `TODO(result)`. It is never an estimate, a rounded memory or a figure copied from chat.
+- In prose, refer to a table or figure instead of repeating its numbers. A number that has to appear in prose comes from a generated inline block.
+- Before a PR that touches results: run the script and confirm the diff is empty. A CI step that fails when rendering changes a file is added together with the script (T14).
+- Agents do not compute a result in chat or in a commit message to paste it into a document.
+- Values read from provider consoles (model ids, prices, limits) are copied by the human into `docs/MODELS.md` with the date and the page they came from.
+
 ## Project purpose
 
 This repository holds a project built for the Swarm Alignment Hackathon 2026 (an Apart Research sprint, November 6 to 8, 2026). Project title (working): "Infection Chains in LLM Swarms: spread, detection and immunity". The deliverable is a PDF research report plus the code and data that support it.
@@ -74,6 +86,7 @@ PENDING.md
 LASTCONTEXT.md
 .gitignore
 .env.example
+scripts/render_results.py (planned, T14)
 docs/README.md
 docs/PROJECT.md, EXPERIMENT_DESIGN.md, ARCHITECTURE.md, PLAN.md, TASKS.md, REPORT_OUTLINE.md
 docs/hackathon/OVERVIEW.md, RESOURCES.md, RULES.md, TALKS_DIGEST.md, PRIOR_WORK_DIGEST.md
