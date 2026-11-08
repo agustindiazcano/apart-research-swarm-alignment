@@ -221,7 +221,7 @@ def test_malformed_json_is_counted_noop() -> None:
     assert calls[0].payload["raw_text"] == "not json"
     assert calls[0].payload["provider"] == "fake"
     assert calls[0].payload["cost_usd"] == 0.0
-    assert calls[0].payload["retries"] == 0
+    assert calls[0].payload["retries"] is None
     assert len(of_kind(events, "error")) == 1
     action = [e for e in of_kind(events, "action") if e.agent_id == 2 and e.round == 1]
     assert action[0].payload["type"] == "noop"
@@ -496,3 +496,46 @@ def test_abort_cancels_other_agent_calls_before_returning() -> None:
         assert client.cancelled == client.started - 1
 
     asyncio.run(scenario())
+
+
+def test_abort_keeps_completed_sibling_llm_event() -> None:
+    class OrderedAbortClient(FakeClient):
+        def __init__(self) -> None:
+            super().__init__(noop_script)
+            self.completed = asyncio.Event()
+            self.wait_forever = asyncio.Event()
+
+        async def complete(
+            self,
+            messages: Sequence[Mapping[str, str]],
+            *,
+            temperature: float | None = None,
+            max_tokens: int = 256,
+            logprobs: bool = False,
+        ) -> LLMResult:
+            if messages[0]["content"].startswith("AGENT:0 "):
+                result = await super().complete(messages, max_tokens=max_tokens)
+                self.completed.set()
+                return result
+            await self.completed.wait()
+            if messages[0]["content"].startswith("AGENT:1 "):
+                raise AbortError("budget fixture exhausted")
+            await self.wait_forever.wait()
+            raise AssertionError("waiting call was released")
+
+    events: list[EventRecord] = []
+    with pytest.raises(AbortError):
+        asyncio.run(
+            run_episode(
+                make_world(),
+                OrderedAbortClient(),
+                Builder(),
+                events.append,
+                abort_on=(AbortError,),
+                now=lambda: "T",
+            )
+        )
+    completed = of_kind(events, "llm_call")
+    assert [event.agent_id for event in completed] == [0]
+    assert completed[0].payload["response_id"] == "id-0-0"
+    assert of_kind(events, "action") == []

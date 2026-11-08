@@ -111,7 +111,8 @@ async def _decide(
         "cost_usd": cost_fn(result),
         "latency_ms": result.latency_ms,
         "parse_ok": action is not None,
-        "retries": 0,
+        # TODO(verify): LLMResult has no retry metadata; an unknown count stays null.
+        "retries": None,
         "response_id": result.response_id,
         "finish_reason": result.finish_reason,
         "raw_text": result.text,
@@ -168,32 +169,30 @@ async def run_episode(
             text=m.text,
         )
 
-    for rnd in range(total_rounds):
-        turns = await _gather_round(
-            [
-                _decide(
-                    seed,
-                    board,
-                    client,
-                    prompt_builder,
-                    rnd,
-                    total_rounds,
-                    n_agents,
-                    max_tokens,
-                    abort_on,
-                    cost_fn,
-                )
-                for seed in world.agents
-            ]
+    async def decide_and_log(seed: AgentSeed, rnd: int) -> _AgentTurn:
+        nonlocal n_parse_failures
+        turn = await _decide(
+            seed,
+            board,
+            client,
+            prompt_builder,
+            rnd,
+            total_rounds,
+            n_agents,
+            max_tokens,
+            abort_on,
+            cost_fn,
         )
-        for seed, turn in zip(world.agents, turns, strict=True):
-            if turn.llm_payload is not None:
-                emit("llm_call", rnd, seed.agent_id, turn.llm_payload)
-            if turn.error is not None:
-                emit("error", rnd, seed.agent_id, turn.error)
-            if turn.parse_failed:
-                n_parse_failures += 1
+        if turn.llm_payload is not None:
+            emit("llm_call", rnd, seed.agent_id, turn.llm_payload)
+        if turn.error is not None:
+            emit("error", rnd, seed.agent_id, turn.error)
+        if turn.parse_failed:
+            n_parse_failures += 1
+        return turn
 
+    for rnd in range(total_rounds):
+        turns = await _gather_round([decide_and_log(seed, rnd) for seed in world.agents])
         # Barrier: validate every action, decide the gate verdicts of the round concurrently
         # (they depend only on the round-start state), then apply the actions in agent id order.
         plans: list[tuple[AgentSeed, ActionPayload, str | None]] = [
