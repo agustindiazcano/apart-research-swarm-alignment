@@ -32,9 +32,6 @@ Work in progress, built during the Swarm Alignment Hackathon 2026.
 | Schedule tab (talks and recordings) | https://apartresearch.com/sprints/swarm-alignment-2026#schedule | from organizer email |
 | Adaption platform | https://adaptionlabs.ai/app | from organizer email |
 | Adaption docs | https://docs.adaptionlabs.ai/ | from organizer email |
-| Apart Research Discord | `TODO(link)` | no |
-| Discord help-desk channel | `TODO(link)` | no |
-| Pre-hackathon survey | `TODO(link)` | no |
 | Support email | sprints@apartresearch.com | from organizer email |
 
 Project documents:
@@ -54,7 +51,12 @@ Full rules: docs/hackathon/RULES.md
 
 | Path | Origin | Notes |
 |---|---|---|
-| (none) | n/a | The repository was empty when the scaffold task started. Nothing pre-exists. |
+| `mcp-transactional-agent` (external repository, not copied here) | PRE-EXISTING | Direct dependency and system under test for D1 and D3. Run without modifying its code, configuration only. Same author, MIT license. https://github.com/agustindiazcano/mcp-transactional-agent |
+| AFAW (anti-fragile agentic workflow) | PRE-EXISTING | Working method only (branch per task, TDD, CI, human approval). No code used. https://github.com/agustindiazcano/afaw-anti-fragile-agentic-workflow |
+| AFAW Engine | PRE-EXISTING | Earlier context. No code used. https://github.com/agustindiazcano/afaw-engine-gitlab |
+| Waggle Hive (`waggle-agents-meta-muse`) | PRE-EXISTING | Evaluation conventions only (dangerous error first, Wilson intervals, separate counting units). No code used. https://github.com/agustindiazcano/waggle-agents-meta-muse |
+
+Everything else in this repository was written during the sprint. Details: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 
 Code written before the sprint is marked PRE-EXISTING here and in the report.
 
