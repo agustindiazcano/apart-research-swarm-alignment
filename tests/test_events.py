@@ -141,3 +141,10 @@ def test_read_events_reports_unknown_kind_line_number(tmp_path: Path) -> None:
     # Derivation: schema validation error occurs on line 1
     error_message = str(exc_info.value).lower()
     assert "line 1" in error_message
+
+
+def test_read_events_reports_invalid_utf8_line_number(tmp_path: Path) -> None:
+    log_path = tmp_path / "invalid_encoding.jsonl"
+    log_path.write_bytes(b"\n\xff\n")
+    with pytest.raises(ValueError, match="line 2"):
+        read_events(log_path)

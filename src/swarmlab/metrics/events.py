@@ -58,11 +58,11 @@ def read_events(path: Path) -> list[EventRecord]:
         lineno = 0
         for raw_line in reader:
             lineno += 1
-            decoded = raw_line.decode("utf-8")
-            stripped = decoded.strip()
-            if not stripped:
-                continue
             try:
+                decoded = raw_line.decode("utf-8")
+                stripped = decoded.strip()
+                if not stripped:
+                    continue
                 record = from_json_line(stripped)
             except Exception as exc:
                 raise ValueError(
