@@ -37,6 +37,19 @@ Work in progress, built during the Swarm Alignment Hackathon 2026.
 | Pre-hackathon survey | `TODO(link)` | no |
 | Support email | sprints@apartresearch.com | from organizer email |
 
+Project documents:
+
+- [docs/hackathon/RULES.md](docs/hackathon/RULES.md)
+- [docs/hackathon/TALKS_DIGEST.md](docs/hackathon/TALKS_DIGEST.md)
+
+## How this project is judged
+
+- Impact potential and innovation
+- Execution quality (methodology, implementation, findings)
+- Presentation and clarity
+
+Full rules: docs/hackathon/RULES.md
+
 ## Pre-existing work vs work done during the sprint
 
 | Path | Origin | Notes |
