@@ -8,9 +8,17 @@ This repository holds a project built for the Swarm Alignment Hackathon 2026 (an
 
 Rules documents under `docs/` are authoritative and will be added incrementally by the maintainer. When a rules document conflicts with this file, the rules document wins.
 
+## Session protocol
+
+- At the start of every session, read [`PENDING.md`](PENDING.md) (prioritized open tasks, phase codes, traffic light) and [`LASTCONTEXT.md`](LASTCONTEXT.md) (what the previous agent did and what comes next) before doing anything else.
+- After finishing every task, update both files in the same task: move the task to "Done" in `PENDING.md`, rewrite `LASTCONTEXT.md` with the latest state, then commit.
+- When a task is finished, tell the human and ask for approval to open the PR. Do not open the PR before the human approves.
+- Exception to the no-emoji rule: the traffic light symbols in `PENDING.md`.
+
 ## Workflow rules
 
-- One branch per task. For this task: `chore/project-scaffold`. Never commit to `main`.
+- One branch per task, named `<type>/<short-description>`. Never commit to `main`.
+- Atomic commits: each commit holds one logical change that builds and passes CI on its own. Do not mix unrelated changes (for example, code and docs for different tasks) in one commit.
 - TDD for any code. This task has no application code, so no tests are needed beyond CI passing.
 - Everything must pass CI before a PR is opened. A human approves and merges every PR. Do not merge, do not force-push.
 - Documents, code, commits and READMEs are in English.
@@ -36,6 +44,8 @@ README.md
 LICENSE
 AGENTS.md
 CLAUDE.md                      (symlink to AGENTS.md)
+PENDING.md
+LASTCONTEXT.md
 .gitignore
 .env.example
 docs/README.md
