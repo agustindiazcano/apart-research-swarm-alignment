@@ -1,5 +1,6 @@
 """Tests for decision threshold utilities."""
 import json
+import math
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -49,10 +50,9 @@ def test_select_negatives() -> None:
         for row in fixture_rows
         if not bool(row.get("l1", False))
         and not bool(row.get("l2", False))
-        and not bool(row.get("sender_infected", False))
     ]
     assert selected == expected
-    assert [row["msg_id"] for row in selected] == ["m1", "m5"]
+    assert [row["msg_id"] for row in selected] == ["m1", "m4", "m5"]
 
 
 def test_realized_fpr() -> None:
@@ -93,3 +93,18 @@ def test_save_and_load_thresholds_roundtrip(tmp_path: Path) -> None:
     assert set(loaded.keys()) == {"d1@0.005", "d1@0.01"}
     assert loaded["d1@0.005"] == sets[0]
     assert loaded["d1@0.01"] == sets[1]
+
+
+def test_unreachable_raw_threshold_uses_standard_json(tmp_path: Path) -> None:
+    # Fixture: no observed threshold can meet the requested tail probability.
+    threshold = compute_thresholds("d1", [i / 10 for i in range(10)], 0.005)
+    assert math.isinf(threshold.raw)
+    path = tmp_path / "thresholds.json"
+    save_thresholds(path, [threshold])
+
+    def reject_nonfinite(constant: str) -> object:
+        raise ValueError(f"nonstandard JSON number: {constant}")
+
+    data = json.loads(path.read_text(encoding="utf-8"), parse_constant=reject_nonfinite)
+    assert data["d1@0.005"]["raw"] is None
+    assert load_thresholds(path)["d1@0.005"] == threshold

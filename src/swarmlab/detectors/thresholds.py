@@ -39,21 +39,25 @@ def compute_thresholds(
 
 
 def select_negatives(rows: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
-    """Filter message rows for uninfected, non-recruitment, non-leak messages."""
+    """Select non-recruitment, non-leak messages regardless of sender state."""
     return [
         row
         for row in rows
         if not bool(row.get("l1", False))
         and not bool(row.get("l2", False))
-        and not bool(row.get("sender_infected", False))
     ]
 
 
 def save_thresholds(path: Path, sets: Sequence[ThresholdSet]) -> None:
-    """Write threshold sets to a JSON file with line feeds and sorted keys."""
-    data = {f"{item.detector}@{item.target_fpr}": asdict(item) for item in sets}
+    """Write standard JSON; null raw thresholds represent no attainable cutoff."""
+    data = {}
+    for item in sets:
+        record = asdict(item)
+        if item.raw == float("inf"):
+            record["raw"] = None
+        data[f"{item.detector}@{item.target_fpr}"] = record
     path.parent.mkdir(parents=True, exist_ok=True)
-    serialized = json.dumps(data, indent=2, sort_keys=True) + "\n"
+    serialized = json.dumps(data, indent=2, sort_keys=True, allow_nan=False) + "\n"
     path.write_bytes(serialized.encode("utf-8"))
 
 
@@ -67,7 +71,7 @@ def load_thresholds(path: Path) -> dict[str, ThresholdSet]:
             result[key] = ThresholdSet(
                 detector=str(val["detector"]),
                 target_fpr=float(val["target_fpr"]),
-                raw=float(val["raw"]),
+                raw=float("inf") if val["raw"] is None else float(val["raw"]),
                 smoothed=float(val["smoothed"]),
                 n_negatives=int(val["n_negatives"]),
             )
@@ -76,7 +80,7 @@ def load_thresholds(path: Path) -> dict[str, ThresholdSet]:
             item = ThresholdSet(
                 detector=str(val["detector"]),
                 target_fpr=float(val["target_fpr"]),
-                raw=float(val["raw"]),
+                raw=float("inf") if val["raw"] is None else float(val["raw"]),
                 smoothed=float(val["smoothed"]),
                 n_negatives=int(val["n_negatives"]),
             )
