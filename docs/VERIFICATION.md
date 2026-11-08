@@ -81,7 +81,7 @@ From `src/agents/provider_roles.py`:
 - `LLM_PROVIDER=vertex`: roles whose default is gemini run on Vertex AI. `judge2` and `prompt_guard` stay on groq.
 - The Prompt Guard fails open: if it cannot score, the result is `skipped`.
 
-Open item for the human: this project plans to use Adaption, Muse, Modal and Vertex only. D2 and D3 with real providers need a Groq key for `judge2` and `prompt_guard`, or a code change in the external repository (not allowed without approval). Decision needed before task T10 and T11. `TODO(verify)`: behavior of the Prompt Guard under `LLM_PROVIDER=mock`.
+Decision (2026-11-08): Groq is not used in this project. `judge2` and `prompt_guard` run on the project providers (Vertex, Muse, Adaption) instead. How they are remapped is worked out in T10 and T11 and declared here. `TODO(verify)`: behavior of the Prompt Guard under `LLM_PROVIDER=mock`.
 
 ## 7. Other findings
 
@@ -139,6 +139,6 @@ A token hash is produced with `hashlib.sha256(token.encode()).hexdigest()`.
 | Origin of the `unknown` / `DENIED_UNAUTHENTICATED` audit row at startup | T07 |
 | Client-side shape of a denied MCP call | T07 |
 | Prompt Guard behavior under `LLM_PROVIDER=mock` | T10 |
-| Judge providers without Groq (decision for the human) | T10, T11 |
+| Remapping `judge2` and `prompt_guard` from Groq to Vertex, Muse or Adaption | T10, T11 |
 | Real-provider run of the claim pipeline (needs keys) | T11 |
 | Model ids, prices and limits for Adaption, Muse, Modal and Vertex (`docs/MODELS.md`) | gate G1 |
