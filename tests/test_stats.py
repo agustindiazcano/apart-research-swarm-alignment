@@ -264,7 +264,7 @@ def test_bootstrap_ci() -> None:
     low, high = bootstrap_ci(constant_sample, seed=0)
     assert np.isclose(low, 7.5, rtol=1e-12, atol=1e-12)
     assert np.isclose(high, 7.5, rtol=1e-12, atol=1e-12)
-    assert np.isclose(high - low, 0.0, abs_tol=1e-12)
+    assert np.isclose(high - low, 0.0, atol=1e-12)
 
     # Non-default stat
     med_low, med_high = bootstrap_ci(sample, stat=np.median, seed=0)
