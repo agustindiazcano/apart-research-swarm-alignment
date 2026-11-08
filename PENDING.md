@@ -35,20 +35,20 @@ Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.m
 | # | Light | ID | Task | Depends on | Status |
 |---|---|---|---|---|---|
 | 1 | 🔴 | T00 | Merge the redesign docs PR (human approves) | none | branch `docs/redesign-infected-swarm` |
-| 2 | 🔴 | T01 | Package skeleton, config, CLI stub, CI (ruff, mypy, pytest) and the frozen `schema.py` contract, lane A | T00 | open |
-| 3 | 🔴 | T05 | Event schema, extraction and statistics, lane B | T00 | open |
+| 2 | 🔴 | T01 | Package skeleton, config, CLI stub, CI (ruff, mypy, pytest) and the frozen `schema.py` contract, lane A | T00 | branch `chore/skeleton` pushed, PR not opened (merge first) |
+| 3 | 🔴 | T05 | Event schema, extraction and statistics, lane B | T00 | T05a statistics done on `feat/stats`; T05b extraction open |
 | 4 | 🔴 | T02 | LLM client with logprobs option and budget guard, lane A | T01 | open |
 | 5 | 🔴 | T03 | World generator and ground-truth rules, lane A | T01 | open |
 | 6 | 🔴 | T04 | Swarm core: board, ring and complete topology, agents, runner, lane A | T02, T03 | open |
 | 7 | 🔴 | T06 | Detectors D1 to D3 and the online gate, lane B | T05 | open |
 | 8 | 🔴 | G1 | Provider check (logprobs, temperature, model ids, limits) and `docs/MODELS.md` | T04, T05, T06 | human supplies console data |
 | 9 | 🟡 | T07 | Pilot and playbook calibration (3 seeds) | G1 | open |
-| 10 | 🟡 | T08 | Preregistration and tag `prereg-v1` | T07 | open |
-| 11 | 🟡 | T09 | Batch runner | T04 | open |
+| 10 | 🟡 | T08 | Preregistration and tag `prereg-v1` | T07 | T08a manifest generator done on `feat/prereg`; tag after the pilot |
+| 11 | 🟡 | T09 | Batch runner | T04 | done on `feat/batch-runner`, PR not opened |
 | 12 | 🟡 | T10 | Runs: TRAIN, A0, A1, A3, A3c, A2 scoring | T08, T09, T06 | open |
 | 13 | 🟡 | T11 | Analysis and figures from committed logs | T05 | open |
 | 14 | 🟢 | T12 | D4 micro-verifiers with veto gate | T06 | open |
-| 15 | 🟢 | T14 | Reproduction instructions, report assets and `scripts/render_results.py` with its CI freshness check | T11 | open |
+| 15 | 🟢 | T14 | Reproduction instructions, report assets and `scripts/render_results.py` with its CI freshness check | T11 | T14a renderer done on `feat/render-results`; reproduction docs open |
 | 16 | 🟢 | T15 | Final check against RULES.md, report, submission | report draft | open |
 | 17 | ⚪ | T13 | Immunity arm (stretch) | T08, T11 | open |
 | 18 | ⚪ | SETUP-03 | Add `PENDING.md` and `LASTCONTEXT.md` to the required-files check in CI | none | open |
