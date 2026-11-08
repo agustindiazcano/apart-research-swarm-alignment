@@ -15,6 +15,18 @@ Rules documents under `docs/` are authoritative and will be added incrementally 
 - When a task is finished, tell the human and ask for approval to open the PR. Do not open the PR before the human approves.
 - Exception to the no-emoji rule: the traffic light symbols in `PENDING.md`.
 
+## Multiple agents, branch and worktree rules
+
+More than one agent works in this project, possibly at the same time, on the same machine. Do not assume anything about the state you find.
+
+- Before any edit, commit or branch operation, check where you are: `git branch --show-current`, `git status -sb` and `git worktree list`. Do this at the start of the session and again before each task. A previous agent or the human may have switched branches, left uncommitted changes or created worktrees.
+- Do not assume the checked-out branch is yours or is the one a task needs. Do not assume `main` is up to date: run `git fetch` and compare with `origin/main`. Do not assume a file, branch, container or running service was created by you.
+- Never edit, stash, reset, delete or commit changes you did not make (untracked files included). If the working tree has changes you do not recognize, leave them alone and tell the human.
+- To avoid collisions, start every task in its own worktree and its own branch: `git worktree add ../<repo>-wt-<task> -b <type>/<short-description> <base>`. Work only inside that worktree. Do not switch branches in a directory another agent may be using.
+- Remove your worktree when the PR is merged: `git worktree remove ../<repo>-wt-<task>`. Do not remove worktrees you did not create.
+- Shared local resources (Docker projects, ports, containers, volumes, databases) follow the same rule: check what exists before creating or removing anything, use a name that identifies the task, and remove only what you created.
+- Record the branch, worktree path and any running service in `LASTCONTEXT.md` so the next agent does not have to guess.
+
 ## Workflow rules
 
 - One branch per task, named `<type>/<short-description>`. Never commit to `main`.

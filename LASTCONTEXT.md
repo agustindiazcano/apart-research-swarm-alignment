@@ -6,10 +6,9 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Branch `docs/prior-work` (stacked on `docs/verify-external-stack`): wrote `docs/hackathon/PRIOR_WORK_DIGEST.md` from the author's list (AFAW, AFAW Engine, Waggle Hive, `mcp-transactional-agent`), filled the README pre-existing table, and restored the references to the digest in `AGENTS.md` and the docs.
-- Before that, T00 was completed (`docs/VERIFICATION.md`, PR #7). Key finding: judges and Prompt Guard default to Groq, which is not a planned provider (SETUP-10).
-- A script error in the T00 PR had dropped the SCOPE-03 row from `PENDING.md`; it was restored.
-- The experiment stack (`swarmexp`) is still running in Docker.
+- Added the "Multiple agents, branch and worktree rules" section to `AGENTS.md` on branch `docs/multi-agent-rule`, worked in its own worktree `../apart-research-swarm-alignment-wt-agents-rule` (stacked on `docs/prior-work`). Remove the worktree after the PR is merged.
+- Earlier in this session: T00 verification (PR #7), prior work digest (PR #8), env and docs PRs (#5, #6). See `PENDING.md` "Done".
+- The experiment Docker stack (project `swarmexp`) is still running; it belongs to the T00 work.
 
 ## Repository state
 
