@@ -271,7 +271,7 @@ def test_fit_temperature_scale_requires_both_classes() -> None:
     with pytest.raises(ValueError, match="both classes"):
         fit_temperature_scale(pairs, [1, 1])
 
-    with pytest.raises(ValueError, match="length"):
+    with pytest.raises(ValueError, match="Length mismatch"):
         fit_temperature_scale(pairs, [0])
 
 
