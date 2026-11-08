@@ -62,6 +62,8 @@ Ordered by priority, top first.
 | T00 | Verify the external stack and write `docs/VERIFICATION.md` | branch `docs/verify-external-stack` |
 | REPORT-05 | Prior work named; `docs/hackathon/PRIOR_WORK_DIGEST.md` written, README pre-existing table filled, references restored | branch `docs/prior-work` |
 | SETUP-11 | Multi-agent rule in `AGENTS.md`: check branch and worktrees first, assume nothing, one worktree and branch per task | branch `docs/multi-agent-rule` |
+| SETUP-13 | Rule in `AGENTS.md`: every PR is based on `main`, no stacked PRs | branch `docs/pr-base-main-rule` |
+| SETUP-14 | Content of stacked PRs #6 to #10 brought to `main` | PR #11 |
 | SETUP-12 | Removed the Discord, help-desk and survey `TODO(link)` rows from the README links table (SETUP-04 dropped) | branch `docs/readme-remove-todo-links` |
 | SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
