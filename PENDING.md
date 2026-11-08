@@ -36,6 +36,8 @@ Ordered by priority, top first.
 |---|---|---|---|---|---|
 | 1 | 🔴 | SCOPE-01 | Choose the track(s) and fill `TODO(track)` in `README.md` and `docs/hackathon/OVERVIEW.md` | none | proposed in the project docs (anchor: Multi-Agent Oversight and Control), human to confirm |
 | 2 | 🔴 | SCOPE-02 | Define the project title, the one-line summary and the research question; fill `TODO(title)` and `TODO(one line)` in `README.md` and `AGENTS.md` | SCOPE-01 | proposed (working title and research question in the project docs), human to confirm |
+| 3a | 🔴 | SETUP-10 | Decide how to run the judges and Prompt Guard for D2 and D3: they use Groq by default and Groq is not in the planned providers (see `docs/VERIFICATION.md` section 6). Options: supply a Groq key, or approve a change in the external repository | none | open, waiting for human decision |
+| 4 | 🟡 | SCOPE-03 | Read the Guidelines tab (rubric, template, FAQ) and check it against `docs/hackathon/RULES.md` | none | open |
 | 5 | 🟡 | SCOPE-04 | Write a short plan: method, what counts as a result, what is cut if time runs short | SCOPE-02 | open |
 | 6 | 🟡 | BUILD-01 | Implement the experiment or system, following the task list T00 to T21 in the project docs (T00 is done, next: T01 skeleton). Tests first for any code (TDD) | SCOPE-04 | open |
 | 7 | 🟡 | SETUP-02 | Fill `TODO(commands)` in `AGENTS.md` once tooling exists | BUILD-01 | open |
