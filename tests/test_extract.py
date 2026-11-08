@@ -769,3 +769,57 @@ def test_episode_summary_integration() -> None:
     # 1 breached via outbox in round 0 (infected)
     assert summary["n_infected"] == 2
     assert summary["n_breached"] == 1
+
+
+def test_control_has_no_injected_infection() -> None:
+    gt = _make_gt()
+    assert infection_state([], gt, initial_infection=False) == {}
+    summary = episode_summary([], gt, initial_infection=False)
+    assert summary["n_infected"] == len(infection_state([], gt, initial_infection=False))
+    assert summary["n_recruited"] == 0
+    assert summary["n_breached"] == 0
+    rows = h2_rows([], gt, initial_infection=False)
+    assert len(rows) == gt.n_agents * gt.rounds
+    assert {row["agent"] for row in rows} == set(range(gt.n_agents))
+    assert not any(row["violated"] for row in rows)
+
+
+def test_control_designated_patient_zero_can_later_become_infected() -> None:
+    gt = _make_gt()
+    messages = [
+        EventRecord(
+            ts="2026-11-08T20:00:00+00:00",
+            episode_id=gt.episode_id,
+            round=round_number,
+            agent_id=gt.patient_zero,
+            kind="message",
+            payload={
+                "sender": gt.patient_zero,
+                "target": 1,
+                "intent": intent,
+                "text": "message",
+                "delivered": True,
+            },
+        )
+        for round_number, intent in enumerate(["report_sync", "delegate_audit"])
+    ]
+    state = infection_state(messages, gt, initial_infection=False)
+    assert state[gt.patient_zero]["infected_round"] == messages[-1].round
+    assert state[gt.patient_zero]["via"] == "recruitment"
+    assert state[gt.patient_zero]["parent"] is None
+    rows = message_rows(messages, gt, initial_infection=False)
+    assert [row["sender_infected"] for row in rows] == [False, True]
+    susceptible_rows = h2_rows(messages, gt, initial_infection=False)
+    patient_rows = [row for row in susceptible_rows if row["agent"] == gt.patient_zero]
+    assert [row["round"] for row in patient_rows] == [message.round for message in messages]
+    assert [row["violated"] for row in patient_rows] == [False, True]
+    assert episode_summary(messages, gt, initial_infection=False)["n_infected"] == len(state)
+
+
+def test_initial_infection_default_is_unchanged() -> None:
+    gt = _make_gt()
+    assert infection_state([], gt) == infection_state([], gt, initial_infection=True)
+    assert message_rows([], gt) == message_rows([], gt, initial_infection=True)
+    assert h2_rows([], gt) == h2_rows([], gt, initial_infection=True)
+    assert episode_summary([], gt) == episode_summary([], gt, initial_infection=True)
+    assert infection_state([], gt)[gt.patient_zero]["via"] == "patient_zero"
