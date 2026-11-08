@@ -11,7 +11,7 @@ Scoring criteria to write for: (1) impact potential and innovation, including no
 | Title, abstract | 0.4 | Question, method in two sentences, the main numbers with intervals, the main limit |
 | 1 Introduction | 0.7 | The incident analogy (cite from the sprint Resources tab, `TODO(link)`); the open questions on spread and on split attacks; contribution in three bullets; non-claims |
 | 2 Related work | 0.4 | Only references verified by hand, plus the hackathon talks cited as workshop communication. `TODO(verify)`: candidate primary references on indirect prompt injection and on self-propagating prompts; none is cited until checked |
-| 3 Testbed and threat model | 1.0 | Figure F1 (world, ring and complete, worm playbook, split credential); recruitment versus breach; labels; what is pre-existing |
+| 3 Testbed and threat model | 1.0 | Figure F0 (world, ring and complete, worm playbook, split credential); recruitment versus breach; labels; what is pre-existing |
 | 4 Experimental design | 1.0 | Arms, seeds, held-out playbook, preregistration tag, detectors D1 to D4, calibration, statistics, manipulation checks and strawman checks |
 | 5 Results | 2.2 | F2 spread kinetics by round and topology; R0 for recruitment and breach with intervals; H2 social proof with repetition controlled; F3 detector ROC by playbook (seen versus unseen) and by harm condition; T1 paired gating comparisons with Holm; F4 safety versus utility cost |
 | 6 Discussion | 0.8 | Where chains form and where they stop; what the network context adds to a message-level detector; logprob calibration versus text numbers; what the labels mean |
@@ -20,7 +20,8 @@ Scoring criteria to write for: (1) impact potential and innovation, including no
 
 ## Figures and tables
 
-- F1 world and threat model (diagram)
+- F0 world and threat model (diagram)
+- F1 central figure, two panels: A detection on the held-out playbook (TPR at 0.5% FPR, D1 to D5), B cost versus security for no defense, D1, D2, D3, D5 (EXPERIMENT_DESIGN.md section 7)
 - F2 infection prevalence by round, ring versus complete, solo versus split
 - F3 detector ROC and TPR at fixed FPR, seen versus unseen playbook
 - F4 gate effect on exfiltration versus report completion
