@@ -6,9 +6,9 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Added the "Multiple agents, branch and worktree rules" section to `AGENTS.md` on branch `docs/multi-agent-rule`, worked in its own worktree `../apart-research-swarm-alignment-wt-agents-rule` (stacked on `docs/prior-work`). Remove the worktree after the PR is merged.
-- Earlier in this session: T00 verification (PR #7), prior work digest (PR #8), env and docs PRs (#5, #6). See `PENDING.md` "Done".
-- The experiment Docker stack (project `swarmexp`) is still running; it belongs to the T00 work.
+- Branch `docs/readme-remove-todo-links` (worktree `../apart-research-swarm-alignment-wt-readme-links`, stacked on `docs/multi-agent-rule`): removed the Discord, help-desk and pre-hackathon survey rows from the README official links table. SETUP-04 is dropped from `PENDING.md`. The same `TODO(link)` entries still exist in `docs/hackathon/RULES.md` (section 11) and `TALKS_DIGEST.md`; not touched.
+- Open PR chain: #5 to #9. Worktree `../apart-research-swarm-alignment-wt-agents-rule` belongs to PR #9; remove it after that PR merges.
+- The experiment Docker stack (project `swarmexp`) is still running.
 
 ## Repository state
 
