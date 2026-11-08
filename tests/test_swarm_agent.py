@@ -8,7 +8,8 @@ def test_plain_json() -> None:
     action, reason = parse_action(raw)
     assert reason is None
     assert action is not None
-    assert (action.action, action.to, action.intent, action.text) == ("post", 2, "report_sync", "hi")
+    got = (action.action, action.to, action.intent, action.text)
+    assert got == ("post", 2, "report_sync", "hi")
 
 
 def test_json_inside_prose() -> None:
