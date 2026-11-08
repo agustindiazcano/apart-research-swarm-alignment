@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import math
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -27,6 +28,13 @@ class PriceTable:
 
     input_per_m: float
     output_per_m: float
+
+    def __post_init__(self) -> None:
+        if any(
+            not math.isfinite(price) or price < 0.0
+            for price in (self.input_per_m, self.output_per_m)
+        ):
+            raise ValueError("Token prices must be finite and nonnegative")
 
 
 class GuardedClient:
@@ -53,6 +61,13 @@ class GuardedClient:
         self.stats = CallStats()
         self.last_cost_usd: float = 0.0
 
+    def cost_of(self, result: LLMResult) -> float:
+        """Return the configured token cost for this result, independent of other calls."""
+        return (
+            result.tokens_in * self._prices.input_per_m
+            + result.tokens_out * self._prices.output_per_m
+        ) / 1_000_000.0
+
     async def complete(
         self,
         messages: Sequence[Mapping[str, str]],
@@ -66,14 +81,21 @@ class GuardedClient:
 
         sem = self._limiter.semaphore(self._provider)
         async with sem:
+            async def authorized_call() -> LLMResult:
+                # Queued calls and retries recheck the budget before sending a request.
+                # Charges for concurrent in-flight requests are unknown until they return;
+                # this check does not reserve their eventual cost.
+                self._guard.authorize(self._provider)
+                return await self._inner.complete(
+                    messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    logprobs=logprobs,
+                )
+
             try:
                 result, call_stats = await call_with_policy(
-                    lambda: self._inner.complete(
-                        messages,
-                        temperature=temperature,
-                        max_tokens=max_tokens,
-                        logprobs=logprobs,
-                    ),
+                    authorized_call,
                     self._policy,
                     sleep=self._sleep,
                 )
@@ -87,10 +109,7 @@ class GuardedClient:
             self.stats.retries += call_stats.retries
             self.stats.timeouts += call_stats.timeouts
 
-        cost = (
-            result.tokens_in * self._prices.input_per_m
-            + result.tokens_out * self._prices.output_per_m
-        ) / 1_000_000.0
+        cost = self.cost_of(result)
         self.last_cost_usd = cost
         self._guard.record(self._provider, cost)
 

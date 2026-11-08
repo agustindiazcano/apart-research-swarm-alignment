@@ -97,3 +97,17 @@ def test_snapshot_returns_per_provider_cap_and_spent() -> None:
         "provider_a": {"cap": 10.0, "spent": cost_a},
         "provider_b": {"cap": None, "spent": 0.0},
     }
+
+
+@pytest.mark.parametrize("cap", [float("nan"), float("inf"), -1.0])
+def test_invalid_budget_caps_are_rejected(cap: float) -> None:
+    with pytest.raises(ValueError):
+        BudgetGuard({"provider_a": cap})
+
+
+@pytest.mark.parametrize("cost", [float("nan"), float("inf")])
+def test_nonfinite_cost_cannot_disable_budget_guard(cost: float) -> None:
+    guard = BudgetGuard({"provider_a": 1.0})
+    with pytest.raises(ValueError):
+        guard.record("provider_a", cost)
+    assert guard.spent("provider_a") == 0.0

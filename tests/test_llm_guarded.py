@@ -21,6 +21,14 @@ class RecordingSleep:
         self.delays.append(delay)
 
 
+@pytest.mark.parametrize("price", [float("nan"), float("inf"), -1.0])
+def test_prices_must_be_finite_and_nonnegative(price: float) -> None:
+    with pytest.raises(ValueError):
+        PriceTable(input_per_m=price, output_per_m=1.0)
+    with pytest.raises(ValueError):
+        PriceTable(input_per_m=1.0, output_per_m=price)
+
+
 def test_guarded_client_has_complete_method() -> None:
     inner = MockClient(["ok"])
     guard = BudgetGuard({"test": 1.0})
@@ -190,3 +198,60 @@ async def test_guarded_client_concurrency_bounded_by_semaphore() -> None:
     # Verify timestamp was populated when empty
     for r in results:
         assert r.timestamp_utc != ""
+
+
+@pytest.mark.asyncio
+async def test_cost_of_each_result_survives_concurrent_calls() -> None:
+    prices = PriceTable(input_per_m=3.0, output_per_m=7.0)
+    client = GuardedClient(
+        MockClient(["short", "a longer response with different token usage"]),
+        BudgetGuard({"test": 1.0}),
+        ProviderLimiter({"test": 2}),
+        CallPolicy(),
+        prices,
+        provider="test",
+    )
+    results = await asyncio.gather(
+        client.complete([{"role": "user", "content": "first"}]),
+        client.complete([{"role": "user", "content": "second longer prompt"}]),
+    )
+    expected = [
+        (r.tokens_in * prices.input_per_m + r.tokens_out * prices.output_per_m) / 10**6
+        for r in results
+    ]
+    assert expected[0] != expected[1]
+    assert [client.cost_of(r) for r in results] == pytest.approx(expected)
+
+
+@pytest.mark.asyncio
+async def test_queued_calls_recheck_budget_before_provider_request() -> None:
+    started = asyncio.Event()
+    release = asyncio.Event()
+    calls = 0
+
+    class WaitingClient:
+        async def complete(
+            self, messages: Sequence[Mapping[str, str]], *,
+            temperature: float | None = None, max_tokens: int = 256,
+            logprobs: bool = False,
+        ) -> LLMResult:
+            nonlocal calls
+            calls += 1
+            started.set()
+            await release.wait()
+            return LLMResult("ok", "test", "fixture", "id", 1, 0, 0.0)
+
+    client = GuardedClient(
+        WaitingClient(), BudgetGuard({"test": 1.0}),
+        ProviderLimiter({"test": 1}), CallPolicy(),
+        PriceTable(input_per_m=10**6, output_per_m=0.0), provider="test",
+    )
+    first = asyncio.create_task(client.complete([]))
+    await started.wait()
+    second = asyncio.create_task(client.complete([]))
+    await asyncio.sleep(0)
+    release.set()
+    outcomes = await asyncio.gather(first, second, return_exceptions=True)
+    assert isinstance(outcomes[0], LLMResult)
+    assert isinstance(outcomes[1], BudgetExceeded)
+    assert calls == 1

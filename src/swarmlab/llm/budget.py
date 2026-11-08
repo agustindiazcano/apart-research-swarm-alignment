@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from collections.abc import Mapping
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,11 @@ class BudgetGuard:
     """Tracks and bounds spending per provider in USD."""
 
     def __init__(self, caps_usd: Mapping[str, float | None]) -> None:
+        if any(
+            cap is not None and (not math.isfinite(cap) or cap < 0.0)
+            for cap in caps_usd.values()
+        ):
+            raise ValueError("Budget caps must be finite and nonnegative, or None")
         self._caps: dict[str, float | None] = dict(caps_usd)
         self._spent: dict[str, float] = {p: 0.0 for p in self._caps}
 
@@ -43,8 +49,8 @@ class BudgetGuard:
 
     def record(self, provider: str, cost_usd: float) -> None:
         """Record cost and raise BudgetExceeded if total exceeds cap."""
-        if cost_usd < 0.0:
-            raise ValueError(f"Cost cannot be negative: {cost_usd}")
+        if not math.isfinite(cost_usd) or cost_usd < 0.0:
+            raise ValueError("Cost must be finite and nonnegative")
         current = self._spent.get(provider, 0.0)
         new_total = current + cost_usd
         self._spent[provider] = new_total
