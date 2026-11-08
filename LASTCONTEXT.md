@@ -6,17 +6,18 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Docker Desktop was stopped; started it (daemon 29.8.0 is running). T00 not started yet.
-- On branch `chore/env-prior-work` (stacked on `docs/project-docs`, PR #5 not merged yet): removed the `PRIOR_WORK_DIGEST.md` references from `AGENTS.md`, `docs/AGENTS_SECTION.md` and `docs/AGENT_PROMPT.md` (REPORT-05 tracks writing it later); rewrote `.env.example` for Adaption, Vertex, Muse and Modal only.
-- `.env.example` now also has `*_BUDGET_USD` names per provider. I chose those names; T02 (BudgetGuard) may rename them.
-- Provider usage was read from `../software-ai-eval` (docs/MODELS.md, config/models.example.yaml, README). Facts found: Vertex uses ADC plus `GOOGLE_CLOUD_PROJECT` and location `global`; Muse uses `META_MUSE_API_KEY`, base URL `https://api.meta.ai/v1`, Responses protocol; Adaption uses `ADAPTION_API_KEY` with the `adaption` SDK. Modal: the current `models.yaml` has no Modal entry, so the variable names and endpoint stay `TODO(verify)`.
+- T00 done on branch `docs/verify-external-stack` (stacked on `chore/env-prior-work`): ran the external stack in an isolated Docker project `swarmexp` and wrote `docs/VERIFICATION.md`.
+- Verified by running: compose with the chaos override works after two local config changes (RabbitMQ healthcheck as the `rabbitmq` user, no RabbitMQ volume); claim endpoint `POST /api/v1/claims`; identities `swarm-reader` and `swarm-privileged` (reader gets `DENIED_UNAUTHORIZED` on `execute_refund`, privileged succeeds); `refunds.transaction_id` and `orders.order_id` are both varchar, so no cast in the harm join.
+- Corrections to `docs/ARCHITECTURE.md` are listed in `VERIFICATION.md` (tool argument is `transaction_id`; harm query needs no `::text`). They are not applied to `ARCHITECTURE.md` yet.
+- Key finding: under `LLM_PROVIDER=mock` every claim is approved, so D2 and D3 need real providers. The judges and Prompt Guard default to Groq, which is not among the planned providers (SETUP-10).
+- No file in the external repository was changed. Override file and tokens live in the agent scratchpad, not in the repo.
 
 ## Repository state
 
 | Item | State |
 |---|---|
 | `main` | Scaffold, handoff files, session rules, project context in `AGENTS.md`. |
-| `docs/project-docs` | This task. PR open for human review. |
+| `docs/project-docs` (#5), `chore/env-prior-work` (#6), `docs/verify-external-stack` | Stacked PRs, each based on the previous one. Merge in that order. |
 | `swarm-utils/` (untracked) | Source copy of the project docs, identical to what is now in `docs/`. Not tracked on purpose. |
 | `.env.example` | Rewritten for the four providers (this branch). Local `.env` is older: add the new names by hand. |
 | `.env` | Local, git-ignored. Keys must be entered by the human. |
@@ -25,13 +26,16 @@ Last updated: 2026-11-08
 
 ## Next step
 
-T00 (critical path): run the external stack and write `docs/VERIFICATION.md`, on branch `docs/verify-external-stack` from an up-to-date `main`. Verify every `TODO(verify)` in `docs/ARCHITECTURE.md`. Needs Docker. Do not change code in the external repository, configuration only, and list every change.
+T01 (skeleton, config loading, CLI stub, CI with lint, mypy --strict, pytest) on `chore/skeleton`, then T02 (LLM client and budget guard). Both only need the merged docs. T03 and T07 need the experiment stack from `docs/VERIFICATION.md`.
+
+The experiment stack is currently running (`docker ps --filter name=swarmexp`). Stop it with `docker compose -p swarmexp ... down -v` from the external repository when not needed.
 
 ## Open questions for the human
 
-- Is it fine to run `docker compose` with the chaos override from `agentic-mcp-engine` (starts Postgres, RabbitMQ, MCP server, gateway, worker locally)? Which commit of that repository should be pinned (it is on `feat/front-desk-eval`, HEAD `37f6d72`)?
+- SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
 - Which repositories inspired this work (REPORT-05)?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
+- Merge PRs #5, #6 and the T00 PR in order.
 
 ## Notes
 
