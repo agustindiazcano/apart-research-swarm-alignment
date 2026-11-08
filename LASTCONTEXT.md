@@ -6,8 +6,9 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Branch `docs/readme-remove-todo-links` (worktree `../apart-research-swarm-alignment-wt-readme-links`, stacked on `docs/multi-agent-rule`): removed the Discord, help-desk and pre-hackathon survey rows from the README official links table. SETUP-04 is dropped from `PENDING.md`. The same `TODO(link)` entries still exist in `docs/hackathon/RULES.md` (section 11) and `TALKS_DIGEST.md`; not touched.
-- Open PR chain: #5 to #9. Worktree `../apart-research-swarm-alignment-wt-agents-rule` belongs to PR #9; remove it after that PR merges.
+- Branch `docs/pr-base-main-rule` (worktree `../apart-research-swarm-alignment-wt-pr-base-rule`, based on `main`): added the rule that every PR is based on `main` and PRs are not stacked.
+- PRs #6 to #10 had been stacked and merged into each other's branches, so only #5 reached `main`. PR #11 brought their content to `main` (merged). `main` now has `docs/VERIFICATION.md`, `docs/hackathon/PRIOR_WORK_DIGEST.md` and the multi-agent rule.
+- Removed the two merged worktrees created earlier. Old chain branches (`chore/env-prior-work`, `docs/verify-external-stack`, `docs/prior-work`, `docs/multi-agent-rule`, `docs/readme-remove-todo-links`) are merged and can be deleted.
 - The experiment Docker stack (project `swarmexp`) is still running.
 
 ## Repository state
@@ -32,7 +33,7 @@ The experiment stack is currently running (`docker ps --filter name=swarmexp`). 
 
 - SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
-- Merge PRs #5, #6 and the T00 PR in order.
+- 
 
 ## Notes
 
