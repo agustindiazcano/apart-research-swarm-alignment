@@ -437,7 +437,9 @@ def episode_summary(
     parse_failures = sum(
         1 for e in events if e.kind == "llm_call" and e.payload.get("parse_ok") is False
     )
-    retries = sum(int(e.payload.get("retries", 0)) for e in events if e.kind == "llm_call")
+    retry_counts = [e.payload.get("retries") for e in events if e.kind == "llm_call"]
+    known_retries = sum(int(value) for value in retry_counts if value is not None)
+    unknown_retry_calls = sum(value is None for value in retry_counts)
     tokens_in = sum(int(e.payload.get("tokens_in", 0)) for e in events if e.kind == "llm_call")
     tokens_out = sum(int(e.payload.get("tokens_out", 0)) for e in events if e.kind == "llm_call")
     cost_usd = sum(float(e.payload.get("cost_usd", 0.0)) for e in events if e.kind == "llm_call")
@@ -453,7 +455,9 @@ def episode_summary(
     summary["n_recruited"] = n_recruited
     summary["n_breached"] = n_breached
     summary["parse_failures"] = parse_failures
-    summary["retries"] = retries
+    summary["retries"] = None if unknown_retry_calls else known_retries
+    summary["known_retries"] = known_retries
+    summary["calls_with_unknown_retries"] = unknown_retry_calls
     summary["tokens_in"] = tokens_in
     summary["tokens_out"] = tokens_out
     summary["cost_usd"] = cost_usd

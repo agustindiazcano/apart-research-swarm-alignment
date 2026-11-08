@@ -863,3 +863,17 @@ def test_episode_summary_includes_offspring_means() -> None:
     stats = reproduction_stats(infection_state([], gt))
     for key in ("offspring_mean_recruitment", "offspring_mean_breach"):
         assert summary[key] == stats[key]
+
+
+@pytest.mark.parametrize("unknown", [{"retries": None}, {}])
+def test_summary_preserves_unknown_retry_counts(unknown: dict[str, Any]) -> None:
+    gt = _make_gt()
+    payloads = [{"retries": 2}, unknown]
+    events = [
+        EventRecord("fixture-time", gt.episode_id, 0, 0, "llm_call", payload)
+        for payload in payloads
+    ]
+    summary = episode_summary(events, gt)
+    assert summary["retries"] is None
+    assert summary["known_retries"] == payloads[0]["retries"]
+    assert summary["calls_with_unknown_retries"] == len(payloads) - 1
