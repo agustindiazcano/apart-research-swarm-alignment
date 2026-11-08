@@ -1,10 +1,11 @@
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import hashlib
 import json
-from pathlib import Path
 import subprocess
-from typing import Any, Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -101,7 +102,8 @@ def write_manifest(manifest: Mapping[str, Any], json_path: Path, md_path: Path) 
         separators=(",", ":"),
         ensure_ascii=False,
     )
-    json_path.write_text(canonical + "\n", encoding="utf-8")
+    # Bytes, not text mode: the files must be identical on every platform (LF only).
+    json_path.write_bytes((canonical + "\n").encode("utf-8"))
 
     digest = manifest_digest(manifest)
     lines: list[str] = [
@@ -129,7 +131,7 @@ def write_manifest(manifest: Mapping[str, Any], json_path: Path, md_path: Path) 
     )
     lines.append("")
 
-    md_path.write_text("\n".join(lines), encoding="utf-8")
+    md_path.write_bytes("\n".join(lines).encode("utf-8"))
 
 
 def verify_manifest(
@@ -142,7 +144,7 @@ def verify_manifest(
 
     checked_paths: set[str] = set()
     manifest_paths: set[str] = set()
-    for group_name, entries in manifest_groups.items():
+    for entries in manifest_groups.values():
         for entry in entries:
             rel_path = entry["path"]
             manifest_paths.add(rel_path)
@@ -157,7 +159,8 @@ def verify_manifest(
                 actual_sha = hash_file(file_path)
                 if actual_sha != entry["sha256"]:
                     issues.append(
-                        f"Hash mismatch for {rel_path}: expected {entry['sha256']}, got {actual_sha}"
+                        f"Hash mismatch for {rel_path}: "
+                        f"expected {entry['sha256']}, got {actual_sha}"
                     )
 
     active_groups = groups if groups is not None else DEFAULT_GROUPS
@@ -202,7 +205,7 @@ def run(
     git_commit: str | None = None,
 ) -> dict[str, Any]:
     if created_utc is None:
-        created_utc = datetime.now(timezone.utc).isoformat()
+        created_utc = datetime.now(UTC).isoformat()
     if git_commit is None:
         git_commit = current_git_commit(root)
     manifest = build_manifest(root, groups, git_commit=git_commit, created_utc=created_utc)

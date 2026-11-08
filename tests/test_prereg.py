@@ -1,9 +1,9 @@
 import hashlib
 import json
-from pathlib import Path
 import subprocess
 import sys
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from pathlib import Path
 
 import pytest
 
@@ -308,3 +308,20 @@ def test_current_git_commit(tmp_path: Path) -> None:
     not_a_repo.mkdir(parents=True)
     with pytest.raises(RuntimeError):
         current_git_commit(not_a_repo)
+
+
+def test_written_files_use_lf_line_endings(tmp_path: Path) -> None:
+    manifest = {
+        "schema_version": 1,
+        "git_commit": "0" * 40,
+        "created_utc": "2026-11-08T00:00:00+00:00",
+        "groups": {"design": [{"path": "a.md", "sha256": "f" * 64, "size": 1}]},
+        "extra": {},
+    }
+    json_path = tmp_path / "out" / "manifest.json"
+    md_path = tmp_path / "out" / "PREREGISTRATION.md"
+    write_manifest(manifest, json_path, md_path)
+    for path in (json_path, md_path):
+        data = path.read_bytes()
+        assert b"\r\n" not in data
+        assert data.endswith(b"\n")
