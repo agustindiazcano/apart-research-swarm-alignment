@@ -48,7 +48,7 @@ Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.m
 | 12 | 🟡 | T10 | Runs: TRAIN, A0, A1, A3, A3c, A2 scoring | T08, T09, T06 | open |
 | 13 | 🟡 | T11 | Analysis and figures from committed logs | T05 | open |
 | 14 | 🟢 | T12 | D4 micro-verifiers with veto gate | T06 | open |
-| 15 | 🟢 | T14 | Reproduction instructions and report assets | T11 | open |
+| 15 | 🟢 | T14 | Reproduction instructions, report assets and `scripts/render_results.py` with its CI freshness check | T11 | open |
 | 16 | 🟢 | T15 | Final check against RULES.md, report, submission | report draft | open |
 | 17 | ⚪ | T13 | Immunity arm (stretch) | T08, T11 | open |
 | 18 | ⚪ | SETUP-03 | Add `PENDING.md` and `LASTCONTEXT.md` to the required-files check in CI | none | open |
@@ -69,5 +69,6 @@ Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.m
 | SETUP-14 | Content of stacked PRs #6 to #10 brought to `main` | PR #11 |
 | SETUP-12 | Removed the Discord, help-desk and survey `TODO(link)` rows from the README links table (SETUP-04 dropped) | branch `docs/readme-remove-todo-links` |
 | SETUP-15 | Neutral language rule in `AGENTS.md`, CI check for forbidden words, evaluative wording removed from the project documents | branch `docs/redesign-infected-swarm` |
+| SETUP-16 | Data Integrity section at the top of `README.md` and `AGENTS.md`: results are generated and inserted by script, never typed by hand; marked result blocks in the README | branch `docs/redesign-infected-swarm` |
 | SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
