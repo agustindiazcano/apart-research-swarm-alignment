@@ -42,6 +42,7 @@ Project documents:
 
 - [docs/hackathon/RULES.md](docs/hackathon/RULES.md)
 - [docs/hackathon/TALKS_DIGEST.md](docs/hackathon/TALKS_DIGEST.md)
+- [docs/PROVIDER_PRICING.md](docs/PROVIDER_PRICING.md)
 
 ## How this project is judged
 
@@ -82,7 +83,11 @@ docs/PROJECT.md, EXPERIMENT_DESIGN.md, ARCHITECTURE.md, PLAN.md, TASKS.md, REPOR
 LASTCONTEXT.md                 (handoff note for the next agent)
 .gitignore
 .env.example
-scripts/render_results.py (planned, T14)
+pyproject.toml
+src/swarmlab/                  (package, schema, batch, preregistration and metrics)
+tests/                         (offline tests)
+scripts/render_results.py      (generated result blocks)
+scripts/agy_launch.sh           (delegation helper)
 docs/README.md
 docs/hackathon/OVERVIEW.md
 docs/hackathon/RESOURCES.md
