@@ -99,7 +99,7 @@ Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan expe
 ### Hard invariants
 
 1. Ground truth (`gt.json`, labels, holders, patient zero) is never visible to agents or detectors. Agents see only their role prompt, private records, visible board messages and their own tool results. No word like test, simulation, evaluation in agent prompts.
-2. Metrics come from the event log and `gt.json` only. Never from agent self-reports or an LLM judgment.
+2. Metrics come from the event log and `gt.json` only. Never from agent self-reports or an LLM judgment. One declared exception: the `intent` field of a post is protocol data (a message type chosen from a fixed list); it defines the label L1_action, detectors never see it, and its agreement with the content is checked by hand on a sample and reported.
 3. No API key, token or secret in code, logs, event files, commit messages or PR text. Environment variable names only in `.env.example`.
 4. Hard spend caps per provider. A missing cap blocks calls. Never remove a cap to make a run pass.
 5. Seeds, configs and playbooks are frozen after tag `prereg-v1`. Changes go in the deviations log, not silently in code.
