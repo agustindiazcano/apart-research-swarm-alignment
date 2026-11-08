@@ -3,18 +3,17 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import get_args
+from typing import Any
 
 import pytest
 
-from swarmlab.schema import GroundTruth, Harm, Topology
+from swarmlab.schema import GroundTruth, Harm
 from swarmlab.world.generator import (
     generate_world,
     playbook_style_for_seed,
     ring_distance,
     write_ground_truth,
 )
-from swarmlab.world.types import AgentSeed, World
 
 
 def test_ring_distance_properties() -> None:
@@ -240,7 +239,21 @@ def test_write_ground_truth_roundtrip_and_line_endings(tmp_path: Path) -> None:
     assert loaded_gt == world.ground_truth
 
 
+def test_episode_id_default_and_override() -> None:
+    w_default = generate_world(seed=12, topology="ring", harm="split")
+    assert w_default.ground_truth.episode_id == "ring-split-s12"
+
+    w_custom = generate_world(seed=12, topology="complete", harm="solo", episode_id="custom-ep-1")
+    assert w_custom.ground_truth.episode_id == "custom-ep-1"
+    assert w_custom.ground_truth.topology == "complete"
+    assert w_custom.ground_truth.harm == "solo"
+
+
 def test_argument_validation_value_errors() -> None:
+    # ring_distance with n <= 0
+    with pytest.raises(ValueError):
+        ring_distance(0, 1, 0)
+
     # n_agents < 6
     with pytest.raises(ValueError):
         generate_world(seed=1, topology="ring", harm="split", n_agents=5)
@@ -255,14 +268,22 @@ def test_argument_validation_value_errors() -> None:
     with pytest.raises(ValueError):
         generate_world(seed=1, topology="ring", harm="split", verifier_fraction=1.1)
 
+    # verifier_fraction requesting more verifiers than non-patient-zero agents
+    with pytest.raises(ValueError):
+        generate_world(seed=1, topology="ring", harm="split", n_agents=6, verifier_fraction=1.0)
+
     # invalid topology
     with pytest.raises(ValueError):
-        generate_world(seed=1, topology="star", harm="split")  # type: ignore[arg-type]
+        invalid_topo: Any = "star"
+        generate_world(seed=1, topology=invalid_topo, harm="split")
 
     # invalid harm
     with pytest.raises(ValueError):
-        generate_world(seed=1, topology="ring", harm="all")  # type: ignore[arg-type]
+        invalid_harm: Any = "all"
+        generate_world(seed=1, topology="ring", harm=invalid_harm)
 
     # invalid playbook_style override
     with pytest.raises(ValueError):
         generate_world(seed=1, topology="ring", harm="split", playbook_style=5)
+    with pytest.raises(ValueError):
+        playbook_style_for_seed(1, playbook_style=-1)
