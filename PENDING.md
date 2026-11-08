@@ -46,6 +46,7 @@ Ordered by priority, top first.
 | 12 | 🟢 | SUBMIT-01 | Resolve every `TODO(` marker, verify every citation and URL, check CI is green on `main` | REPORT-01, REPORT-02, REPORT-03 | open |
 | 13 | 🟢 | SUBMIT-02 | Export the PDF and submit before the deadline | SUBMIT-01 | open |
 | 14 | ⚪ | SETUP-03 | Add `PENDING.md` and `LASTCONTEXT.md` to the required-files check in `.github/workflows/ci.yml` | none | open |
+| 14a | 🟢 | REPORT-05 | Name the inspiration and prior repositories and write `docs/hackathon/PRIOR_WORK_DIGEST.md` (references to it were removed from `AGENTS.md` and the docs until it exists); then re-add the references | none | open |
 | 15 | ⚪ | SETUP-04 | Fill the remaining `TODO(link)` entries in `README.md` (Discord, help desk, survey) | none | open |
 | 16 | ⚪ | REPORT-04 | Fill `TODO(list of AI tools and versions)` and `TODO(reproduction steps)` in `README.md` | BUILD-01 | open |
 
@@ -58,4 +59,5 @@ Ordered by priority, top first.
 | SETUP-07 | Local `.env` created from `.env.example` (git-ignored); `.gitignore` and `.env.example` already existed | local only, no commit |
 | SETUP-01 | Rules and talks digest on `main` (PR #2 had been merged into the scaffold branch after PR #1, so it never reached `main`) | branch `docs/project-docs` |
 | SETUP-06 | Project docs (`PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`, `REPORT_OUTLINE`, prompts) added to `docs/` | branch `docs/project-docs` |
+| SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |

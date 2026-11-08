@@ -6,11 +6,10 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- PR #4 (project context in `AGENTS.md`) is merged.
-- Found that PR #2 (rules and talks digest) was merged into `chore/project-scaffold` after PR #1 had already merged, so `RULES.md` and `TALKS_DIGEST.md` never reached `main`. Merged that branch into `docs/project-docs`.
-- On branch `docs/project-docs`: copied the project docs from `swarm-utils/` into `docs/` (`PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`, `REPORT_OUTLINE`, `AGENT_PROMPT`, `AGENTS_SECTION`) and extended the `docs/README.md` index. PR open, waiting for the human.
-- Located the external repository: `C:\projects\projects-github-agustindiazcano\agentic-mcp-engine` (git remote is `mcp-transactional-agent`, branch `feat/front-desk-eval`, has `docker-compose.chaos.yml` and `mcp_clients.json`). Not modified.
-- No application code written. T00 not started.
+- Docker Desktop was stopped; started it (daemon 29.8.0 is running). T00 not started yet.
+- On branch `chore/env-prior-work` (stacked on `docs/project-docs`, PR #5 not merged yet): removed the `PRIOR_WORK_DIGEST.md` references from `AGENTS.md`, `docs/AGENTS_SECTION.md` and `docs/AGENT_PROMPT.md` (REPORT-05 tracks writing it later); rewrote `.env.example` for Adaption, Vertex, Muse and Modal only.
+- `.env.example` now also has `*_BUDGET_USD` names per provider. I chose those names; T02 (BudgetGuard) may rename them.
+- Provider usage was read from `../software-ai-eval` (docs/MODELS.md, config/models.example.yaml, README). Facts found: Vertex uses ADC plus `GOOGLE_CLOUD_PROJECT` and location `global`; Muse uses `META_MUSE_API_KEY`, base URL `https://api.meta.ai/v1`, Responses protocol; Adaption uses `ADAPTION_API_KEY` with the `adaption` SDK. Modal: the current `models.yaml` has no Modal entry, so the variable names and endpoint stay `TODO(verify)`.
 
 ## Repository state
 
@@ -19,9 +18,9 @@ Last updated: 2026-11-08
 | `main` | Scaffold, handoff files, session rules, project context in `AGENTS.md`. |
 | `docs/project-docs` | This task. PR open for human review. |
 | `swarm-utils/` (untracked) | Source copy of the project docs, identical to what is now in `docs/`. Not tracked on purpose. |
-| `.env.example` | Modified in the working tree by the human (provider key names added). Not committed by the agent. Commit it as its own task only if the human asks. |
+| `.env.example` | Rewritten for the four providers (this branch). Local `.env` is older: add the new names by hand. |
 | `.env` | Local, git-ignored. Keys must be entered by the human. |
-| `docs/hackathon/PRIOR_WORK_DIGEST.md` | Referenced by `AGENTS.md`, does not exist. |
+| `docs/hackathon/PRIOR_WORK_DIGEST.md` | Does not exist; references removed. See REPORT-05. |
 | Application code | None. |
 
 ## Next step
@@ -31,7 +30,7 @@ T00 (critical path): run the external stack and write `docs/VERIFICATION.md`, on
 ## Open questions for the human
 
 - Is it fine to run `docker compose` with the chaos override from `agentic-mcp-engine` (starts Postgres, RabbitMQ, MCP server, gateway, worker locally)? Which commit of that repository should be pinned (it is on `feat/front-desk-eval`, HEAD `37f6d72`)?
-- Is there a `PRIOR_WORK_DIGEST.md` to add, or should the references be removed?
+- Which repositories inspired this work (REPORT-05)?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
 
 ## Notes
