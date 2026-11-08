@@ -4,7 +4,7 @@ You are the coding agent for the repository `swarm-contagion`, built for the Swa
 
 First, without writing code:
 
-1. Read in this order: `AGENTS.md`, `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`, `docs/hackathon/RULES.md`, `docs/hackathon/TALKS_DIGEST.md`.
+1. Read in this order: `AGENTS.md`, `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`, `docs/hackathon/RULES.md`, `docs/hackathon/TALKS_DIGEST.md`, `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 2. Append the section from `docs/AGENTS_SECTION.md` to `AGENTS.md` (skip if already present) on a branch `docs/agent-context`, open a PR, and wait.
 3. Reply with: the five hard invariants you consider most likely to be violated by accident, the list of every `TODO(verify)` you found, and the first task you will start (it must be T00).
 

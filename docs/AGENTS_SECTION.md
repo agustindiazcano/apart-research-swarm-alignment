@@ -1,6 +1,6 @@
 ## Project context: swarm-contagion (append to AGENTS.md)
 
-Goal: measure how much harm passes each layer of a layered defense when one compromised, unprivileged agent in an LLM swarm tries to get an unauthorized refund executed by persuading privileged peers, as a function of topology and swarm size. Full definitions: `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`. Hackathon rules: `docs/hackathon/RULES.md`; talk lessons: `docs/hackathon/TALKS_DIGEST.md`.
+Goal: measure how much harm passes each layer of a layered defense when one compromised, unprivileged agent in an LLM swarm tries to get an unauthorized refund executed by persuading privileged peers, as a function of topology and swarm size. Full definitions: `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`. Hackathon rules: `docs/hackathon/RULES.md`; talk lessons: `docs/hackathon/TALKS_DIGEST.md`; prior work: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 
 Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan work after Mon 05:00 ART other than writing and checking.
 
