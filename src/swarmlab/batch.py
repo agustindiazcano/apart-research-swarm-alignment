@@ -39,7 +39,7 @@ def load_matrix(source: str | Path | Mapping[str, Any]) -> list[EpisodeSpec]:
         with open(source, encoding="utf-8") as handle:
             loaded = yaml.safe_load(handle)
         if not isinstance(loaded, Mapping):
-            raise ValueError("matrix file must contain a mapping")  # noqa: TRY004
+            raise ValueError("matrix file must contain a mapping")
         data = loaded
     for key in ("arm", "topologies", "harms", "defenses", "seeds"):
         if key not in data:
@@ -151,7 +151,7 @@ async def run_batch(
                     result = await episode_fn(spec)
                 except asyncio.CancelledError:
                     raise
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     logger.warning("episode %s attempt %d raised: %r", spec.episode_id,
                                    attempt, exc)
                     result = EpisodeResult(
