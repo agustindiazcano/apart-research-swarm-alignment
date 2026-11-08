@@ -203,7 +203,8 @@ async def test_layered_filter_gray_zone_calls_llm_and_uses_graph() -> None:
     """In the gray zone, D5 calls D2 exactly once, applies graph context, and caches D2 score."""
     d1 = ConfigurableD1Detector(scores={"gray": 0.45})
     # Analytical derivation for D2 score:
-    # lu = -0.5, ls = -1.5, scale = 1.0 -> score = 1 / (1 + exp(-1.5 - (-0.5))) = 1 / (1 + exp(-1.0))
+    # lu = -0.5, ls = -1.5, scale = 1.0 -> score = 1 / (1 + exp(-1.5 - (-0.5)))
+    # which simplifies to 1 / (1 + exp(-1.0))
     d2_raw_score = 1.0 / (1.0 + math.exp(-1.0))
     res = _make_logprob_result(lu=-0.5, ls=-1.5)
 
