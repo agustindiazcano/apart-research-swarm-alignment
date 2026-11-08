@@ -18,7 +18,7 @@ Swarm Alignment Hackathon (Apart Research sprint), organized by Apart Research w
 3. Strengthening agent infrastructure
 4. Multi-agent oversight and control
 
-Selected track(s) for this project: `TODO(track)`.
+Selected track(s) for this project: The Science of Agent Networks (anchor), with Multi-Agent Oversight and Control and Sandboxes and Testbeds as cross-track.
 
 ## Prizes
 

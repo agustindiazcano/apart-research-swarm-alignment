@@ -1,6 +1,6 @@
-# TODO(project title)
+# Infection Chains in LLM Swarms: spread, detection and immunity
 
-TODO(one line)
+An open testbed where an infected LLM agent recruits peers through conversation to leak a split fake credential, and four detectors (lexical, logprob guardrail, graph-contextual, micro-verifier cascade) are measured against that flow.
 
 Work in progress, built during the Swarm Alignment Hackathon 2026.
 
@@ -10,7 +10,7 @@ Work in progress, built during the Swarm Alignment Hackathon 2026.
 - Format: global online sprint, talks from Thursday, November 5, 2026; sprint Friday, November 6 to Sunday, November 8, 2026.
 - Submission deadline: Sunday, November 8, 2026, 11:59 PM AoE (Anywhere on Earth, UTC-12) = Monday, November 9, 2026, 11:59 UTC = Monday, November 9, 2026, 08:59 in Argentina (UTC-3).
 - Prizes: USD 4,000 in total. Top teams are invited to the Apart Fellowship.
-- Tracks: (1) Sandboxes and testbeds, (2) The science of agent networks, (3) Strengthening agent infrastructure, (4) Multi-agent oversight and control. Selected track(s) for this project: `TODO(track)`.
+- Tracks: (1) Sandboxes and testbeds, (2) The science of agent networks, (3) Strengthening agent infrastructure, (4) Multi-agent oversight and control. Selected track(s) for this project: The Science of Agent Networks (anchor), with Multi-Agent Oversight and Control and Sandboxes and Testbeds as cross-track.
 - Team size: 1 to 5 people. Each person may be on at most two projects.
 
 ## Submission requirements
@@ -51,10 +51,10 @@ Full rules: docs/hackathon/RULES.md
 
 | Path | Origin | Notes |
 |---|---|---|
-| `mcp-transactional-agent` (external repository, not copied here) | PRE-EXISTING | Direct dependency and system under test for D1 and D3. Run without modifying its code, configuration only. Same author, MIT license. https://github.com/agustindiazcano/mcp-transactional-agent |
 | AFAW (anti-fragile agentic workflow) | PRE-EXISTING | Working method only (branch per task, TDD, CI, human approval). No code used. https://github.com/agustindiazcano/afaw-anti-fragile-agentic-workflow |
 | AFAW Engine | PRE-EXISTING | Earlier context. No code used. https://github.com/agustindiazcano/afaw-engine-gitlab |
 | Waggle Hive (`waggle-agents-meta-muse`) | PRE-EXISTING | Evaluation conventions only (dangerous error first, Wilson intervals, separate counting units). No code used. https://github.com/agustindiazcano/waggle-agents-meta-muse |
+| `software-ai-eval` (local project, not copied here) | PRE-EXISTING | Provider configuration facts only (endpoints, authentication variable names). No code used. |
 
 Everything else in this repository was written during the sprint. Details: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 
@@ -68,6 +68,7 @@ LICENSE
 AGENTS.md                      (agent instructions, single source of truth)
 CLAUDE.md                      (symlink to AGENTS.md)
 PENDING.md                     (prioritized open tasks)
+docs/PROJECT.md, EXPERIMENT_DESIGN.md, ARCHITECTURE.md, PLAN.md, TASKS.md, REPORT_OUTLINE.md
 LASTCONTEXT.md                 (handoff note for the next agent)
 .gitignore
 .env.example

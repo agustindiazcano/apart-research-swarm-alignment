@@ -17,4 +17,3 @@ More rules documents will be added incrementally by the maintainer. Rules docume
 | [AGENT_PROMPT.md](AGENT_PROMPT.md) | First message for the coding agent |
 | [AGENTS_SECTION.md](AGENTS_SECTION.md) | Source of the project context section appended to `AGENTS.md` |
 | [hackathon/PRIOR_WORK_DIGEST.md](hackathon/PRIOR_WORK_DIGEST.md) | Pre-existing work by the author and how each item is used |
-| [VERIFICATION.md](VERIFICATION.md) | Results of task T00: what was verified by running the external stack, and the configuration changes |
