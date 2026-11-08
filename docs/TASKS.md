@@ -23,7 +23,7 @@ Lanes: A runtime, B measurement, C experiments (see PLAN.md). The critical path 
 | T11 (CP) | C | Analysis and figures from committed logs: kinetics, detector ROC by playbook, gating trade-off | `feat/analysis` | T05 | 2 h | Figures and tables regenerate from logs with one command |
 | T12 | B | D4 micro-verifiers with veto gate (offline), ablations | `feat/verifiers` | T06 | 2 h | Veto never lets a score of 0 from a critical verifier through; meta-classifier baseline included |
 | T13 | C | Immunity (stretch): verifier protocol in the runner and prediction file | `feat/immunity` | T08 T11 | 2 h | Prediction committed before any A4 run |
-| T14 | C | README run instructions, provenance, report assets | `docs/repro` | T11 | 1 h | A fresh clone reproduces the tables from committed logs |
+| T14 | C | README run instructions, provenance, and `scripts/render_results.py` (rewrites the marked result blocks in README and docs from `results/`, prints source file and SHA-256) plus a CI step that fails if rendering changes any file | `docs/repro` | T11 | 1 h | A fresh clone reproduces the tables from committed logs |
 | T15 | C | Final check against `docs/hackathon/RULES.md`: pages, appendix, pre-existing table, references | `docs/final-check` | report draft | 1 h | Checklist in the PR description |
 
 Order for the arms: run a smoke matrix with 1 seed per cell first; then launch seeds in batches so a balanced truncation is always possible.
