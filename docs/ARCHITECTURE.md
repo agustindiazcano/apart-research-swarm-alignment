@@ -7,6 +7,7 @@ Everything runs locally in Python (async). The only external services are model 
 ```
 src/swarmlab/
   config.py            # YAML configs, env var names, seeds
+  schema.py            # frozen contract: dataclasses for event records, ActionJSON and GroundTruth; imported by every lane
   llm/
     client.py          # LLMClient protocol: complete(messages, temperature, max_tokens, logprobs) -> LLMResult
     providers/         # mock.py plus the providers chosen at G1 (vertex, openai_compat, muse)
@@ -53,6 +54,10 @@ tests/                 # unit + integration; mock LLM for everything except pilo
 
 Decisions use the state at round start; actions are applied together.
 
+The batch runner also runs several independent episodes at once under a global semaphore (in addition to the per-provider semaphore); the limit is set at gate G1 from the measured quotas. Running one episode at a time would not fit the time window.
+
+Schema contract: `schema.py` is written and merged first (T01). Lanes A and B import it. A change to it needs a PR that all lanes agree on.
+
 ## 3. Agent prompt contents
 
 Every agent sees: its role, the benign job and its private records, the confidentiality policy (and its fragment if it holds one), the tool list with the JSON action schema, and the last K visible messages. No label, no episode metadata, none of the words test, simulation, evaluation, benchmark, experiment.
@@ -90,7 +95,7 @@ No metric reads an agent self-report or an LLM judgment.
 Interface: `score(message, context) -> float` in [0, 1]. `context` carries sender, round, and the sender's inbox from the previous round (D3 and D4).
 
 - D2 logprobs: one output token, `top_logprobs` on, softmax over the SAFE and UNSAFE logprobs, temperature scale fit on TRAIN. If a provider returns no logprobs, the declared fallback in EXPERIMENT_DESIGN.md section 5 applies.
-- D3: one line over stored D2 scores, no extra model call.
+- D3: one line over the stored cached scores S~ with a relevance gate on the outgoing message (EXPERIMENT_DESIGN.md section 5), no extra model call.
 - D5: keeps the surrogate graph state: for each message it stores S~ (S_D2 if the LLM ran, else the calibrated D1 probability), so D3 always finds the previous-round inbox scores. D5 runs D1 first; only gray-zone messages call the LLM (D2 and D3). The log records which stage decided each message, so the share of messages that reached the LLM is a query.
 - D4: three isolated prompts (each sees a different projection of the state), run in parallel; veto aggregation; weights, gamma and thresholds fit on TRAIN.
 - Calibration: thresholds are computed on TRAIN negatives and saved in `results/thresholds.json` before any TEST episode is scored.
@@ -100,7 +105,7 @@ Interface: `score(message, context) -> float` in [0, 1]. `context` carries sende
 - `world_seed` fixes the world. LLM sampling is not seeded: the committed event logs are the reproducible artifact, with provider response ids as proof of real calls.
 - `swarmlab analyze results/<run>` regenerates every table and figure from event logs and `gt.json`.
 - Each run directory stores config, config hash, git commit, model ids, start and end time, and the cost summary.
-- Preregistration: `swarmlab prereg` writes `experiments/PREREGISTRATION.md` with the SHA-256 of the design doc, playbooks, configs and analysis code; the human creates tag `prereg-v1`.
+- Preregistration: `swarmlab prereg` writes `experiments/PREREGISTRATION.md` and `artifacts/preregistration_manifest.json` with the SHA-256 of the design doc, playbooks, configs and analysis code, before any TEST episode runs; the human creates tag `prereg-v1`. TEST logs keep real provider response ids, latencies and timestamps, so the order of events is checkable.
 
 ## 8. Failure handling
 

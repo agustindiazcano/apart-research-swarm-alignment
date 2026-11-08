@@ -35,6 +35,8 @@ Scoring criteria to write for: (1) impact potential and innovation, including no
 - Every number comes from the committed event logs; no number from memory, from the talks or from a synthetic simulation.
 - Say what was measured and what was not. If the infection does not spread, or a detector catches everything, say so.
 - Dual use: publish rates and classes, not message text or playbooks.
+- Report both outcomes: full exfiltration (3 of 3 fragments) and the fraction of fragments leaked.
+- Report the operational imperfections as measured: network retries, JSON parse failures turned into no-ops, target versus realized FPR on A0 and A3c with Wilson intervals.
 - Declare AI tools used for coding and drafting.
 - No filler adjectives about quality; let the numbers carry it.
 - Reference list: only verified items. Mark anything unverified `TODO(link)` and remove before submission.

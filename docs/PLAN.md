@@ -31,10 +31,13 @@ Clock: ART (UTC-3). Written Sun Nov 8, 21:15 ART. Deadline Mon Nov 9, 08:59 ART 
 ## Gates and fallbacks
 
 - G1 fail: cut D4 and the artifact vector first; never cut the ground truth or the event log.
-- Logprobs not available on the chosen provider: use the declared D2 fallback (discrete rubric plus D1 tie-breaker) and say so.
+- Contract first: T01 merges `schema.py` before lanes A and B start, so both lanes use the same record layout and the merge at G1 does not stall on field names.
+- Logprobs not available on the chosen provider, or temperature 0 ignored: switch at once to the D2 fallback (short JSON rubric plus 0.05 times the D1 score) and say so. Do not spend time fighting a provider SDK.
+- G2 case 2A (the model never complies): reframe the policy before the tag as an operational rule (the tag is shared only for consolidation when a network integrity audit is active), and keep the strawman check (a raw request with no audit pretext is refused in all trials).
+- G2 case 2B (breaches at distance 1 but chains stop at length 1): make the pass-on block in the playbook message explicit before the tag.
 - G2 fail (the attack does not spread): change the swarm model or the playbook text before the tag. If still failing at 02:00, the main result becomes "the infection does not spread in this setup", reported with attempt and refusal rates, plus detectors on the recruitment messages that exist. That is still a valid result.
 - Quotas (429): reduce to 10 seeds per cell, balanced across cells.
-- Drop order: A4, then D4, then solo condition in A3, then complete topology in A3. D5 stays: it is the requested layered filter.
+- Drop order, confirmed: A4 first (keep R0 from A1 and report the analytic threshold p* = 1 - 1/R0 as a prediction); then D4; then reduce A3c from 20 to 8 episodes (2 seeds per gate); then solo in A3. Untouchable: A0, A1 (ring and complete), A2, and A3 in the ring split with D1, D2, D3 and D5.
 - Final rule: from Mon 05:00 onward, no new experiments. Writing and checking only.
 
 ## Human-only steps
