@@ -31,6 +31,7 @@ More than one agent works in this project, possibly at the same time, on the sam
 
 - One branch per task, named `<type>/<short-description>`. Never commit to `main`.
 - Atomic commits: each commit holds one logical change that builds and passes CI on its own. Do not mix unrelated changes (for example, code and docs for different tasks) in one commit.
+- Every PR is based on `main` (`gh pr create --base main`). Do not stack PRs on top of other feature branches: a PR merged into a feature branch does not reach `main` (this happened with PR #2 and PRs #6 to #10). If a task depends on an unmerged PR, wait for the merge, or open one PR that holds both changes.
 - TDD for any code. This task has no application code, so no tests are needed beyond CI passing.
 - Everything must pass CI before a PR is opened. A human approves and merges every PR. Do not merge, do not force-push.
 - Documents, code, commits and READMEs are in English.
