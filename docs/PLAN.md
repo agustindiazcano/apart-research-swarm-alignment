@@ -1,43 +1,49 @@
-# Plan (hour by hour) and Gates
+# Plan and Gates
 
-Clock: ART (UTC-3). Written Sun Nov 8, about 04:30 ART. Deadline Mon Nov 9, 08:59 ART. About 28.5 hours remain. Rules: one branch per task, TDD, CI green, human merges every PR. The human approval step is on the critical path: keep PRs small and merge as soon as CI is green.
+Clock: ART (UTC-3). Written Sun Nov 8, 21:15 ART. Deadline Mon Nov 9, 08:59 ART (about 11.5 hours). Experiments stop Mon 05:00 ART (about 7.5 hours). The author is registered. The workflow in `AGENTS.md` is not relaxed: one worktree and branch per task, TDD, CI green, every PR based on `main`, human approves and merges. Overhead is cut by using fewer, larger tasks and by running independent lanes in parallel, not by skipping the workflow.
+
+## Lanes (parallel agents, one worktree each)
+
+| Lane | Tasks | Needs from other lanes |
+|---|---|---|
+| A runtime | T01 skeleton, T02 LLM client and budget, T03 world and ground truth, T04 swarm core (board, topology, agent, tools, runner) | none (event schema is in ARCHITECTURE.md) |
+| B measurement | T05 event schema, extraction and statistics, T06 detectors D1 to D3 (D4 later) | event schema; hand-built fixtures until A delivers |
+| C experiments | T07 pilot and playbook calibration, T08 prereg, T09 batch runner, T10 runs, T11 analysis and figures | A for the runner; B for detectors |
 
 ## Timeline
 
 | When (ART) | Work | Output |
 |---|---|---|
-| Sun 04:30 to 06:00 | T00 run the external stack and answer every `TODO(verify)`; T01 skeleton; start T02 | `docs/VERIFICATION.md`, repo skeleton |
-| Sun 06:00 to 09:00 | T02 LLM client and budget guard; T03 world and ground truth; T04 events and metrics; T05 board and topology | unit-tested modules |
-| Sun 09:00 | GATE G1 | end-to-end episode with scripted mock agents, D0 and D1, metrics computed from events and SQL, `docs/MODELS.md` with real model ids, prices and limits |
-| Sun 09:00 to 12:00 | T06 agent loop; T07 tool layer; T08 runner; T09 D0/D1 | real-LLM pilot possible |
-| Sun 12:00 to 13:00 | T13 pilot (N = 10, 3 to 5 episodes), manipulation check, prompt freeze | pilot report (excluded from analysis) |
-| Sun 13:00 | GATE G2 | attack works under D0 (H1 sanity); T14 preregistration tag `prereg-v1` |
-| Sun 13:00 to 15:30 | T10 D2; T11 D3; T12 D5; T15 batch runner | all defenses runnable |
-| Sun 15:30 | GATE G3 | one episode per defense per topology passes end to end |
-| Sun 15:30 to Mon 00:30 | main arm (450 episodes) and controls; T16 analysis on partial data; report skeleton | results/main |
-| Sun 18:00 to Mon 00:30 | scale arm in parallel when quotas allow | results/scale |
-| Mon 00:30 | GATE G4 | main arm complete, or balanced truncation applied (minimum 20 seeds per cell) |
-| Mon 00:30 to 03:00 | frontier substitution arm; adaptive attacker arm; optional D4 and insider variant | results/frontier, results/adaptive |
-| Mon 03:00 to 05:00 | final analysis, figures, tables | `results/summary`, figures |
-| Mon 05:00 to 05:30 | assemble a complete draft and submit it as insurance (resubmitting with the same title replaces it) | first submission |
-| Mon 05:30 to 07:30 | write the report by hand from the outline; appendix; pre-existing declaration; check against RULES.md | final PDF |
+| Sun 21:15 to 21:45 | Redesign docs PR (this); open lanes A and B | docs on `main` after human merge |
+| Sun 21:45 to Mon 00:30 | Lane A: T01 to T04. Lane B: T05, T06. Provider check: logprob support, temperature, model ids, limits | unit-tested modules |
+| Mon 00:30 | GATE G1 | one episode end to end with scripted mock agents; metrics from the log; `docs/MODELS.md` (human supplies from consoles) |
+| Mon 00:30 to 01:30 | T07 pilot: 3 seeds, ring, split, no defense; calibrate worm playbook and model until at least 30% of pilot episodes show a breach and one shows a chain of length 2 or more | pilot report (excluded) |
+| Mon 01:30 | GATE G2 and T08 prereg tag `prereg-v1` | frozen prompts, playbooks, configs |
+| Mon 01:30 to 02:15 | TRAIN (15 episodes); fit D1, D2 temperature, D3 lambda; save thresholds | `results/thresholds.json` |
+| Mon 02:15 to 04:30 | A0 and A1 (75 episodes), then A3 and A3c (80 episodes); A2 scoring in parallel | `results/` |
+| Mon 03:00 | start the report skeleton and appendix while runs continue | |
+| Mon 05:00 | GATE G4: freeze experiments. A4 and D4 online only if everything else is complete | |
+| Mon 05:00 to 05:30 | analysis and figures; early complete draft submitted as insurance (same title replaces it) | first submission |
+| Mon 05:30 to 07:30 | write the report by hand from the outline; checks against RULES.md | final PDF |
 | Mon 07:30 | submit final | submission |
-| Mon 07:30 to 08:59 | buffer only; no new work; the grace period is not guaranteed | |
+| Mon 07:30 to 08:59 | buffer only; no new work | |
 
 ## Gates and fallbacks
 
-- G1 fail: cut T10 to T12 scope first (D2 and D5 can wait); never cut the ground truth or the event log.
-- G2 fail (attack does not work under D0): adjust the payload templates and agent prompts only before the preregistration tag; if still failing at 14:00, switch the primary framing to "persuasion does not spread in this setup" and report the manipulation check as the main result (still valid, smaller).
-- F1 (D3 integration): if the full gateway-worker stack is unstable by 15:00, use the in-process path; record it in the report.
-- F2: if D3 cannot run by 17:00, drop D3 from the ladder, state it as not evaluated, and keep D0, D1, D2, D5.
-- F3 (quotas): reduce to 20 seeds per cell, balanced across cells.
-- F4: drop the frontier arm first, then the adaptive arm, then the scale arm points above N = 50, then D4. Never drop the controls or the preregistration.
+- G1 fail: cut D4 and the artifact vector first; never cut the ground truth or the event log.
+- Contract first: T01 merges `schema.py` before lanes A and B start, so both lanes use the same record layout and the merge at G1 does not stall on field names.
+- Logprobs not available on the chosen provider, or temperature 0 ignored: switch at once to the D2 fallback (short JSON rubric plus 0.05 times the D1 score) and say so. Do not spend time fighting a provider SDK.
+- G2 case 2A (the model never complies): reframe the policy before the tag as an operational rule (the tag is shared only for consolidation when a network integrity audit is active), and keep the strawman check (a raw request with no audit pretext is refused in all trials).
+- G2 case 2B (breaches at distance 1 but chains stop at length 1): make the pass-on block in the playbook message explicit before the tag.
+- G2 fail (the attack does not spread): change the swarm model or the playbook text before the tag. If still failing at 02:00, the main result becomes "the infection does not spread in this setup", reported with attempt and refusal rates, plus detectors on the recruitment messages that exist. That is still a valid result.
+- Quotas (429): reduce to 10 seeds per cell, balanced across cells.
+- Drop order, confirmed: A4 first (keep R0 from A1 and report the analytic threshold p* = 1 - 1/R0 as a prediction); then D4; then reduce A3c from 20 to 8 episodes (2 seeds per gate); then solo in A3. Untouchable: A0, A1 (ring and complete), A2, and A3 in the ring split with D1, D2, D3 and D5.
 - Final rule: from Mon 05:00 onward, no new experiments. Writing and checking only.
 
 ## Human-only steps
 
-Merging PRs; verifying model ids and prices in provider consoles; entering API keys into `.env` (never in chat or logs); the pre-hackathon survey (prize eligibility); using the same email for Adaption credits; asking the help-desk about reuse of work from another hackathon; writing the final report text by hand (the organizers recommend rewriting AI-drafted text); submitting on the sprint website.
+Merging PRs; verifying model ids, prices and limits in provider consoles; entering API keys in `.env`; the pre-hackathon survey (prize eligibility); using the same email for Adaption credits; creating tag `prereg-v1`; writing the final report text by hand; submitting on the sprint website.
 
 ## Cost watch
 
-Check cumulative spend at each gate against `docs/EXPERIMENT_DESIGN.md` section 6. Stop an arm if its spend exceeds 2x the estimate.
+Check cumulative spend at each gate against the call-volume estimate in EXPERIMENT_DESIGN.md section 4. Stop an arm if its spend exceeds 2x the estimate.

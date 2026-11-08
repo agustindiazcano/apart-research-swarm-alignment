@@ -6,16 +6,29 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Branch `docs/no-groq-decision` (worktree `../apart-research-swarm-alignment-wt-no-groq`, based on `main`): recorded the author's decision that Groq is not used. Providers for this project: Apart Research (Adaption), Muse and Vertex (Modal stays in `.env.example`). The judges and the Prompt Guard of the external repo default to Groq in its code; they are remapped in T10 and T11 and declared in `docs/VERIFICATION.md`. Do not ask again about Groq keys.
-- PRs #5 to #12 are in `main`. Remove merged chain branches when convenient.
-- The experiment Docker stack (project `swarmexp`) is still running.
+- Branch `docs/redesign-infected-swarm` (worktree `../apart-research-swarm-alignment-wt-redesign`): redesign of the project. Dropped `mcp-transactional-agent` and the refund ledger. New design: infected LLM swarm with real recruitment chains (worm playbook, ring where posts reach only neighbors, split credential), N = 10, R = 10; detectors D1 lexical, D2 logprob micro-LLM guardrail, D3 graph-contextual cascade, D4 micro-verifier cascade with veto; message gate at 0.5% FPR and an episode-level alarm; H2 with repetition control; labels by action (L1_action, L2_leak).
+- Updated `AGENTS.md` project context (new invariants), `PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`, `REPORT_OUTLINE`, `AGENT_PROMPT`, `AGENTS_SECTION`, README, OVERVIEW, `PRIOR_WORK_DIGEST`. Deleted `docs/VERIFICATION.md`.
+- The author is registered for the hackathon. Deadline Mon 08:59 ART; experiments stop Mon 05:00 ART.
+- Input used: a review of the earlier design (pasted by the author). Its workflow advice (skip worktrees, PRs, TDD) was not followed because `AGENTS.md` forbids shortcuts. Its numeric claims were not adopted.
+- A branch `exp/mock-split-attack` (worktree `../apart-research-swarm-alignment-wt-mock-exp`) by another agent holds synthetic numpy simulations. Not touched, not used for results.
+- PR #13 (no-Groq decision) is obsolete: this redesign supersedes it. Close it, do not merge.
+- The Docker project `swarmexp` (external MCP stack) is no longer needed; stop it with its compose files from `../agentic-mcp-engine` when convenient (`docker compose -p swarmexp ... down -v`).
+- Corrections after a second review, applied to the design: label L1_action now comes from a protocol field `intent` of each post (detectors never see it) instead of a lexicon, to avoid circularity with D1; D5 keeps a cached surrogate score S~ per message so D3 inside D5 always has the previous-round scores; the 0.5% FPR threshold uses a smoothed tail estimate over about 700 to 800 TRAIN negatives, with target and realized FPR both reported; H2 is fit on exposed agent-rounds with a topology term and is declared not identifiable if distinct senders barely vary (expected in the ring); A2 is message-level on fixed history and A3 is episode-level causal with outcomes exfiltration, infected fraction and benign utility.
+- Third review, applied: `schema.py` frozen first (T01) so lanes A and B share one record layout; batch runner runs many episodes in parallel under a global semaphore; D2 fallback is a short JSON rubric plus 0.05 times D1; plan B for gate G2 (reframe the policy as an operational rule, make the pass-on block explicit); every agent has a `NODE_AUDIT_TAG` line so requests make sense for all; D1 uses full-vocabulary TF-IDF with L2 and vocabulary-free features, no hand lexicons; D3 graph term only when the outgoing message is not clearly benign; continuous episode score by CUSUM over log-odds; both outcomes reported (full exfiltration and fraction of fragments leaked); pilot seeds 901 to 903; `artifacts/preregistration_manifest.json`; drop order confirmed, A3c may shrink to 8 episodes.
+- Not adopted: statements about publishability and any timing claim that is not measured. Citations stay pending verification.
+- Language rule added to `AGENTS.md` (neutral language, no opinions, hype or intensifiers, forbidden words listed there) and a CI step that checks the forbidden words. Evaluative wording in the project documents was replaced; the concept previously named with one of the forbidden words is now "standard agent".
+- Data Integrity rule added at the top of `AGENTS.md` and `README.md`: no result is typed by hand; numbers are generated from `results/` and inserted by `scripts/render_results.py` between `RESULTS:BEGIN` and `RESULTS:END` markers. The script and its CI freshness check do not exist yet (task T14); until then the README Results block holds a placeholder and no number.
+- Main (PR 13) merged into this branch; conflicts in `LASTCONTEXT.md`, `PENDING.md`, `docs/ARCHITECTURE.md` and `docs/VERIFICATION.md` resolved with the redesign versions (VERIFICATION removed). The branch merges cleanly into `main`.
+- Docker project `swarmexp` removed (containers, volume, network, images built for it). The development containers and volumes of `agentic-mcp-engine` were not touched (two of its containers are running, not started by this work).
+- Added: execution substrate statement (one process per episode with asyncio, no container per agent, information isolation tested), central figure F1 with two panels generated by `swarmlab/metrics/plots.py`, `timestamp_utc` in each model call record.
+- The numpy simulations of the other agent are untracked files in the worktree `../apart-research-swarm-alignment-wt-mock-exp` (branch `exp/mock-split-attack`); nothing from them is committed to any branch.
 
 ## Repository state
 
 | Item | State |
 |---|---|
 | `main` | Scaffold, handoff files, session rules, project context in `AGENTS.md`. |
-| `docs/project-docs` (#5), `chore/env-prior-work` (#6), `docs/verify-external-stack` | Stacked PRs, each based on the previous one. Merge in that order. |
+| `docs/redesign-infected-swarm` | Redesign, pushed, waiting for approval to open the PR. |
 | `swarm-utils/` (untracked) | Source copy of the project docs, identical to what is now in `docs/`. Not tracked on purpose. |
 | `.env.example` | Rewritten for the four providers (this branch). Local `.env` is older: add the new names by hand. |
 | `.env` | Local, git-ignored. Keys must be entered by the human. |
@@ -24,17 +37,18 @@ Last updated: 2026-11-08
 
 ## Next step
 
-T01 (skeleton, config loading, CLI stub, CI with lint, mypy --strict, pytest) on `chore/skeleton`, then T02 (LLM client and budget guard). Both only need the merged docs. T03 and T07 need the experiment stack from `docs/VERIFICATION.md`.
-
-The experiment stack is currently running (`docker ps --filter name=swarmexp`). Stop it with `docker compose -p swarmexp ... down -v` from the external repository when not needed.
+After the human merges the redesign PR: open lane A (T01 skeleton, then T02, T03, T04) and lane B (T05 metrics, then T06 detectors incl. D5) in separate worktrees, possibly by different agents at the same time. First action for lane A or B is a provider check: logprob support, temperature, model ids and limits (the human supplies console data for `docs/MODELS.md`).
 
 ## Open questions for the human
 
-- Confirm the track (Multi-Agent Oversight and Control) and the working title.
+- Approve opening the redesign PR (rules: ask first).
+- Close PR #13 (obsolete, Groq decision)?
+- Stop the Docker project `swarmexp` (leftover from the dropped MCP stack)?
+- Which provider and model for the swarm agents, and which low-cost model for the guardrail (G1)?
 
 ## Notes
 
-- Deadline: Monday, November 9, 2026, 08:59 ART. No new experiments after Monday 05:00 ART.
+- Deadline: Monday, November 9, 2026, 08:59 ART. No new experiments after Monday 05:00 ART. The author is registered.
 - CI blocks the em dash character in tracked files and requires `CLAUDE.md` to be a symlink to `AGENTS.md`.
 - `PENDING.md` uses emojis for the traffic light on purpose (exception in `AGENTS.md`). Do not use emojis elsewhere.
 - Never put API keys in chat, logs or commits. Payload templates stay out of public docs.

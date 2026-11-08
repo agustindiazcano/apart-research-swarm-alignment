@@ -43,6 +43,13 @@ jobs:
             exit 1
           fi
 
+      - name: No forbidden words in tracked files
+        run: |
+          if git grep -I -n -i -w -E 'honest|honestly|honesty' -- . ':!AGENTS.md' ':!CLAUDE.md' ':!.github/workflows/ci.yml' ; then
+            echo "Forbidden word found in the files above (see AGENTS.md, neutral language rule)"
+            exit 1
+          fi
+
       - name: TODO markers in markdown (warning on main only)
         run: |
           if [ "${GITHUB_REF_NAME}" = "main" ]; then

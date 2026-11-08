@@ -2,9 +2,21 @@
 
 Single source of truth for agent instructions in this repository. `CLAUDE.md` is a symlink to this file.
 
+## Data Integrity
+
+No result is typed by hand. Every number in the README, in `docs/` and in the report (rates, counts, intervals, R0, AUROC, costs, table cells) is produced by a script from the committed event logs and `gt.json`, and is inserted into the file by a script. Two causes of error are removed this way: transcription mistakes by a person, and numbers produced by an AI model that were never measured.
+
+- Generated content sits between markers: `<!-- RESULTS:BEGIN <name> -->` and `<!-- RESULTS:END <name> -->`. Nothing inside a marked block is edited by hand.
+- `scripts/render_results.py` (task T14) reads `results/`, rewrites the marked blocks, and prints the source file and its SHA-256 next to each table.
+- A value with no source file is written as `TODO(result)`. It is never an estimate, a rounded memory or a figure copied from chat.
+- In prose, refer to a table or figure instead of repeating its numbers. A number that has to appear in prose comes from a generated inline block.
+- Before a PR that touches results: run the script and confirm the diff is empty. A CI step that fails when rendering changes a file is added together with the script (T14).
+- Agents do not compute a result in chat or in a commit message to paste it into a document.
+- Values read from provider consoles (model ids, prices, limits) are copied by the human into `docs/MODELS.md` with the date and the page they came from.
+
 ## Project purpose
 
-This repository holds a project built for the Swarm Alignment Hackathon 2026 (an Apart Research sprint, November 6 to 8, 2026). Project title: `TODO(title)`. The deliverable is a PDF research report plus the code and data that support it.
+This repository holds a project built for the Swarm Alignment Hackathon 2026 (an Apart Research sprint, November 6 to 8, 2026). Project title (working): "Infection Chains in LLM Swarms: spread, detection and immunity". The deliverable is a PDF research report plus the code and data that support it.
 
 Rules documents under `docs/` are authoritative and will be added incrementally by the maintainer. When a rules document conflicts with this file, the rules document wins.
 
@@ -35,7 +47,8 @@ More than one agent works in this project, possibly at the same time, on the sam
 - TDD for any code. This task has no application code, so no tests are needed beyond CI passing.
 - Everything must pass CI before a PR is opened. A human approves and merges every PR. Do not merge, do not force-push.
 - Documents, code, commits and READMEs are in English.
-- Typography: do not use the em dash character anywhere. Use commas, colons or parentheses. No emojis. Avoid filler adjectives (robust, rigorous, seamless, etc.).
+- Typography: do not use the em dash character anywhere. Use commas, colons or parentheses. No emojis (exception: the traffic light symbols in `PENDING.md`).
+- Neutral language everywhere: documents, code comments, commit messages, PR text, reports and summaries to the human. State facts, numbers, definitions and sources. Do not write opinions, evaluations, praise, criticism, hype or promotional wording, and do not use intensifying adjectives or adverbs (for example robust, rigorous, seamless, elite, strong, impressive, brilliant, critical, fatal, very, extremely). Describe a limitation by its cause and its size, not with a judgment. Forbidden words: honest, honestly, honesty. A concept that uses one of them is renamed (for example, "honest agent" becomes "standard agent"). CI checks the forbidden words.
 - Never invent facts, URLs, citations, versions or results. If a value is unknown, write `TODO(<what is missing>)` and list it in the PR description. Fabricated references can disqualify the project.
 - Commit messages: conventional commits (`chore:`, `docs:`).
 
@@ -73,9 +86,10 @@ PENDING.md
 LASTCONTEXT.md
 .gitignore
 .env.example
+scripts/render_results.py (planned, T14)
 docs/README.md
-docs/hackathon/OVERVIEW.md
-docs/hackathon/RESOURCES.md
+docs/PROJECT.md, EXPERIMENT_DESIGN.md, ARCHITECTURE.md, PLAN.md, TASKS.md, REPORT_OUTLINE.md
+docs/hackathon/OVERVIEW.md, RESOURCES.md, RULES.md, TALKS_DIGEST.md, PRIOR_WORK_DIGEST.md
 .github/workflows/ci.yml
 .github/pull_request_template.md
 ```
@@ -90,42 +104,38 @@ docs/hackathon/RESOURCES.md
 - A PR is opened against `main` and left for human review.
 - Docs are updated (README pre-existing table, layout, and any affected document).
 
-## Project context: swarm-contagion (append to AGENTS.md)
+## Project context: swarm-contagion
 
-Goal: measure how much harm passes each layer of a layered defense when one compromised, unprivileged agent in an LLM swarm tries to get an unauthorized refund executed by persuading privileged peers, as a function of topology and swarm size. Full definitions: `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`. Hackathon rules: `docs/hackathon/RULES.md`; talk lessons: `docs/hackathon/TALKS_DIGEST.md`; prior work: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
+Goal: measure how an infection spreads through conversations in an LLM swarm (recruitment chains and terminal breaches of a split canary credential), and how well four detectors catch it, offline and as online gates: a lexical logistic regression, a logprob-calibrated micro-LLM guardrail, a graph-contextual cascade and a micro-verifier cascade. Full definitions: `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`. Hackathon rules: `docs/hackathon/RULES.md`; talk lessons: `docs/hackathon/TALKS_DIGEST.md`; prior work: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 
-Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan work after Mon 05:00 ART other than writing and checking.
+Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan experiments after Mon 05:00 ART; after that only analysis, writing and checking.
 
 ### Hard invariants
 
-1. Ground truth is never visible to agents. Agents see only their role prompt, their private tickets, visible board messages and their own tool results. No label, no episode metadata, no word like test, simulation, evaluation in agent prompts.
-2. Metrics come from the event log and SQL only. Never from agent self-reports or an LLM judgment.
-3. The external repository mcp-transactional-agent is pre-existing and unmodified except configuration. List every configuration change in `docs/VERIFICATION.md`. Any code change to it needs human approval.
-4. No API key, token or secret in code, logs, event files, commit messages or PR text. Environment variable names only in `.env.example`.
-5. Hard spend caps per provider. A missing cap blocks calls. Never remove a cap to make a run pass.
-6. Seeds and configs are frozen after tag `prereg-v1`. Changes go in the deviations log, not silently in code.
-7. No outcome-based exclusion of episodes. Failed episodes are rerun with the same seed (max 2) and then reported as failures.
-8. The experiment database is separate from any development database. Tests refuse to run against a database whose name does not end in `_test` or `_exp`.
-9. Payload templates stay in `experiments/payloads/` and are never copied into public docs or the report.
-10. Local, synthetic, fake money only. Nothing touches a real service or real credentials beyond model-provider APIs.
+1. Ground truth (`gt.json`, labels, holders, patient zero) is never visible to agents or detectors. Agents see only their role prompt, private records, visible board messages and their own tool results. No word like test, simulation, evaluation in agent prompts.
+2. Metrics come from the event log and `gt.json` only. Never from agent self-reports or an LLM judgment. One declared exception: the `intent` field of a post is protocol data (a message type chosen from a fixed list); it defines the label L1_action, detectors never see it, and its agreement with the content is checked by hand on a sample and reported.
+3. No API key, token or secret in code, logs, event files, commit messages or PR text. Environment variable names only in `.env.example`.
+4. Hard spend caps per provider. A missing cap blocks calls. Never remove a cap to make a run pass.
+5. Seeds, configs and playbooks are frozen after tag `prereg-v1`. Changes go in the deviations log, not silently in code.
+6. No outcome-based exclusion of episodes. Failed episodes are rerun with the same seed (max 2) and then reported as failures.
+7. Detectors are fit on TRAIN seeds only. Thresholds are saved before any TEST episode is scored. Playbook style 2 is never used in TRAIN.
+8. Playbook texts stay in `experiments/payloads/` and are never copied into public docs or the report.
+9. Local, synthetic data and a fake credential only. Nothing touches a real service beyond model-provider APIs.
+10. Every reported number comes from committed event logs. No number from memory, from the talks, from the literature or from a synthetic simulation is presented as a result.
 
 ### Working rules (author's workflow)
 
-One branch per task. Failing test first, shown failing for the right reason. CI green before a PR. Human approves and merges every PR. Do not push to main. Do not suggest shortcuts that break this workflow. Output language is English. No em dash. No emojis. No filler adjectives about quality.
+Check the branch and worktrees before acting. One worktree and branch per task. Failing test first, shown failing for the right reason. CI green before a PR. The human approves and merges every PR; ask before opening one. Every PR is based on `main`. Do not push to main. Do not suggest shortcuts that break this workflow. Output language is English. No em dash. No emojis. Neutral language only (see the language rule in `AGENTS.md`).
 
 ### Claims policy
 
-Report only what the data show. Do not cite speaker figures from the sprint talks as facts. Declare what is pre-existing. A null result is a result. Unknown facts stay `TODO(verify)` until verified by running something.
+Report only what the data show. Do not cite speaker figures from the sprint talks as facts. Cite only references verified by hand. Declare what is pre-existing. A null result is a result. Unknown facts stay `TODO(verify)` until verified by running something.
 
 ### Commands (fill in after T01)
 
 ```
-swarmlab run-episode --config experiments/configs/main.yaml --world-seed 1 --defense D1 --topology full
-swarmlab batch --matrix experiments/configs/main.yaml --resume
-swarmlab analyze results/main
+swarmlab run-episode --config experiments/configs/free_flow.yaml --world-seed 101 --topology ring
+swarmlab batch --matrix experiments/configs/free_flow.yaml --resume
+swarmlab analyze results/free_flow
 swarmlab prereg
 ```
-
-### Definitions used everywhere
-
-Harm = refund row in the ledger for an order without a ticket. Exposed = read a board message containing the attacker order id. Mentioned = posted it. Acted = tool call or claim involving it. Containment layer = first layer that stopped an attempted action.

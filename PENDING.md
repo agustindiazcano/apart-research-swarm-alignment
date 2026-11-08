@@ -11,7 +11,7 @@ Last updated: 2026-11-08
 | 🔴 | Blocking or urgent. Nothing downstream can finish without it. |
 | 🟡 | Next. Do it once the blockers are clear. |
 | 🟢 | Later. Needed before submission but not blocking now. |
-| ⚪ | Backlog. Nice to have, drop first if time runs out. |
+| ⚪ | Backlog. Optional; dropped first if time runs out. |
 
 ## Phase codes
 
@@ -30,24 +30,28 @@ Submission deadline: Monday, November 9, 2026, 11:59 UTC (Sunday, November 8, 11
 
 ## Open tasks
 
-Ordered by priority, top first.
+Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.md`; lanes in `docs/PLAN.md`.
 
 | # | Light | ID | Task | Depends on | Status |
 |---|---|---|---|---|---|
-| 1 | 🔴 | SCOPE-01 | Choose the track(s) and fill `TODO(track)` in `README.md` and `docs/hackathon/OVERVIEW.md` | none | proposed in the project docs (anchor: Multi-Agent Oversight and Control), human to confirm |
-| 2 | 🔴 | SCOPE-02 | Define the project title, the one-line summary and the research question; fill `TODO(title)` and `TODO(one line)` in `README.md` and `AGENTS.md` | SCOPE-01 | proposed (working title and research question in the project docs), human to confirm |
-| 4 | 🟡 | SCOPE-03 | Read the Guidelines tab (rubric, template, FAQ) and check it against `docs/hackathon/RULES.md` | none | open |
-| 5 | 🟡 | SCOPE-04 | Write a short plan: method, what counts as a result, what is cut if time runs short | SCOPE-02 | open |
-| 6 | 🟡 | BUILD-01 | Implement the experiment or system, following the task list T00 to T21 in the project docs (T00 is done, next: T01 skeleton). Tests first for any code (TDD) | SCOPE-04 | open |
-| 7 | 🟡 | SETUP-02 | Fill `TODO(commands)` in `AGENTS.md` once tooling exists | BUILD-01 | open |
-| 8 | 🟢 | EVAL-01 | Run the evaluation and produce figures and tables from real outputs only | BUILD-01 | open |
-| 9 | 🟢 | REPORT-01 | Draft the report on the official template (4 to 8 pages, 8 is a hard cap) | EVAL-01 | open |
-| 10 | 🟢 | REPORT-02 | Write the appendix "Limitations and Dual-Use / Ethical Considerations" | EVAL-01 | open |
-| 11 | 🟢 | REPORT-03 | Disclose pre-existing work in the report and update the README pre-existing table | BUILD-01 | open |
-| 12 | 🟢 | SUBMIT-01 | Resolve every `TODO(` marker, verify every citation and URL, check CI is green on `main` | REPORT-01, REPORT-02, REPORT-03 | open |
-| 13 | 🟢 | SUBMIT-02 | Export the PDF and submit before the deadline | SUBMIT-01 | open |
-| 14 | ⚪ | SETUP-03 | Add `PENDING.md` and `LASTCONTEXT.md` to the required-files check in `.github/workflows/ci.yml` | none | open |
-| 16 | ⚪ | REPORT-04 | Fill `TODO(list of AI tools and versions)` and `TODO(reproduction steps)` in `README.md` | BUILD-01 | open |
+| 1 | 🔴 | T00 | Merge the redesign docs PR (human approves) | none | branch `docs/redesign-infected-swarm` |
+| 2 | 🔴 | T01 | Package skeleton, config, CLI stub, CI (ruff, mypy, pytest) and the frozen `schema.py` contract, lane A | T00 | open |
+| 3 | 🔴 | T05 | Event schema, extraction and statistics, lane B | T00 | open |
+| 4 | 🔴 | T02 | LLM client with logprobs option and budget guard, lane A | T01 | open |
+| 5 | 🔴 | T03 | World generator and ground-truth rules, lane A | T01 | open |
+| 6 | 🔴 | T04 | Swarm core: board, ring and complete topology, agents, runner, lane A | T02, T03 | open |
+| 7 | 🔴 | T06 | Detectors D1 to D3 and the online gate, lane B | T05 | open |
+| 8 | 🔴 | G1 | Provider check (logprobs, temperature, model ids, limits) and `docs/MODELS.md` | T04, T05, T06 | human supplies console data |
+| 9 | 🟡 | T07 | Pilot and playbook calibration (3 seeds) | G1 | open |
+| 10 | 🟡 | T08 | Preregistration and tag `prereg-v1` | T07 | open |
+| 11 | 🟡 | T09 | Batch runner | T04 | open |
+| 12 | 🟡 | T10 | Runs: TRAIN, A0, A1, A3, A3c, A2 scoring | T08, T09, T06 | open |
+| 13 | 🟡 | T11 | Analysis and figures from committed logs | T05 | open |
+| 14 | 🟢 | T12 | D4 micro-verifiers with veto gate | T06 | open |
+| 15 | 🟢 | T14 | Reproduction instructions, report assets and `scripts/render_results.py` with its CI freshness check | T11 | open |
+| 16 | 🟢 | T15 | Final check against RULES.md, report, submission | report draft | open |
+| 17 | ⚪ | T13 | Immunity arm (stretch) | T08, T11 | open |
+| 18 | ⚪ | SETUP-03 | Add `PENDING.md` and `LASTCONTEXT.md` to the required-files check in CI | none | open |
 
 ## Done
 
@@ -64,6 +68,8 @@ Ordered by priority, top first.
 | SETUP-13 | Rule in `AGENTS.md`: every PR is based on `main`, no stacked PRs | branch `docs/pr-base-main-rule` |
 | SETUP-14 | Content of stacked PRs #6 to #10 brought to `main` | PR #11 |
 | SETUP-12 | Removed the Discord, help-desk and survey `TODO(link)` rows from the README links table (SETUP-04 dropped) | branch `docs/readme-remove-todo-links` |
-| SETUP-10 | Decision: Groq is not used. Judges and Prompt Guard run on the project providers (Apart Research via Adaption, Muse, Vertex). Remapping is part of T10 and T11 | branch `docs/no-groq-decision` |
+| SETUP-15 | Neutral language rule in `AGENTS.md`, CI check for forbidden words, evaluative wording removed from the project documents | branch `docs/redesign-infected-swarm` |
+| SETUP-16 | Data Integrity section at the top of `README.md` and `AGENTS.md`: results are generated and inserted by script, never typed by hand; marked result blocks in the README | branch `docs/redesign-infected-swarm` |
+| SETUP-10 | Decision: Groq is not used. Superseded by the redesign: the MCP judge pipeline it applied to is not part of the new design | PR #13 |
 | SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
