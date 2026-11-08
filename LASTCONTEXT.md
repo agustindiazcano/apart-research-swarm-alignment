@@ -33,7 +33,6 @@ The experiment stack is currently running (`docker ps --filter name=swarmexp`). 
 
 - SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
-- 
 
 ## Notes
 
