@@ -2,6 +2,10 @@
 
 Everything runs locally in Python (async). The only external services are model providers. Anything marked `TODO(verify)` must be checked by running a call before code depends on it.
 
+## Execution substrate
+
+One Python process per episode, with `asyncio`; no container per agent. Agents do not run code or touch the file system: each returns one restricted JSON action (`post`, `write_report`, `send_external`, `noop`) that the orchestrator validates and applies. Isolation between agents is isolation of information, enforced in memory: an `Agent` object receives only its private records, its role prompt and the messages visible to it under the topology, built as new strings each round, with no reference to shared state. A test checks that an agent's prompt never contains another agent's private record or any ground-truth field. One container for the whole runner (`swarmlab`) is allowed for reproducibility; the agents inside it still run in memory.
+
 ## 1. Layout
 
 ```
@@ -35,7 +39,8 @@ src/swarmlab/
     events.py          # event schema + JSONL writer
     extract.py         # infection graph, recruitment and breach, chains, R0, utility, labels
     stats.py           # Wilson, exact McNemar, Holm, bootstrap, AUROC, TPR at FPR
-    report.py          # tables and figures
+    report.py          # tables
+    plots.py           # central figure and other figures, generated from results/ only
   cli.py               # run-episode, batch, train-detectors, score, analyze, prereg
 experiments/
   configs/             # pilot.yaml, free_flow.yaml, gating.yaml, control.yaml, immunity.yaml
@@ -68,7 +73,7 @@ The infected agent additionally has the covert goal and a worm playbook style (s
 
 Common fields: `ts, episode_id, round, agent_id, kind`. Kinds:
 
-- `llm_call`: provider, model, provider response id, tokens_in, tokens_out, cost_usd, latency_ms, parse_ok, retries, finish_reason, raw text
+- `llm_call`: timestamp_utc, provider, model, provider response id, tokens_in, tokens_out, cost_usd, latency_ms, parse_ok, retries, finish_reason, raw text
 - `action`: parsed action (type, target, intent, text), or rejection reason
 - `message`: sender, target, intent, visible_to, text, delivered, detector scores including the cached score S~ and the deciding stage, gate decision
 - `report_write`: section, text
