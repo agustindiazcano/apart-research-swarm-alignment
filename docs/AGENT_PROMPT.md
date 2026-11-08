@@ -15,6 +15,6 @@ Then, for your task:
 - Update `PENDING.md` and `LASTCONTEXT.md`, then ask the human for approval to open the PR. The PR is based on `main`.
 - If something in the docs is wrong or unclear, do not guess: mark it `TODO(verify)` and ask.
 
-Hard rules: ground truth never reaches agent prompts or detectors; metrics come from event logs only; no secrets anywhere; spend caps are mandatory; no outcome-based exclusion; no edits to configs, seeds or playbooks after tag `prereg-v1` without a line in the deviations log; every reported number comes from committed event logs; English only, no em dash, no emojis, no filler adjectives.
+Hard rules: ground truth never reaches agent prompts or detectors; metrics come from event logs only; no secrets anywhere; spend caps are mandatory; no outcome-based exclusion; no edits to configs, seeds or playbooks after tag `prereg-v1` without a line in the deviations log; every reported number comes from committed event logs; English only, no em dash, no emojis, neutral language (no opinions, hype or intensifiers; the forbidden words are listed in `AGENTS.md`).
 
 At each gate in `docs/PLAN.md` (G1 to G4) post a short status: what works end to end, cumulative cost versus the estimate, what is behind schedule, and which fallback you propose. Do not take a fallback without the human's agreement, except that you must never cut the ground truth, the event log, the controls or the preregistration.

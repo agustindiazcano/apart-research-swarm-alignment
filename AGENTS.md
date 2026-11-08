@@ -35,7 +35,8 @@ More than one agent works in this project, possibly at the same time, on the sam
 - TDD for any code. This task has no application code, so no tests are needed beyond CI passing.
 - Everything must pass CI before a PR is opened. A human approves and merges every PR. Do not merge, do not force-push.
 - Documents, code, commits and READMEs are in English.
-- Typography: do not use the em dash character anywhere. Use commas, colons or parentheses. No emojis. Avoid filler adjectives (robust, rigorous, seamless, etc.).
+- Typography: do not use the em dash character anywhere. Use commas, colons or parentheses. No emojis (exception: the traffic light symbols in `PENDING.md`).
+- Neutral language everywhere: documents, code comments, commit messages, PR text, reports and summaries to the human. State facts, numbers, definitions and sources. Do not write opinions, evaluations, praise, criticism, hype or promotional wording, and do not use intensifying adjectives or adverbs (for example robust, rigorous, seamless, elite, strong, impressive, brilliant, critical, fatal, very, extremely). Describe a limitation by its cause and its size, not with a judgment. Forbidden words: honest, honestly, honesty. A concept that uses one of them is renamed (for example, "honest agent" becomes "standard agent"). CI checks the forbidden words.
 - Never invent facts, URLs, citations, versions or results. If a value is unknown, write `TODO(<what is missing>)` and list it in the PR description. Fabricated references can disqualify the project.
 - Commit messages: conventional commits (`chore:`, `docs:`).
 
@@ -111,7 +112,7 @@ Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan expe
 
 ### Working rules (author's workflow)
 
-Check the branch and worktrees before acting. One worktree and branch per task. Failing test first, shown failing for the right reason. CI green before a PR. The human approves and merges every PR; ask before opening one. Every PR is based on `main`. Do not push to main. Do not suggest shortcuts that break this workflow. Output language is English. No em dash. No emojis. No filler adjectives about quality.
+Check the branch and worktrees before acting. One worktree and branch per task. Failing test first, shown failing for the right reason. CI green before a PR. The human approves and merges every PR; ask before opening one. Every PR is based on `main`. Do not push to main. Do not suggest shortcuts that break this workflow. Output language is English. No em dash. No emojis. Neutral language only (see the language rule in `AGENTS.md`).
 
 ### Claims policy
 
