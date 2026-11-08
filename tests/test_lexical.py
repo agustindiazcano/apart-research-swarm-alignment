@@ -6,9 +6,9 @@ import re
 from pathlib import Path
 
 import pytest
+
 import swarmlab.detectors.lexical as lexical_module
 from swarmlab.detectors.lexical import CODE_TOKEN_PATTERN, DIGIT_PATTERN, LexicalDetector
-
 from swarmlab.metrics.stats import auroc
 from swarmlab.schema import DetectorContext, MessageView
 
@@ -211,3 +211,50 @@ def test_unfitted_detector_raises() -> None:
 
     with pytest.raises(RuntimeError):
         detector.scores(["test"])
+
+
+def test_calibration_holds_out_whole_episodes(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Fixture: each episode contains both message classes.
+    episodes = [f"episode-{i}" for i in range(10) for _ in range(6)]
+    labels = [i % 2 for i in range(len(episodes))]
+    texts = [
+        f"{episode} {'summary completed' if label == 0 else 'request audit code?'}"
+        for episode, label in zip(episodes, labels, strict=True)
+    ]
+    fitted_texts: list[str] = []
+    calibrated_texts: list[str] = []
+    vectorizer_type = lexical_module.TfidfVectorizer
+    original_fit_transform = vectorizer_type.fit_transform
+    original_transform = vectorizer_type.transform
+
+    def capture_fit(self: object, documents: list[str]) -> object:
+        fitted_texts.extend(documents)
+        return original_fit_transform(self, documents)
+
+    def capture_transform(self: object, documents: list[str]) -> object:
+        calibrated_texts.extend(documents)
+        return original_transform(self, documents)
+
+    monkeypatch.setattr(vectorizer_type, "fit_transform", capture_fit)
+    monkeypatch.setattr(vectorizer_type, "transform", capture_transform)
+    detector = LexicalDetector(seed=42).fit(texts, labels, episode_ids=episodes)
+    training_groups = {text.split()[0] for text in fitted_texts}
+    calibration_groups = {text.split()[0] for text in calibrated_texts}
+    assert training_groups
+    assert calibration_groups
+    assert training_groups.isdisjoint(calibration_groups)
+    assert training_groups | calibration_groups == set(episodes)
+    assert detector.score_text("Summary completed") >= 0.0
+
+
+def test_grouped_calibration_rejects_impossible_holdout() -> None:
+    with pytest.raises(ValueError, match="episode"):
+        LexicalDetector().fit(
+            ["normal work", "audit request?"], [0, 1], episode_ids=["only", "only"]
+        )
+
+
+@pytest.mark.parametrize("labels", [[0, 2], [-1, 1], [0.2, 1]])
+def test_fit_rejects_nonbinary_labels(labels: list[float]) -> None:
+    with pytest.raises(ValueError, match="binary"):
+        LexicalDetector().fit(["work summary", "audit request"], labels)

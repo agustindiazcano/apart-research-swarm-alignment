@@ -12,7 +12,7 @@ import scipy.sparse
 from sklearn.calibration import _SigmoidCalibration
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedGroupKFold, train_test_split
 from sklearn.preprocessing import MaxAbsScaler
 
 from swarmlab.schema import DetectorContext, MessageView
@@ -48,17 +48,28 @@ class LexicalDetector:
         self._classifier: LogisticRegression | None = None
         self._calibrator: _SigmoidCalibration | None = None
 
-    def fit(self, texts: Sequence[str], labels: Sequence[int]) -> LexicalDetector:
+    def fit(
+        self,
+        texts: Sequence[str],
+        labels: Sequence[int],
+        *,
+        episode_ids: Sequence[str] | None = None,
+    ) -> LexicalDetector:
         """Fit TF-IDF, dense features, logistic regression, and Platt scaling.
 
-        If either class has fewer than 5 examples, calibration is fitted on the full
-        training data instead of a held-out split.
+        Episode data must provide episode_ids to keep model fitting and calibration
+        in separate episodes. A grouped split requires both classes on each side.
+        Without episode_ids, independent-message fixtures use a stratified split;
+        if either class has fewer than 5 examples, that fixture mode calibrates on
+        the full training data.
         """
         if len(texts) != len(labels):
             raise ValueError("texts and labels must have equal length")
         if len(texts) == 0:
             raise ValueError("texts and labels must not be empty")
 
+        if any(label not in (0, 1) for label in labels):
+            raise ValueError("labels must be binary (0 or 1)")
         labels_arr = np.asarray(labels, dtype=int)
         unique_classes = np.unique(labels_arr)
         if len(unique_classes) < 2:
@@ -67,11 +78,28 @@ class LexicalDetector:
         counts = {int(c): int(np.sum(labels_arr == c)) for c in unique_classes}
         min_class_count = min(counts.values())
 
-        if min_class_count < 5:
-            train_texts = list(texts)
-            train_labels = list(labels)
-            calib_texts = train_texts
-            calib_labels = train_labels
+        if episode_ids is not None:
+            if len(episode_ids) != len(texts):
+                raise ValueError("episode_ids and texts must have equal length")
+            n_groups = len(set(episode_ids))
+            if n_groups < 2:
+                raise ValueError("calibration requires at least two episodes")
+            splitter = StratifiedGroupKFold(
+                n_splits=min(5, n_groups), shuffle=True, random_state=self.seed
+            )
+            partitions = (
+                (train, calib)
+                for train, calib in splitter.split(texts, labels_arr, groups=episode_ids)
+                if len(np.unique(labels_arr[train])) == 2
+                and len(np.unique(labels_arr[calib])) == 2
+            )
+            partition = next(partitions, None)
+            if partition is None:
+                raise ValueError("episode split needs both classes in fitting and calibration")
+            train_idx, calib_idx = partition
+        elif min_class_count < 5:
+            train_idx = np.arange(len(texts))
+            calib_idx = train_idx
         else:
             train_idx, calib_idx = train_test_split(
                 np.arange(len(texts)),
@@ -79,10 +107,11 @@ class LexicalDetector:
                 stratify=labels_arr,
                 random_state=self.seed,
             )
-            train_texts = [texts[i] for i in train_idx]
-            train_labels = [int(labels_arr[i]) for i in train_idx]
-            calib_texts = [texts[i] for i in calib_idx]
-            calib_labels = [int(labels_arr[i]) for i in calib_idx]
+
+        train_texts = [texts[i] for i in train_idx]
+        train_labels = [int(labels_arr[i]) for i in train_idx]
+        calib_texts = [texts[i] for i in calib_idx]
+        calib_labels = [int(labels_arr[i]) for i in calib_idx]
 
         self._vectorizer = TfidfVectorizer(ngram_range=(1, 2), lowercase=True, stop_words=None)
         tfidf_train = self._vectorizer.fit_transform(train_texts)
