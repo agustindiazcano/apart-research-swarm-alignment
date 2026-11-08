@@ -13,6 +13,7 @@ Last updated: 2026-11-08
 - A branch `exp/mock-split-attack` (worktree `../apart-research-swarm-alignment-wt-mock-exp`) by another agent holds synthetic numpy simulations. Not touched, not used for results.
 - PR #13 (no-Groq decision) is obsolete: this redesign supersedes it. Close it, do not merge.
 - The Docker project `swarmexp` (external MCP stack) is no longer needed; stop it with its compose files from `../agentic-mcp-engine` when convenient (`docker compose -p swarmexp ... down -v`).
+- Corrections after a second review, applied to the design: label L1_action now comes from a protocol field `intent` of each post (detectors never see it) instead of a lexicon, to avoid circularity with D1; D5 keeps a cached surrogate score S~ per message so D3 inside D5 always has the previous-round scores; the 0.5% FPR threshold uses a smoothed tail estimate over about 700 to 800 TRAIN negatives, with target and realized FPR both reported; H2 is fit on exposed agent-rounds with a topology term and is declared not identifiable if distinct senders barely vary (expected in the ring); A2 is message-level on fixed history and A3 is episode-level causal with outcomes exfiltration, infected fraction and benign utility.
 
 ## Repository state
 
