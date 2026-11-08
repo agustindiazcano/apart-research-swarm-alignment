@@ -52,6 +52,8 @@ README.md
 LICENSE
 AGENTS.md                      (agent instructions, single source of truth)
 CLAUDE.md                      (symlink to AGENTS.md)
+PENDING.md                     (prioritized open tasks)
+LASTCONTEXT.md                 (handoff note for the next agent)
 .gitignore
 .env.example
 docs/README.md
