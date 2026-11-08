@@ -6,17 +6,20 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Branch `docs/pr-base-main-rule` (worktree `../apart-research-swarm-alignment-wt-pr-base-rule`, based on `main`): added the rule that every PR is based on `main` and PRs are not stacked.
-- PRs #6 to #10 had been stacked and merged into each other's branches, so only #5 reached `main`. PR #11 brought their content to `main` (merged). `main` now has `docs/VERIFICATION.md`, `docs/hackathon/PRIOR_WORK_DIGEST.md` and the multi-agent rule.
-- Removed the two merged worktrees created earlier. Old chain branches (`chore/env-prior-work`, `docs/verify-external-stack`, `docs/prior-work`, `docs/multi-agent-rule`, `docs/readme-remove-todo-links`) are merged and can be deleted.
-- The experiment Docker stack (project `swarmexp`) is still running.
+- Branch `docs/redesign-infected-swarm` (worktree `../apart-research-swarm-alignment-wt-redesign`): redesign of the project. Dropped `mcp-transactional-agent` and the refund ledger. New design: infected LLM swarm with real recruitment chains (worm playbook, ring where posts reach only neighbors, split credential), N = 10, R = 10; detectors D1 lexical, D2 logprob micro-LLM guardrail, D3 graph-contextual cascade, D4 micro-verifier cascade with veto; message gate at 0.5% FPR and an episode-level alarm; H2 with repetition control; labels by action (L1_action, L2_leak).
+- Updated `AGENTS.md` project context (new invariants), `PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`, `REPORT_OUTLINE`, `AGENT_PROMPT`, `AGENTS_SECTION`, README, OVERVIEW, `PRIOR_WORK_DIGEST`. Deleted `docs/VERIFICATION.md`.
+- The author is registered for the hackathon. Deadline Mon 08:59 ART; experiments stop Mon 05:00 ART.
+- Input used: a review of the earlier design (pasted by the author). Its workflow advice (skip worktrees, PRs, TDD) was not followed because `AGENTS.md` forbids shortcuts. Its numeric claims were not adopted.
+- A branch `exp/mock-split-attack` (worktree `../apart-research-swarm-alignment-wt-mock-exp`) by another agent holds synthetic numpy simulations. Not touched, not used for results.
+- PR #13 (no-Groq decision) is obsolete: this redesign supersedes it. Close it, do not merge.
+- The Docker project `swarmexp` (external MCP stack) is no longer needed; stop it with its compose files from `../agentic-mcp-engine` when convenient (`docker compose -p swarmexp ... down -v`).
 
 ## Repository state
 
 | Item | State |
 |---|---|
 | `main` | Scaffold, handoff files, session rules, project context in `AGENTS.md`. |
-| `docs/project-docs` (#5), `chore/env-prior-work` (#6), `docs/verify-external-stack` | Stacked PRs, each based on the previous one. Merge in that order. |
+| `docs/redesign-infected-swarm` | Redesign, pushed, waiting for approval to open the PR. |
 | `swarm-utils/` (untracked) | Source copy of the project docs, identical to what is now in `docs/`. Not tracked on purpose. |
 | `.env.example` | Rewritten for the four providers (this branch). Local `.env` is older: add the new names by hand. |
 | `.env` | Local, git-ignored. Keys must be entered by the human. |
@@ -25,18 +28,18 @@ Last updated: 2026-11-08
 
 ## Next step
 
-T01 (skeleton, config loading, CLI stub, CI with lint, mypy --strict, pytest) on `chore/skeleton`, then T02 (LLM client and budget guard). Both only need the merged docs. T03 and T07 need the experiment stack from `docs/VERIFICATION.md`.
-
-The experiment stack is currently running (`docker ps --filter name=swarmexp`). Stop it with `docker compose -p swarmexp ... down -v` from the external repository when not needed.
+After the human merges the redesign PR: open lane A (T01 skeleton, then T02, T03, T04) and lane B (T05 metrics, then T06 detectors incl. D5) in separate worktrees, possibly by different agents at the same time. First action for lane A or B is a provider check: logprob support, temperature, model ids and limits (the human supplies console data for `docs/MODELS.md`).
 
 ## Open questions for the human
 
-- SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
-- Confirm the track (Multi-Agent Oversight and Control) and the working title.
+- Approve opening the redesign PR (rules: ask first).
+- Close PR #13 (obsolete, Groq decision)?
+- Stop the Docker project `swarmexp` (leftover from the dropped MCP stack)?
+- Which provider and model for the swarm agents, and which cheap model for the guardrail (G1)?
 
 ## Notes
 
-- Deadline: Monday, November 9, 2026, 08:59 ART. No new experiments after Monday 05:00 ART.
+- Deadline: Monday, November 9, 2026, 08:59 ART. No new experiments after Monday 05:00 ART. The author is registered.
 - CI blocks the em dash character in tracked files and requires `CLAUDE.md` to be a symlink to `AGENTS.md`.
 - `PENDING.md` uses emojis for the traffic light on purpose (exception in `AGENTS.md`). Do not use emojis elsewhere.
 - Never put API keys in chat, logs or commits. Payload templates stay out of public docs.
