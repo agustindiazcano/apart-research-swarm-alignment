@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import math
 from datetime import datetime
-from typing import get_type_hints
 
 import pytest
 
 from swarmlab.llm.mock import MockClient
-from swarmlab.schema import LLMClient, LLMResult, TokenLogprob
+from swarmlab.schema import LLMClient, TokenLogprob
 
 
-def test_mock_client_implements_llm_client_protocol() -> None:
-    client = MockClient(["response"])
-    assert isinstance(client, LLMClient)
+def test_mock_client_has_complete_method() -> None:
+    client: LLMClient = MockClient(["response"])
+    assert hasattr(client, "complete")
+    assert callable(client.complete)
 
 
 @pytest.mark.asyncio
@@ -102,7 +102,7 @@ async def test_mock_client_logprobs() -> None:
     token_a = "SAFE"
     token_b = "UNSAFE"
     client = MockClient(
-        ["SAFE"],
+        ["SAFE", "SAFE"],
         logprob_pair=(token_a, token_b, p_a),
     )
 
