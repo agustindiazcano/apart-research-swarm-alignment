@@ -1,7 +1,7 @@
 """Plotting utilities for experiment results and metrics."""
 
-from collections.abc import Sequence
 import csv
+from collections.abc import Sequence
 from pathlib import Path
 
 import matplotlib
@@ -48,7 +48,7 @@ def read_table(path: Path, columns: Sequence[str]) -> list[dict[str, str]]:
     Extra columns are allowed. Missing columns raise a ValueError.
     Returns row dictionaries with original string values.
     """
-    with open(path, "r", encoding="utf-8", newline="") as f:
+    with open(path, encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         if reader.fieldnames is None:
             missing = list(columns)

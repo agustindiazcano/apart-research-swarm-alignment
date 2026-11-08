@@ -1,10 +1,11 @@
 """Tests for swarmlab.metrics.plots."""
 
-from collections.abc import Sequence
 import ast
 import csv
-from pathlib import Path
 import struct
+from collections.abc import Sequence
+from pathlib import Path
+
 import pytest
 
 from swarmlab.metrics.plots import (
@@ -37,9 +38,7 @@ PNG_SIGNATURE: bytes = b"\x89PNG\r\n\x1a\n"
 # 1.5: Line width in points for kinetics line plot
 ALLOWED_NUMERIC_LITERALS: set[int | float] = {
     0,
-    0.0,
     1,
-    1.0,
     2,
     9,
     150,
