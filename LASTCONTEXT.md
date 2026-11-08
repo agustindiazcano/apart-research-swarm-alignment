@@ -6,9 +6,8 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- Branch `docs/pr-base-main-rule` (worktree `../apart-research-swarm-alignment-wt-pr-base-rule`, based on `main`): added the rule that every PR is based on `main` and PRs are not stacked.
-- PRs #6 to #10 had been stacked and merged into each other's branches, so only #5 reached `main`. PR #11 brought their content to `main` (merged). `main` now has `docs/VERIFICATION.md`, `docs/hackathon/PRIOR_WORK_DIGEST.md` and the multi-agent rule.
-- Removed the two merged worktrees created earlier. Old chain branches (`chore/env-prior-work`, `docs/verify-external-stack`, `docs/prior-work`, `docs/multi-agent-rule`, `docs/readme-remove-todo-links`) are merged and can be deleted.
+- Branch `docs/no-groq-decision` (worktree `../apart-research-swarm-alignment-wt-no-groq`, based on `main`): recorded the author's decision that Groq is not used. Providers for this project: Apart Research (Adaption), Muse and Vertex (Modal stays in `.env.example`). The judges and the Prompt Guard of the external repo default to Groq in its code; they are remapped in T10 and T11 and declared in `docs/VERIFICATION.md`. Do not ask again about Groq keys.
+- PRs #5 to #12 are in `main`. Remove merged chain branches when convenient.
 - The experiment Docker stack (project `swarmexp`) is still running.
 
 ## Repository state
@@ -31,7 +30,6 @@ The experiment stack is currently running (`docker ps --filter name=swarmexp`). 
 
 ## Open questions for the human
 
-- SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
 
 ## Notes
