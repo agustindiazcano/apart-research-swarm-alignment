@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  repo-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Required files exist
+        run: |
+          missing=0
+          for f in README.md LICENSE AGENTS.md CLAUDE.md .gitignore .env.example \
+                   docs/hackathon/OVERVIEW.md docs/hackathon/RESOURCES.md docs/README.md \
+                   .github/workflows/ci.yml .github/pull_request_template.md; do
+            if [ ! -e "$f" ] && [ ! -L "$f" ]; then
+              echo "Missing required file: $f"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: CLAUDE.md is a symlink to AGENTS.md
+        run: |
+          if [ ! -L CLAUDE.md ]; then
+            echo "CLAUDE.md is not a symlink"
+            exit 1
+          fi
+          target=$(readlink CLAUDE.md)
+          if [ "$target" != "AGENTS.md" ]; then
+            echo "CLAUDE.md points to '$target', expected 'AGENTS.md'"
+            exit 1
+          fi
+
+      - name: No em dash character in tracked files
+        run: |
+          dash=$(printf '\342\200\224')
+          if git grep -I -n -F "$dash" -- . ; then
+            echo "Em dash found in the files above"
+            exit 1
+          fi
+
+      - name: TODO markers in markdown (warning on main only)
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            if git grep -n 'TODO(' -- '*.md' ; then
+              echo "::warning::TODO markers remain in markdown files on main"
+            fi
+          else
+            echo "Skipped: not on main"
+          fi
