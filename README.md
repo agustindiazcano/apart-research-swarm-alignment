@@ -63,7 +63,9 @@ docs/hackathon/RESOURCES.md
 
 ## Author
 
-Agustin Diaz-Cano, MSc candidate in Systems Engineering (Information Systems Engineering), Universidad Tecnologica Nacional, Facultad Regional Buenos Aires (UTN FRBA), Argentina.
+Agustin Diaz-Cano
+MS Candidate,Systems Engineering
+Universidad Tecnologica Nacional, FRBA, Argentina
 
 - University: https://www.frba.utn.edu.ar/
 - ORCID: https://orcid.org/0009-0001-4336-490X
