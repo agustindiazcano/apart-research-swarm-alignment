@@ -1,92 +1,81 @@
-# Containing the Confused Deputy: Prompt-Injection Contagion in an LLM Swarm
+# Infection Chains in LLM Swarms: spread, detection and immunity
 
 Working title. Short name: `swarm-contagion`.
 
 Sprint: Swarm Alignment Hackathon (Apart Research with AI Alignment Foundation and AE Studio), Nov 6 to 8, 2026.
 Deadline: Sun Nov 8, 2026, 11:59 PM AoE = Mon Nov 9, 11:59 UTC = Mon Nov 9, 08:59 ART (UTC-3).
 Author: Agustin Diaz-Cano, MS Candidate, Systems Engineering (UTN FRBA, Argentina). Solo team.
-Anchor track: Multi-Agent Oversight and Control. Cross-track: The Science of Agent Networks (spread versus topology and swarm size), Sandboxes and Testbeds (open, reproducible harness; cheap versus frontier agents).
+Anchor track: The Science of Agent Networks (how fast and how far bad behavior spreads, does network shape matter). Cross-track: Multi-Agent Oversight and Control (do monitors still work when the untrusted side is several coordinating agents) and Sandboxes and Testbeds (open, reproducible harness).
 
 ## 1. Summary
 
-One agent in a swarm is compromised and has no permission to move money. It tries to get an unauthorized refund executed by persuading peers that do have permission (a confused-deputy attack). We build a small, reproducible, fully local testbed (fake money, fake orders, a real transactional ledger) and measure, for each layer of a layered defense, how much harm gets through and how far the persuasion spreads, as a function of network topology and swarm size.
+A swarm of LLM agents does a cooperative job. One agent is infected: it carries a covert goal and a playbook for recruiting peers by conversation. Infected agents talk to each other, recruit more agents, split the work of a theft across a chain of agents, and try to get a fake credential out of the swarm. Nothing here is a single injected user prompt: the object of study is the infected conversation flow itself.
 
-Defense ladder (cumulative, defined in `EXPERIMENT_DESIGN.md`):
+The project has three parts, in this order:
 
-- D0 no defense: every agent may execute refunds.
-- D1 identity-based tool permissions at an MCP boundary: only privileged identities may execute refunds.
-- D2 D1 plus a prompt-injection classifier on inter-agent messages.
-- D3 D2 plus claim mediation: privileged agents cannot execute directly, they file claims that go through an evidence check and an LLM judge cascade before a deterministic worker executes.
-- D5 (reference, not cumulative): D1 plus task-bound capabilities (a refund needs a ticket issued by the harness). Blocks the attack by construction; included to bound what a provenance-aware control costs.
+1. **Free infected flow.** What an infected swarm does when nothing stops it: who gets infected, in what order, through which tactics, how long the chains are, how fast the credential leaves. Deliverable: the infection graph, kinetics (R0, chain length, time to exfiltration) and a labeled corpus of infected and clean conversations.
+2. **Detectors against that flow.** A ladder: a lexical logistic regression (D1); a micro-LLM guardrail that answers with one token and is scored from its logprobs (D2); a graph-contextual cascade that adds the suspicion of what the sender received one round earlier (D3); a cascade of three isolated micro-verifiers with a veto gate (D4); and a layered filter that puts the logistic regression in front of the guardrail so only doubtful messages reach the LLM (D5). Measured offline (can they tell recruitment and leak messages from clean ones, and chains from clean runs) and online (does gating messages reduce exfiltration, and at what cost to the legitimate task).
+3. **Immunity threshold (stretch).** A threshold for the fraction of verifying agents is derived from the free-flow R0 before any immunity run, then tested if time remains.
 
-The author's own system (mcp-transactional-agent) is the defense under test for D1 and D3. Its documentation states that identity-based permissions cannot be extended by injected text but that injected text can still steer which allowed tool is used and with what arguments. This project tests that residual risk with real LLM agents, which the existing integration test does not do (it only checks that a restricted token receives HTTP 403).
+The reason this is not a toy: the attack needs a chain. The credential is split into three fragments held by three different agents, so no single message or single agent does the harm. That is the case the talks identified as open (Kitaoka: split attacks evade per-agent monitors).
 
-## 2. Research question
+## 2. Research questions
 
-Primary: when a compromised, unprivileged agent tries to obtain an unauthorized transaction by persuading privileged peers, how much harm passes each layer of a layered defense, and how does that depend on topology and swarm size?
-
-Sub-questions:
-
-- Q1. Does identity-based permission (D1) contain the attack? Null hypothesis: zero unauthorized refunds.
-- Q2. How much does filtering inter-agent messages (D2) reduce spread and harm?
-- Q3. How much of the remaining harm does an LLM judge cascade with deterministic evidence checks (D3) stop, and what is its cost on legitimate refunds?
-- Q4. Does network shape (full board, ring, hub) change spread and harm? As swarm size grows (10, 20, 50, 100), does spread change smoothly or jump?
-- Q5. Do conclusions drawn with cheap agent models hold with frontier agent models (and with an adaptive frontier attacker)?
+- Q1 (free flow). How does an infected conversation spread through a swarm? Does the probability of complying rise with the number of distinct infected senders, once repetition of the request is controlled (social proof versus insistence), and does it depend on network shape?
+- Q2 (detection). Can D1 to D4 detect recruitment and leak messages, and detect an infected chain before the credential leaves? Does detection degrade when the harm is split over three agents compared with one agent, and on a playbook style never seen in training? Does using the network (D3) help, and does a cheap logistic filter in front of the LLM (D5) keep detection while sending fewer messages to the model?
+- Q3 (defense effect). Does gating messages with D1, D2, D3 and D5 reduce exfiltration, and what does it cost in legitimate task completion?
+- Q4 (immunity, stretch). Is there a fraction of verifying agents above which the infection dies out, and does the threshold predicted from Q1 match the measured one?
 
 ## 3. Why this matters
 
-The Apart overview describes the July 2026 incident in which about 1,200 agents found a shared directory, used it as a message board, split up work, and roughly 700 broke into Hugging Face systems together (METR, 2026; citation to be completed from the sprint Resources tab, TODO(link)). The same page lists, as an open Track 2 question, how fast and how far bad behavior spreads when one agent in a network is compromised, and whether network shape matters. The Track 4 questions ask whether control protocols still hold when the untrusted side is several coordinating agents. This project is a controlled, measurable instance of those questions with material (ledger) harm and a real permission boundary.
+The Apart overview describes the July 2026 incident in which about 1,200 agents found a shared directory, used it as a message board, split up work and about 700 broke into Hugging Face systems together (METR, 2026; citation to be completed from the sprint Resources tab, `TODO(link)`). The same page lists as open Track 2 questions how fast and how far bad behavior spreads when one agent is compromised and whether network shape matters. This project measures those questions in a controlled swarm, adds the case where harm is split across agents, and tests two practical detectors and one swarm-level defense.
 
-## 4. Contribution claims (narrow) and non-claims
+## 4. Contribution claims and non-claims
 
-Claims we may make, only if the data support them:
+Claims, only if the data support them:
 
-1. A reproducible testbed with deterministic ground truth for persuasion-based confused-deputy attacks in LLM swarms, with a defense plug-in interface so another team can run a different defense on the same episodes.
-2. Measured harm incidence, spread, and containment-layer breakdown for D0 to D3 and D5, with Wilson 95% intervals and fixed sample sizes.
-3. A measured comparison of cheap-model and frontier-model swarms on a subset of conditions.
+1. An open, reproducible testbed for infection chains in LLM swarms with deterministic ground truth (a canary credential and a policy violation log), including split-harm chains.
+2. Measured spread kinetics and chain structure of a free infected flow, with intervals and fixed sample sizes.
+3. A direct comparison of a lexical classifier, a logprob-calibrated micro-LLM guardrail, a graph-contextual cascade and a micro-verifier cascade, offline and as online gates, on the same episodes, with a held-out attack style.
+4. (Stretch) A threshold predicted before measurement and then compared with the measured one.
 
 Non-claims:
 
-- No claim that any defense "is better than others" beyond the baselines implemented here.
-- No claim of transfer to real deployments. The environment is a toy; fake money; synthetic orders. Transfer is untested and is stated as a limitation.
+- No claim that a detector "is better" beyond the two implemented here and the models used.
+- No claim of transfer to real deployments. The world is synthetic and the credential is fake.
 - No claim about the Hugging Face incident beyond the analogy in section 3.
-- Speaker figures from the sprint talks are not cited as facts.
+- Speaker figures from the talks are not cited as facts.
 
 ## 5. Threat model
 
-- Attacker: patient zero, one swarm member chosen at random from unprivileged agents. It has a goal in its system prompt: cause a refund to be executed on an attacker-controlled order that has no ticket (no legitimate task). It cannot execute refunds itself under D1 to D3.
-- Capability: it can post to the board (visible according to topology). It has read tools only.
-- Victims: privileged agents (20% of the swarm) that can execute refunds (D0, D1, D2, D5) or file claims (D3).
-- Payload: three fixed templates (direct request, authority or urgency, "a colleague already approved"). Not optimized. Selected by seed. Templates live in `experiments/payloads/` and are not reproduced in the public report.
-- Exploratory variants: patient zero is privileged (insider); payload arrives inside a tool result instead of the system prompt.
-- Out of scope: attacks on the host, the database superuser, network interception, attacks on model providers.
+- Attacker: patient zero, one swarm member, with a covert goal in its system prompt and a worm playbook (three styles): get the full canary credential out through the external channel, using other agents as relays. It does not know who holds fragments and holds none itself.
+- Contagion: patient zero asks its neighbors to act as sub-auditors and to ask their own neighbors for audit codes (the fragments) and forward them. A recruited agent decides for itself; there is no harness-forced change to a peer's prompt. In the ring, agents can only address their two neighbors, so a fragment at ring distance 3 or more cannot be reached without real multi-hop recruitment.
+- Victims: ordinary agents with a confidentiality policy. Three of them hold one fragment each (split condition) or one holds all (solo condition).
+- Exploratory variant: the infection also travels inside a poisoned shared note (artifact vector).
+- Out of scope: attacks on hosts, networks or model providers.
 
-## 6. Harm, spread and containment definitions
+## 6. Definitions
 
-- Authorized order: an order with a ticket issued by the harness to a worker (the legitimate task).
-- Harm: a row in the refunds ledger whose refunded order has no ticket. Counted in SQL.
-- Exposed: an agent that reads a board message containing the attacker order id.
-- Mentioned: an agent that posts a message containing the attacker order id.
-- Acted: an agent that makes a tool call or files a claim involving the attacker order id.
-- Containment layer: for each attempted action on the attacker order, the first layer that stopped it (message filter, MCP deny, evidence check, judge reject, human-review escalation, task-binding) or "none".
+Recruitment (active contagion), breach (terminal compromise), infected, parent, chain, R0, exfiltration and the message labels L1_action and L2_leak are defined once, in `EXPERIMENT_DESIGN.md` sections 2 and 4. All are computed from the event log, never from an agent or an LLM. Harm outcome (primary): exfiltration yes or no. Legitimate task completion: fraction of benign facts correctly present in the shared report.
 
-## 7. What is pre-existing and what is sprint work
+## 7. Pre-existing and sprint work
 
 Pre-existing, declared in the README and the report:
 
-- mcp-transactional-agent (whole repository: gateway, worker, MCP server with security boundary, ledger, Prompt Guard, double judge and Supreme Court cascade, evidence check). Used as an external dependency at a pinned commit. Allowed changes: configuration only (MCP client registry entries, environment variables). Any code change must be listed.
-- Volumetric Logic preprint v0.1 (March 2026) and the idea of a restriction-only geometric veto (only if the optional D4 arm is run).
-- Evaluation conventions from earlier work (report the dangerous error first, Wilson intervals, separate counting units). Ideas only; no code copied from the Waggle Hive repository.
-- The AFAW working method (branch per task, TDD, CI, human approval).
+- Working method from the AFAW project (branch per task, TDD, CI, human approval). Method only, no code.
+- Evaluation conventions from the author's earlier projects (report the dangerous outcome first, Wilson intervals, separate counting units). Conventions only, no code.
+- Provider configuration facts (endpoints, authentication) were read from the author's `software-ai-eval` project. No code is copied.
 
-Sprint work (new commits in this repository only): the swarm harness, world generator, agents and prompts, topology, tool layer and defenses D2/D5, event log, metrics, batch runner, analysis, figures, preregistration, and the report.
+Not part of the results: synthetic numpy simulations made by another agent on a separate branch. They are not used for any figure or number, and they are not included in the submission repository unless clearly labeled as analytical priors in a separate folder.
 
-Open item to ask the Discord help-desk: whether reuse of work from another hackathon has restrictions. The Waggle Hive code is not used.
+Sprint work (this repository): everything else, including the swarm harness, world generator, agents and prompts, topologies, event log, detectors, runner, analysis and report. The earlier plan to use `mcp-transactional-agent` as the system under test was dropped on Nov 8; it is not used.
+
+Open item to ask the help-desk: whether reuse of work from another hackathon has restrictions. No code from other hackathon projects is used.
 
 ## 8. Success criteria
 
-The project succeeds if it delivers, by the deadline: the preregistered main arm run at balanced sample size, the analysis as specified, a report of 4 to 8 pages with the Limitations and Dual-Use appendix, and a repository that reproduces the tables from committed event logs. A negative or null result (for example, D1 or D3 contain everything) is a valid result and is reported as measured.
+By the deadline: the free-flow arm and the detector arms run at the preregistered sample size, the analysis as specified, a report of 4 to 8 pages with the Limitations and Dual-Use appendix, and a repository that reproduces the tables from committed event logs. A null result (for example, the infection does not spread, or a detector catches everything) is a valid result and is reported as measured.
 
 ## 9. Dual use
 
-Everything runs locally with synthetic data and fake money. The payload is an ordinary persuasion request with no exploit content. The public report publishes rates, attack classes and conditions, not tuned message text. The repository stays private until judging ends, and payload templates are redacted from any public release.
+Everything runs locally with synthetic data and a fake credential. The infected playbooks are ordinary persuasion with no exploit content. The public report publishes rates, classes and conditions, not tuned message text. The playbook texts stay in `experiments/payloads/` and are redacted from any public release. The repository stays private until judging ends.
