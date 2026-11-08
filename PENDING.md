@@ -68,5 +68,6 @@ Ordered by priority, top first. Task IDs T01 to T15 are defined in `docs/TASKS.m
 | SETUP-13 | Rule in `AGENTS.md`: every PR is based on `main`, no stacked PRs | branch `docs/pr-base-main-rule` |
 | SETUP-14 | Content of stacked PRs #6 to #10 brought to `main` | PR #11 |
 | SETUP-12 | Removed the Discord, help-desk and survey `TODO(link)` rows from the README links table (SETUP-04 dropped) | branch `docs/readme-remove-todo-links` |
+| SETUP-15 | Neutral language rule in `AGENTS.md`, CI check for forbidden words, evaluative wording removed from the project documents | branch `docs/redesign-infected-swarm` |
 | SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
