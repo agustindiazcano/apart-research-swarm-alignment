@@ -39,6 +39,17 @@ More than one agent works in this project, possibly at the same time, on the sam
 - Shared local resources (Docker projects, ports, containers, volumes, databases) follow the same rule: check what exists before creating or removing anything, use a name that identifies the task, and remove only what you created.
 - Record the branch, worktree path and any running service in `LASTCONTEXT.md` so the next agent does not have to guess.
 
+## Delegating tasks to other agents
+
+The coordinator (the agent talking to the human) can run independent tasks of `docs/TASKS.md` in parallel by delegating them to Antigravity (`agy`) and to Claude subagents. Each delegated task has its own worktree and branch created from an up-to-date `origin/main`, and its own prompt.
+
+- Antigravity: use the skill `antigravity` (`.claude/skills/antigravity/SKILL.md`) and the script `scripts/agy_launch.sh`. The command is `agy --dangerously-skip-permissions --model gemini-3.8-flash-high --print "<prompt>"`, run in the background in the human's terminal, without a sandbox. The human authorized this on 2026-11-08 for tasks in separate worktrees only. There is no time limit: the agent finishes the task and the coordinator is notified when the process exits. `agy models` lists the available models; the effort level is part of the model id.
+- Claude subagents: use the Agent tool, in the background, with the same preamble as the skill in the prompt and a worktree of their own.
+- Delegated agents never push, never open or merge pull requests, and do not edit `AGENTS.md`, `README.md`, `PENDING.md`, `LASTCONTEXT.md`, `pyproject.toml`, `.github/` or `docs/`. While tasks run in parallel, the coordinator updates `PENDING.md` and `LASTCONTEXT.md` after review, so parallel branches do not conflict. This replaces, for delegated tasks only, the rule of updating both files inside each task.
+- Review: Antigravity is less capable than Claude. The coordinator reviews every delegated result (diff, tests, `ruff`, `mypy`, the specification, the language rules, the Data Integrity rule) and corrects the errors before a pull request is proposed. Results from Claude subagents are checked by running the same checks.
+- Processes: never kill processes by name. Other `agy.exe` processes can be the human's own sessions; identify yours by the start time recorded by the launch script.
+- The human approves every pull request. Pull requests are based on `main`.
+
 ## Workflow rules
 
 - One branch per task, named `<type>/<short-description>`. Never commit to `main`.
@@ -87,6 +98,8 @@ LASTCONTEXT.md
 .gitignore
 .env.example
 scripts/render_results.py (planned, T14)
+scripts/agy_launch.sh
+.claude/skills/antigravity/SKILL.md
 docs/README.md
 docs/PROJECT.md, EXPERIMENT_DESIGN.md, ARCHITECTURE.md, PLAN.md, TASKS.md, REPORT_OUTLINE.md
 docs/hackathon/OVERVIEW.md, RESOURCES.md, RULES.md, TALKS_DIGEST.md, PRIOR_WORK_DIGEST.md
