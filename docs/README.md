@@ -16,3 +16,4 @@ More rules documents will be added incrementally by the maintainer. Rules docume
 | [REPORT_OUTLINE.md](REPORT_OUTLINE.md) | Skeleton of the final report |
 | [AGENT_PROMPT.md](AGENT_PROMPT.md) | First message for the coding agent |
 | [AGENTS_SECTION.md](AGENTS_SECTION.md) | Source of the project context section appended to `AGENTS.md` |
+| [VERIFICATION.md](VERIFICATION.md) | Results of task T00: what was verified by running the external stack, and the configuration changes |
