@@ -60,5 +60,8 @@ def test_redact_exception_log_line_with_fake_key() -> None:
     clean_log = redact(raw_log_line, [fake_key])
     assert fake_key not in clean_log
     assert "[REDACTED]" in clean_log
-    expected = "ERROR [swarmlab.llm]: Call failed with exception: Provider rejected request with key [REDACTED]"
+    expected = (
+        "ERROR [swarmlab.llm]: Call failed with exception: "
+        "Provider rejected request with key [REDACTED]"
+    )
     assert clean_log == expected
