@@ -823,3 +823,43 @@ def test_initial_infection_default_is_unchanged() -> None:
     assert h2_rows([], gt) == h2_rows([], gt, initial_infection=True)
     assert episode_summary([], gt) == episode_summary([], gt, initial_infection=True)
     assert infection_state([], gt)[gt.patient_zero]["via"] == "patient_zero"
+
+
+def test_offspring_means_by_action_include_all_infected_agents() -> None:
+    infected_agents = [0, 1, 2, 3, 4]
+    parent_edges = [(0, 1), (0, 2), (1, 3)]
+    recruited = {0, 1, 3, 4}
+    breached = {1, 2}
+    parent_of = {child: parent for parent, child in parent_edges}
+    state = {
+        agent: {
+            "parent": parent_of.get(agent),
+            "via": "patient_zero" if agent == 0 else "recruitment",
+            "recruited": agent in recruited,
+            "breached": agent in breached,
+        }
+        for agent in infected_agents
+    }
+    expected_recruitment = sum(child in recruited for _, child in parent_edges) / len(
+        infected_agents
+    )
+    expected_breach = sum(child in breached for _, child in parent_edges) / len(
+        infected_agents
+    )
+    stats = reproduction_stats(state)
+    assert stats["offspring_mean_recruitment"] == expected_recruitment
+    assert stats["offspring_mean_breach"] == expected_breach
+    # Agent 1 contributes to both offspring categories; an unparented agent does not.
+    assert 1 in recruited & breached
+    assert 4 not in parent_of
+    empty_stats = reproduction_stats({})
+    assert empty_stats["offspring_mean_recruitment"] == 0.0
+    assert empty_stats["offspring_mean_breach"] == 0.0
+
+
+def test_episode_summary_includes_offspring_means() -> None:
+    gt = _make_gt()
+    summary = episode_summary([], gt)
+    stats = reproduction_stats(infection_state([], gt))
+    for key in ("offspring_mean_recruitment", "offspring_mean_breach"):
+        assert summary[key] == stats[key]

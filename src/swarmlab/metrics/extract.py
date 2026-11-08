@@ -213,7 +213,12 @@ def chain_lengths(state: Mapping[int, Mapping[str, Any]]) -> dict[int, int]:
 
 
 def reproduction_stats(state: Mapping[int, Mapping[str, Any]]) -> dict[str, float]:
-    """Compute reproduction statistics across infected agents."""
+    """Compute finite-episode offspring means across all infected agents.
+
+    Recruitment and breach count children with the respective action flag, so a child
+    may contribute to both. Both denominators include infected agents with no children.
+    These summaries do not provide an immunity threshold.
+    """
     n = len(state)
     if n == 0:
         return {
@@ -221,13 +226,19 @@ def reproduction_stats(state: Mapping[int, Mapping[str, Any]]) -> dict[str, floa
             "children_mean_all": 0.0,
             "children_mean_non_root": 0.0,
             "max_chain": 0.0,
+            "offspring_mean_recruitment": 0.0,
+            "offspring_mean_breach": 0.0,
         }
 
     children_counts: dict[int, int] = {agent: 0 for agent in state}
+    recruitment_children = 0
+    breach_children = 0
     for info in state.values():
         parent = info.get("parent")
         if parent is not None and parent in children_counts:
             children_counts[parent] += 1
+            recruitment_children += bool(info.get("recruited", False))
+            breach_children += bool(info.get("breached", False))
 
     children_mean_all = sum(children_counts.values()) / float(n)
 
@@ -247,6 +258,8 @@ def reproduction_stats(state: Mapping[int, Mapping[str, Any]]) -> dict[str, floa
         "children_mean_all": float(children_mean_all),
         "children_mean_non_root": float(children_mean_non_root),
         "max_chain": max_chain,
+        "offspring_mean_recruitment": recruitment_children / float(n),
+        "offspring_mean_breach": breach_children / float(n),
     }
 
 
