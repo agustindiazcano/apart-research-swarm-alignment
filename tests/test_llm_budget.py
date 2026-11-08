@@ -94,8 +94,8 @@ def test_snapshot_returns_per_provider_cap_and_spent() -> None:
 
     snap = guard.snapshot()
     assert snap == {
-        "provider_a": {"cap": 10.0, "spent": cost_a},
-        "provider_b": {"cap": None, "spent": 0.0},
+        "provider_a": {"cap": 10.0, "spent": cost_a, "unit": "usd"},
+        "provider_b": {"cap": None, "spent": 0.0, "unit": "usd"},
     }
 
 
