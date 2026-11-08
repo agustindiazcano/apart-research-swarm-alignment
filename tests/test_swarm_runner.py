@@ -117,6 +117,7 @@ class FakeClient:
             tokens_out=7,
             latency_ms=1.0,
             finish_reason="stop",
+            timestamp_utc=f"provider-time-{agent}-{rnd}",
         )
 
 
@@ -407,3 +408,91 @@ def test_cost_fn_sets_cost_usd_in_llm_call_events() -> None:
     for call in calls:
         expected = call.payload["tokens_in"] * 0.5 + call.payload["tokens_out"] * 2.0
         assert call.payload["cost_usd"] == expected
+
+
+def test_gate_context_excludes_stale_rounds_without_changing_prompt_history() -> None:
+    def script(agent: int, rnd: int) -> str:
+        if agent == 0 and rnd in (0, 1):
+            return js(action="post", to=1, intent="report_sync", text=f"round-{rnd}")
+        if agent == 1 and rnd in (2, 3):
+            return js(action="post", to=2, intent="report_sync", text="reply")
+        return js(action="noop")
+
+    gate = RecordingGate(block_sender=None)
+    _, _, builder = run(make_world(rounds=4), FakeClient(script), gate=gate)
+    contexts = {message.round: context for message, context in gate.seen if message.sender == 1}
+    assert [message.round for message in contexts[2].sender_inbox] == [1]
+    assert contexts[2].inbox_cached_scores == (0.25 + 1 / 10,)
+    assert contexts[3] == DetectorContext()
+    prompt_history = {
+        rnd: inbox for seed, inbox, _, rnd in builder.calls if seed.agent_id == 1
+    }
+    assert [rnd for _, rnd, _ in prompt_history[3]] == [0, 1]
+
+
+def test_gate_context_keeps_all_previous_round_messages_beyond_prompt_k() -> None:
+    def script(agent: int, rnd: int) -> str:
+        if rnd == 0 and agent != 1:
+            return js(action="post", to=1, intent="report_sync", text=f"sender-{agent}")
+        if rnd == 1 and agent == 1:
+            return js(action="post", to=2, intent="report_sync", text="reply")
+        return js(action="noop")
+
+    gate = RecordingGate(block_sender=None)
+    _, _, builder = run(
+        make_world(rounds=2, topology="complete"), FakeClient(script), gate=gate, k_inbox=1
+    )
+    context = next(context for message, context in gate.seen if message.sender == 1)
+    assert len(context.sender_inbox) == len(make_world().agents) - 1
+    assert len(context.inbox_cached_scores) == len(context.sender_inbox)
+    inbox = next(inbox for seed, inbox, _, rnd in builder.calls if seed.agent_id == 1 and rnd == 1)
+    assert len(inbox) == 1
+
+
+def test_llm_call_preserves_provider_timestamp() -> None:
+    _, events, _ = run(make_world(rounds=1), FakeClient(noop_script))
+    for event in of_kind(events, "llm_call"):
+        assert event.payload["timestamp_utc"] == f"provider-time-{event.agent_id}-{event.round}"
+        assert event.ts == "T"
+
+
+def test_abort_cancels_other_agent_calls_before_returning() -> None:
+    class WaitingClient(FakeClient):
+        def __init__(self) -> None:
+            super().__init__(noop_script)
+            self.started = 0
+            self.cancelled = 0
+            self.all_started = asyncio.Event()
+            self.wait_forever = asyncio.Event()
+
+        async def complete(
+            self,
+            messages: Sequence[Mapping[str, str]],
+            *,
+            temperature: float | None = None,
+            max_tokens: int = 256,
+            logprobs: bool = False,
+        ) -> LLMResult:
+            self.started += 1
+            call_index = self.started
+            if self.started == len(make_world().agents):
+                self.all_started.set()
+            await self.all_started.wait()
+            if call_index == 1:
+                raise AbortError("budget fixture exhausted")
+            try:
+                await self.wait_forever.wait()
+            except asyncio.CancelledError:
+                self.cancelled += 1
+                raise
+            raise AssertionError("waiting call was released")
+
+    async def scenario() -> None:
+        client = WaitingClient()
+        with pytest.raises(AbortError):
+            await run_episode(
+                make_world(), client, Builder(), lambda event: None, abort_on=(AbortError,)
+            )
+        assert client.cancelled == client.started - 1
+
+    asyncio.run(scenario())

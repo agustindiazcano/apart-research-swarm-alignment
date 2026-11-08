@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any, Protocol
+from typing import Any, Protocol, TypeVar
 
 from swarmlab.schema import (
     ActionPayload,
@@ -59,6 +59,19 @@ class _AgentTurn:
 
 
 _NOOP = ActionPayload(action="noop")
+_T = TypeVar("_T")
+
+
+async def _gather_round(awaitables: Sequence[Awaitable[_T]]) -> list[_T]:
+    """Cancel and drain sibling calls before propagating an episode abort."""
+    tasks = [asyncio.ensure_future(awaitable) for awaitable in awaitables]
+    try:
+        return list(await asyncio.gather(*tasks))
+    except BaseException:
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        raise
 
 
 def _zero_cost(result: LLMResult) -> float:
@@ -91,6 +104,7 @@ async def _decide(
     action, reason = parse_action(result.text)
     payload: dict[str, Any] = {
         "provider": result.provider,
+        "timestamp_utc": result.timestamp_utc,
         "model": result.model,
         "tokens_in": result.tokens_in,
         "tokens_out": result.tokens_out,
@@ -155,8 +169,8 @@ async def run_episode(
         )
 
     for rnd in range(total_rounds):
-        turns = await asyncio.gather(
-            *(
+        turns = await _gather_round(
+            [
                 _decide(
                     seed,
                     board,
@@ -170,7 +184,7 @@ async def run_episode(
                     cost_fn,
                 )
                 for seed in world.agents
-            )
+            ]
         )
         for seed, turn in zip(world.agents, turns, strict=True):
             if turn.llm_payload is not None:
@@ -192,7 +206,7 @@ async def run_episode(
             for seed, action, reason in plans:
                 if reason is None and action.action == "post":
                     assert action.to is not None
-                    inbox = board.inbox(seed.agent_id)
+                    inbox = board.received_in_round(seed.agent_id, rnd - 1)
                     context = DetectorContext(
                         sender_inbox=tuple(view_of(m) for m in inbox),
                         inbox_cached_scores=tuple(
@@ -208,8 +222,8 @@ async def run_episode(
                         text=action.text,
                     )
                     gate_inputs[seed.agent_id] = (view, context)
-            verdicts = await asyncio.gather(
-                *(gate.decide(view, context) for view, context in gate_inputs.values())
+            verdicts = await _gather_round(
+                [gate.decide(view, context) for view, context in gate_inputs.values()]
             )
             decisions = dict(zip(gate_inputs.keys(), verdicts, strict=True))
         for seed, action, reason in plans:
