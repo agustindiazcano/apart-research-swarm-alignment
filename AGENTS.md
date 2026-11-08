@@ -37,6 +37,18 @@ Any file not created during the sprint must be listed in the README section "Pre
 - No fabricated results or references.
 - Pre-existing work is disclosed in both the README and the report.
 
+## Research standards for this project
+
+- Rubric awareness: work is judged on impact and innovation, execution quality, and presentation clarity. Replicating recent work without a new contribution scores low on the first dimension.
+- Claims policy: figures from talks are speaker claims. Never cite them as facts in the report. Cite primary sources only after they are verified. Never invent references, numbers or results.
+- Experiment design minimums: state the threat model first; include a no-attack control and a baseline without our intervention; fix N per condition before running; define metrics before running; report confidence intervals; log any deviation from the plan.
+- Grading: prefer deterministic graders. If an LLM judge is used, store its rubric and spot-check outputs by hand.
+- Data handling: keep results in a database or structured files with a schema, not in ad hoc text dumps. Vet any crawled data before publishing.
+- Dual-use: use local, toy-sized environments only. Do not target real infrastructure. Do not publish optimized attacker prompts or exploit scripts. When in doubt, ask the maintainer before committing material to a public repository.
+- External code: record source, commit hash and license, and mark it EXTERNAL in the README table. Pre-sprint code is marked PRE-EXISTING. Only sprint work is claimed as new.
+- Writing: the report must be clear to a reader who has not seen the code. No padding. Text produced with AI assistance is reviewed and rewritten by the maintainer before submission.
+- Source of truth: docs/hackathon/RULES.md and docs/hackathon/TALKS_DIGEST.md. The Guidelines tab of the sprint page prevails over both.
+
 ## Repository layout
 
 ```

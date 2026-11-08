@@ -1,5 +1,7 @@
 # Swarm Alignment Hackathon 2026: resources
 
+See also RULES.md and TALKS_DIGEST.md in this folder.
+
 ## Official links
 
 | Resource | URL | Verified |

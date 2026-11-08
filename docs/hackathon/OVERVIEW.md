@@ -1,5 +1,7 @@
 # Swarm Alignment Hackathon 2026: overview
 
+See also RULES.md and TALKS_DIGEST.md in this folder.
+
 ## Event
 
 Swarm Alignment Hackathon (Apart Research sprint), organized by Apart Research with the AI Alignment Foundation and AE Studio. Adaption Labs provides platform credits for participants.
