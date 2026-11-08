@@ -32,9 +32,6 @@ Work in progress, built during the Swarm Alignment Hackathon 2026.
 | Schedule tab (talks and recordings) | https://apartresearch.com/sprints/swarm-alignment-2026#schedule | from organizer email |
 | Adaption platform | https://adaptionlabs.ai/app | from organizer email |
 | Adaption docs | https://docs.adaptionlabs.ai/ | from organizer email |
-| Apart Research Discord | `TODO(link)` | no |
-| Discord help-desk channel | `TODO(link)` | no |
-| Pre-hackathon survey | `TODO(link)` | no |
 | Support email | sprints@apartresearch.com | from organizer email |
 
 Project documents:
