@@ -6,11 +6,10 @@ Last updated: 2026-11-08
 
 ## What was done last
 
-- T00 done on branch `docs/verify-external-stack` (stacked on `chore/env-prior-work`): ran the external stack in an isolated Docker project `swarmexp` and wrote `docs/VERIFICATION.md`.
-- Verified by running: compose with the chaos override works after two local config changes (RabbitMQ healthcheck as the `rabbitmq` user, no RabbitMQ volume); claim endpoint `POST /api/v1/claims`; identities `swarm-reader` and `swarm-privileged` (reader gets `DENIED_UNAUTHORIZED` on `execute_refund`, privileged succeeds); `refunds.transaction_id` and `orders.order_id` are both varchar, so no cast in the harm join.
-- Corrections to `docs/ARCHITECTURE.md` are listed in `VERIFICATION.md` (tool argument is `transaction_id`; harm query needs no `::text`). They are not applied to `ARCHITECTURE.md` yet.
-- Key finding: under `LLM_PROVIDER=mock` every claim is approved, so D2 and D3 need real providers. The judges and Prompt Guard default to Groq, which is not among the planned providers (SETUP-10).
-- No file in the external repository was changed. Override file and tokens live in the agent scratchpad, not in the repo.
+- Branch `docs/prior-work` (stacked on `docs/verify-external-stack`): wrote `docs/hackathon/PRIOR_WORK_DIGEST.md` from the author's list (AFAW, AFAW Engine, Waggle Hive, `mcp-transactional-agent`), filled the README pre-existing table, and restored the references to the digest in `AGENTS.md` and the docs.
+- Before that, T00 was completed (`docs/VERIFICATION.md`, PR #7). Key finding: judges and Prompt Guard default to Groq, which is not a planned provider (SETUP-10).
+- A script error in the T00 PR had dropped the SCOPE-03 row from `PENDING.md`; it was restored.
+- The experiment stack (`swarmexp`) is still running in Docker.
 
 ## Repository state
 
@@ -21,7 +20,7 @@ Last updated: 2026-11-08
 | `swarm-utils/` (untracked) | Source copy of the project docs, identical to what is now in `docs/`. Not tracked on purpose. |
 | `.env.example` | Rewritten for the four providers (this branch). Local `.env` is older: add the new names by hand. |
 | `.env` | Local, git-ignored. Keys must be entered by the human. |
-| `docs/hackathon/PRIOR_WORK_DIGEST.md` | Does not exist; references removed. See REPORT-05. |
+| `docs/hackathon/PRIOR_WORK_DIGEST.md` | Exists on `docs/prior-work`. Pin the final commit of `mcp-transactional-agent` (`TODO(verify)`); license is MIT, same author. |
 | Application code | None. |
 
 ## Next step
@@ -33,7 +32,6 @@ The experiment stack is currently running (`docker ps --filter name=swarmexp`). 
 ## Open questions for the human
 
 - SETUP-10: Groq key for `judge2` and Prompt Guard, or approve a change in the external repository?
-- Which repositories inspired this work (REPORT-05)?
 - Confirm the track (Multi-Agent Oversight and Control) and the working title.
 - Merge PRs #5, #6 and the T00 PR in order.
 
