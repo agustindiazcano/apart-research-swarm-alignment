@@ -36,9 +36,6 @@ Ordered by priority, top first.
 |---|---|---|---|---|---|
 | 1 | 🔴 | SCOPE-01 | Choose the track(s) and fill `TODO(track)` in `README.md` and `docs/hackathon/OVERVIEW.md` | none | proposed in the project docs (anchor: Multi-Agent Oversight and Control), human to confirm |
 | 2 | 🔴 | SCOPE-02 | Define the project title, the one-line summary and the research question; fill `TODO(title)` and `TODO(one line)` in `README.md` and `AGENTS.md` | SCOPE-01 | proposed (working title and research question in the project docs), human to confirm |
-| 2a | 🔴 | SETUP-06 | Add the project docs (`PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`) to `docs/`; today they exist only in untracked `swarm_package.zip`, and `PRIOR_WORK_DIGEST.md` is missing | none | open, waiting for human decision |
-| 3 | 🔴 | SETUP-01 | Merge the open PR for `docs/hackathon-rules-and-digest` so the rules and talks digest are on `main` (human approves) | none | open, branch pushed, not merged |
-| 4 | 🟡 | SCOPE-03 | Read the Guidelines tab (rubric, template, FAQ) and record the rubric in `docs/hackathon/` | SETUP-01 | open |
 | 5 | 🟡 | SCOPE-04 | Write a short plan: method, what counts as a result, what is cut if time runs short | SCOPE-02 | open |
 | 6 | 🟡 | BUILD-01 | Implement the experiment or system, following the task list T00 to T21 in the project docs (first: T00, verify the external stack). Tests first for any code (TDD) | SCOPE-04 | open |
 | 7 | 🟡 | SETUP-02 | Fill `TODO(commands)` in `AGENTS.md` once tooling exists | BUILD-01 | open |
@@ -59,4 +56,6 @@ Ordered by priority, top first.
 | SETUP-00 | Project scaffold (README, AGENTS, CI, PR template, docs) | PR #1 |
 | SETUP-05 | `PENDING.md` and `LASTCONTEXT.md` handoff files and session rules | PR #3 |
 | SETUP-07 | Local `.env` created from `.env.example` (git-ignored); `.gitignore` and `.env.example` already existed | local only, no commit |
-| SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | branch `docs/agent-context` |
+| SETUP-01 | Rules and talks digest on `main` (PR #2 had been merged into the scaffold branch after PR #1, so it never reached `main`) | branch `docs/project-docs` |
+| SETUP-06 | Project docs (`PROJECT`, `EXPERIMENT_DESIGN`, `ARCHITECTURE`, `PLAN`, `TASKS`, `REPORT_OUTLINE`, prompts) added to `docs/` | branch `docs/project-docs` |
+| SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
