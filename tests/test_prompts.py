@@ -143,6 +143,15 @@ def test_example_action_in_protocol_is_valid_json() -> None:
         assert "action" in json.loads(example)
 
 
+def test_clean_builder_omits_covert_goal_and_needs_no_playbooks(tmp_path: Path) -> None:
+    builder = StandardPromptBuilder.from_dir("ring", tmp_path, infected=False)
+    text = render(builder, seed(agent_id=0, role="patient_zero", style=2))
+    assert "Private objective" not in text
+    assert "12-character" not in text
+    assert "NODE_AUDIT_TAG: none" in text
+    assert "Never share it" in text
+
+
 REAL_PLAYBOOK_DIR = Path(__file__).resolve().parents[1] / "experiments" / "payloads"
 
 

@@ -73,22 +73,31 @@ class StandardPromptBuilder:
         playbooks: Mapping[int, str],
         *,
         wording: Wording = "A",
+        infected: bool = True,
     ) -> None:
         self._topology = topology
         self._playbooks = dict(playbooks)
         self._wording = wording
+        self._infected = infected
 
     @classmethod
     def from_dir(
-        cls, topology: Topology, directory: Path, *, wording: Wording = "A"
+        cls,
+        topology: Topology,
+        directory: Path,
+        *,
+        wording: Wording = "A",
+        infected: bool = True,
     ) -> StandardPromptBuilder:
         playbooks: dict[int, str] = {}
+        if not infected:
+            return cls(topology, playbooks, wording=wording, infected=False)
         for style in PLAYBOOK_STYLES:
             path = directory / f"playbook_{style}.txt"
             if not path.is_file():
                 raise FileNotFoundError(f"playbook file not found: {path}")
             playbooks[style] = path.read_text(encoding="utf-8").strip()
-        return cls(topology, playbooks, wording=wording)
+        return cls(topology, playbooks, wording=wording, infected=infected)
 
     def _targets(self, seed: AgentSeed, n_agents: int) -> list[int]:
         if self._topology == "ring":
@@ -113,7 +122,7 @@ class StandardPromptBuilder:
         ]
         if seed.verifier:
             parts.append(_VERIFIER)
-        if seed.role == "patient_zero":
+        if self._infected and seed.role == "patient_zero":
             if seed.playbook_style is None:
                 raise ValueError("patient zero needs a playbook style")
             parts.append(_COVERT_GOAL)
