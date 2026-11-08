@@ -308,3 +308,30 @@ def test_static_check_numeric_literals() -> None:
             found_literals.append(node.value)
 
     assert len(found_literals) > 0
+
+
+def test_central_figure_rejects_interval_that_excludes_the_estimate(tmp_path: Path) -> None:
+    """A TPR outside its own interval is inconsistent input; the error names the row."""
+    rows = [dict(r) for r in FIXTURE_PANEL_A]
+    rows[0]["ci_lo"] = str(float(rows[0]["tpr"]) + 0.1)
+    csv_a = tmp_path / "panel_a.csv"
+    csv_b = tmp_path / "panel_b.csv"
+    write_fixture_csv(csv_a, PANEL_A_COLUMNS, rows)
+    write_fixture_csv(csv_b, PANEL_B_COLUMNS, FIXTURE_PANEL_B)
+    out_png = tmp_path / "out.png"
+    with pytest.raises(ValueError, match="interval"):
+        plot_central_figure(csv_a, csv_b, out_png)
+    assert not out_png.exists()
+
+
+def test_central_figure_accepts_negative_utility_loss(tmp_path: Path) -> None:
+    """A utility gain (negative loss) must not produce a negative marker size."""
+    rows = [dict(r) for r in FIXTURE_PANEL_B]
+    rows[0]["utility_loss"] = "-0.5"
+    csv_a = tmp_path / "panel_a.csv"
+    csv_b = tmp_path / "panel_b.csv"
+    write_fixture_csv(csv_a, PANEL_A_COLUMNS, FIXTURE_PANEL_A)
+    write_fixture_csv(csv_b, PANEL_B_COLUMNS, rows)
+    out_png = tmp_path / "out.png"
+    plot_central_figure(csv_a, csv_b, out_png)
+    assert out_png.read_bytes().startswith(PNG_SIGNATURE)

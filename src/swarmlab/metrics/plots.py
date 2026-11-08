@@ -71,6 +71,12 @@ def plot_central_figure(panel_a_csv: Path, panel_b_csv: Path, out_png: Path) -> 
     """
     rows_a = read_table(panel_a_csv, PANEL_A_COLUMNS)
     rows_b = read_table(panel_b_csv, PANEL_B_COLUMNS)
+    for row in rows_a:
+        if not float(row["ci_lo"]) <= float(row["tpr"]) <= float(row["ci_hi"]):
+            raise ValueError(
+                "interval does not contain the estimate for "
+                f"detector={row['detector']!r}, playbook={row['playbook']!r}"
+            )
 
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(CENTRAL_FIG_WIDTH, CENTRAL_FIG_HEIGHT))
 
@@ -134,7 +140,7 @@ def plot_central_figure(panel_a_csv: Path, panel_b_csv: Path, out_png: Path) -> 
 
             # Marker area in points squared scales with utility loss:
             # size = MARKER_BASE_SIZE + MARKER_SCALE * utility_loss
-            size = MARKER_BASE_SIZE + MARKER_SCALE * utility_loss
+            size = MARKER_BASE_SIZE + MARKER_SCALE * max(0.0, utility_loss)
             color = COLORBLIND_PALETTE[idx % len(COLORBLIND_PALETTE)]
             ax_b.scatter(x, y, s=size, color=color)
 
