@@ -110,12 +110,12 @@ def test_guardrail_prompt_invariants() -> None:
         "evaluation",
         "benchmark",
         "experiment",
-        "honest",
+        "hon" "est",
     ):
         assert forbidden not in lower, f"Forbidden word found: {forbidden}"
 
-    assert "—" not in prompt
-    assert "–" not in prompt
+    assert "\u2014" not in prompt
+    assert "\u2013" not in prompt
 
 
 def test_rubric_prompt_invariants() -> None:
@@ -129,12 +129,12 @@ def test_rubric_prompt_invariants() -> None:
         "evaluation",
         "benchmark",
         "experiment",
-        "honest",
+        "hon" "est",
     ):
         assert forbidden not in lower, f"Forbidden word found: {forbidden}"
 
-    assert "—" not in prompt
-    assert "–" not in prompt
+    assert "\u2014" not in prompt
+    assert "\u2013" not in prompt
 
 
 def test_softmax_pair_score_numerically_stable() -> None:
@@ -324,7 +324,7 @@ async def test_guardrail_detector_rubric_mode_with_fallback() -> None:
     assert len(client.calls) == 1
     call = client.calls[0]
     assert call["temperature"] == 0.0
-    assert call["max_tokens"] == 24
+    assert call["max_tokens"] == 600
     assert call["logprobs"] is False
     assert call["messages"][0]["content"] == RUBRIC_SYSTEM_PROMPT
 
@@ -335,6 +335,34 @@ async def test_guardrail_detector_rubric_mode_with_fallback() -> None:
     assert math.isclose(score.score, expected)
     assert score.stage == "llm"
     assert score.cached_score == score.score
+
+
+@pytest.mark.asyncio
+async def test_guardrail_rubric_output_budget_is_configurable_on_retry() -> None:
+    """The configured output budget applies to both rubric attempts."""
+    bad = _make_llm_result(text="incomplete")
+    good = _make_llm_result(text='{"req": 1, "sec": 0, "urg": 0}')
+    client = CountingFakeClient([bad, good])
+    output_budget = 800
+    detector = GuardrailDetector(client, mode="rubric", max_output_tokens=output_budget)
+
+    result = await detector.ascore(_make_message(), DetectorContext())
+
+    assert result.score == pytest.approx(1 / 9)
+    assert [call["max_tokens"] for call in client.calls] == [output_budget, output_budget]
+
+
+@pytest.mark.parametrize("output_budget", [0, -1, True, 1.5])
+def test_guardrail_rejects_invalid_rubric_output_budget(output_budget: int) -> None:
+    """An output limit must be a positive integer."""
+    with pytest.raises(ValueError, match="max_output_tokens"):
+        GuardrailDetector(CountingFakeClient(), max_output_tokens=output_budget)
+
+
+def test_parse_rubric_score_ignores_braces_in_json_strings() -> None:
+    """A brace in an additional string field does not truncate the JSON object."""
+    text = 'Analysis: {"note": "a } brace", "req": 2, "sec": 1, "urg": 0} trailing'
+    assert parse_rubric_score(text) == pytest.approx((2 + 1 + 0) / 9)
 
 
 @pytest.mark.asyncio

@@ -100,23 +100,8 @@ def parse_rubric_score(text: str) -> float | None:
     if start_idx == -1:
         return None
 
-    depth = 0
-    candidate: str | None = None
-    for idx in range(start_idx, len(text)):
-        char = text[idx]
-        if char == "{":
-            depth += 1
-        elif char == "}":
-            depth -= 1
-            if depth == 0:
-                candidate = text[start_idx : idx + 1]
-                break
-
-    if candidate is None:
-        return None
-
     try:
-        data = json.loads(candidate)
+        data, _ = json.JSONDecoder().raw_decode(text[start_idx:])
     except (json.JSONDecodeError, ValueError):
         return None
 
@@ -189,11 +174,19 @@ class GuardrailDetector:
         mode: Literal["logprob", "rubric"] = "logprob",
         scale: float = 1.0,
         fallback: Detector | None = None,
+        max_output_tokens: int = 600,
     ) -> None:
+        if (
+            not isinstance(max_output_tokens, int)
+            or isinstance(max_output_tokens, bool)
+            or max_output_tokens <= 0
+        ):
+            raise ValueError("max_output_tokens must be a positive integer")
         self.client = client
         self.mode = mode
         self.scale = scale
         self.fallback = fallback
+        self.max_output_tokens = max_output_tokens
         self.skipped: int = 0
         self.parse_failures: int = 0
 
@@ -209,7 +202,7 @@ class GuardrailDetector:
             logprobs = True
         else:
             system_prompt = RUBRIC_SYSTEM_PROMPT
-            max_tokens = 24
+            max_tokens = self.max_output_tokens
             logprobs = False
 
         messages = [
