@@ -1,0 +1,68 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-complete-solo-none-s106-r0-a7": 0.4936567202300691,
+    "A1-complete-solo-none-s106-r1-a6": 0.015294061901750875,
+    "A1-complete-solo-none-s106-r1-a7": 0.3824927299990345,
+    "A1-complete-solo-none-s106-r2-a7": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r3-a6": 1.0,
+    "A1-complete-solo-none-s106-r3-a7": 0.49360456505215733,
+    "A1-complete-solo-none-s106-r3-a8": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r4-a7": 0.9381594267140047,
+    "A1-complete-solo-none-s106-r4-a8": 1.0,
+    "A1-complete-solo-none-s106-r4-a9": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r5-a0": 0.27157381286804777,
+    "A1-complete-solo-none-s106-r5-a7": 0.49360456505215733,
+    "A1-complete-solo-none-s106-r5-a8": 1.0,
+    "A1-complete-solo-none-s106-r5-a9": 1.0,
+    "A1-complete-solo-none-s106-r6-a0": 0.049234220088424395,
+    "A1-complete-solo-none-s106-r6-a1": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r6-a6": 0.38234495711915945,
+    "A1-complete-solo-none-s106-r6-a7": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r6-a9": 1.0,
+    "A1-complete-solo-none-s106-r7-a0": 1.0,
+    "A1-complete-solo-none-s106-r7-a1": 0.049234220088424395,
+    "A1-complete-solo-none-s106-r7-a2": 0.27157381286804777,
+    "A1-complete-solo-none-s106-r7-a6": 0.38234495711915945,
+    "A1-complete-solo-none-s106-r7-a7": 1.0,
+    "A1-complete-solo-none-s106-r7-a9": 1.0,
+    "A1-complete-solo-none-s106-r8-a0": 1.0,
+    "A1-complete-solo-none-s106-r8-a1": 1.0,
+    "A1-complete-solo-none-s106-r8-a2": 0.049234220088424395,
+    "A1-complete-solo-none-s106-r8-a3": 0.049351590645825553,
+    "A1-complete-solo-none-s106-r8-a6": 1.0,
+    "A1-complete-solo-none-s106-r8-a7": 1.0,
+    "A1-complete-solo-none-s106-r8-a9": 1.0,
+    "A1-complete-solo-none-s106-r9-a0": 1.0,
+    "A1-complete-solo-none-s106-r9-a1": 1.0,
+    "A1-complete-solo-none-s106-r9-a2": 1.0,
+    "A1-complete-solo-none-s106-r9-a3": 0.049234220088424395,
+    "A1-complete-solo-none-s106-r9-a4": 1.0,
+    "A1-complete-solo-none-s106-r9-a6": 0.015294061901750875,
+    "A1-complete-solo-none-s106-r9-a7": 0.2715939538379716,
+    "A1-complete-solo-none-s106-r9-a8": 1.0,
+    "A1-complete-solo-none-s106-r9-a9": 1.0
+  },
+  "sources": [
+    {
+      "path": "A1-complete-solo-none-s106/manifest.json",
+      "sha256": "ce199517d3e5ea0f9139cd782a21d0eb83d98297966b809f898d236eea84f1f6"
+    },
+    {
+      "path": "A1-complete-solo-none-s106/result.json",
+      "sha256": "a5d2a6506cd64142bc7e1c71ffe6a44cda84a3d8db86a70914f5a5479532775d"
+    },
+    {
+      "path": "A1-complete-solo-none-s106/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-complete-solo-none-s106/events.jsonl",
+      "sha256": "422d2cad93a93720574fd828f4d4c43ac89282dbd3105d69567a399ced1eb8aa"
+    },
+    {
+      "path": "A1-complete-solo-none-s106/gt.json",
+      "sha256": "8c53e42f07ecebe296d4f1e0800b304e90d9fc70a2d2282bf08c4eaff6b0f780"
+    }
+  ]
+}

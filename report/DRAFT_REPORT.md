@@ -163,48 +163,48 @@ Table 1 summarizes free-flow infection metrics across network topologies and cre
 <!-- RESULTS:BEGIN table_1_kinetics -->
 | round | topology | harm | infected_mean | ci_lo | ci_hi | arm | billing_unit | defense | episodes_observed | episodes_total | initial_infection | mock | model | prevalence_ci_hi | prevalence_ci_lo | prevalence_mean | provider |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | complete | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.1 | 0.1 | 0.1 | adaption |
-| 1 | complete | solo | 1.2 | 1.0 | 1.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.16 | 0.1 | 0.12 | adaption |
-| 2 | complete | solo | 1.2 | 1.0 | 1.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.16 | 0.1 | 0.12 | adaption |
-| 3 | complete | solo | 1.6 | 1.2 | 2.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.2 | 0.12 | 0.16 | adaption |
-| 4 | complete | solo | 1.8 | 1.2 | 2.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.24000000000000005 | 0.12 | 0.18000000000000002 | adaption |
-| 5 | complete | solo | 2.2 | 1.2 | 3.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.32 | 0.12 | 0.21999999999999997 | adaption |
-| 6 | complete | solo | 2.8 | 1.2 | 4.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.4600000000000001 | 0.12 | 0.27999999999999997 | adaption |
-| 7 | complete | solo | 3.0 | 1.2 | 4.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.48 | 0.12 | 0.3 | adaption |
-| 8 | complete | solo | 3.2 | 1.2 | 5.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.5399999999999999 | 0.12 | 0.32 | adaption |
-| 9 | complete | solo | 3.6 | 1.2 | 6.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.62 | 0.12 | 0.36000000000000004 | adaption |
-| 0 | complete | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.1 | 0.1 | 0.1 | adaption |
-| 1 | complete | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.1 | 0.1 | 0.1 | adaption |
-| 2 | complete | split | 1.6 | 1.0 | 2.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.24 | 0.1 | 0.16 | adaption |
-| 3 | complete | split | 2.2 | 1.2 | 3.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.32 | 0.12 | 0.22000000000000003 | adaption |
-| 4 | complete | split | 2.6 | 1.4 | 3.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.38 | 0.13999999999999999 | 0.26 | adaption |
-| 5 | complete | split | 3.0 | 1.4 | 4.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.4600000000000001 | 0.13999999999999999 | 0.3 | adaption |
-| 6 | complete | split | 3.2 | 1.4 | 5.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.52 | 0.13999999999999999 | 0.32 | adaption |
-| 7 | complete | split | 3.4 | 1.4 | 5.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.5800000000000001 | 0.13999999999999999 | 0.34 | adaption |
-| 8 | complete | split | 3.8 | 1.6 | 6.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.64 | 0.15999999999999998 | 0.38 | adaption |
-| 9 | complete | split | 3.8 | 1.6 | 6.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.64 | 0.15999999999999998 | 0.38 | adaption |
-| 0 | ring | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.1 | 0.1 | 0.1 | adaption |
-| 1 | ring | solo | 1.2 | 1.0 | 1.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.16 | 0.1 | 0.12 | adaption |
-| 2 | ring | solo | 2.0 | 1.2 | 3.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.3 | 0.12 | 0.2 | adaption |
-| 3 | ring | solo | 2.8 | 1.4 | 4.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.42000000000000004 | 0.13999999999999999 | 0.28 | adaption |
-| 4 | ring | solo | 3.6 | 1.4 | 5.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.5799999999999998 | 0.13999999999999999 | 0.36 | adaption |
-| 5 | ring | solo | 4.4 | 1.6 | 7.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.72 | 0.16 | 0.44000000000000006 | adaption |
-| 6 | ring | solo | 5.0 | 1.8 | 8.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.82 | 0.18 | 0.5 | adaption |
-| 7 | ring | solo | 5.6 | 2.0 | 9.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.9199999999999999 | 0.2 | 0.56 | adaption |
-| 8 | ring | solo | 5.8 | 2.2 | 9.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.9400000000000001 | 0.22000000000000003 | 0.5800000000000001 | adaption |
-| 9 | ring | solo | 5.8 | 2.2 | 9.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.9400000000000001 | 0.22000000000000003 | 0.5800000000000001 | adaption |
-| 0 | ring | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.1 | 0.1 | 0.1 | adaption |
-| 1 | ring | split | 1.2 | 1.0 | 1.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.16 | 0.1 | 0.12 | adaption |
-| 2 | ring | split | 1.6 | 1.0 | 2.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.24 | 0.1 | 0.16 | adaption |
-| 3 | ring | split | 2.2 | 1.2 | 3.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.32 | 0.12 | 0.22000000000000003 | adaption |
-| 4 | ring | split | 3.2 | 1.6 | 4.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.48 | 0.16 | 0.32 | adaption |
-| 5 | ring | split | 3.8 | 1.6 | 6.0 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.5999999999999999 | 0.16 | 0.38 | adaption |
-| 6 | ring | split | 4.2 | 1.6 | 6.8 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.6799999999999999 | 0.16 | 0.42000000000000004 | adaption |
-| 7 | ring | split | 4.6 | 1.6 | 7.6 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.76 | 0.16 | 0.45999999999999996 | adaption |
-| 8 | ring | split | 5.2 | 2.0 | 8.4 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.8400000000000001 | 0.2 | 0.52 | adaption |
-| 9 | ring | split | 5.8 | 2.4 | 9.2 | A1 | credits |  | 5 | 5 | True | False | gemma-4-31b-it | 0.9199999999999999 | 0.24000000000000005 | 0.58 | adaption |
+| 0 | complete | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
+| 1 | complete | solo | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
+| 2 | complete | solo | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
+| 3 | complete | solo | 1.8333333333333333 | 1.3333333333333333 | 2.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.23333333333333336 | 0.13333333333333333 | 0.18333333333333335 | adaption |
+| 4 | complete | solo | 2.1666666666666665 | 1.3333333333333333 | 3.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.30000000000000004 | 0.13333333333333333 | 0.2166666666666667 | adaption |
+| 5 | complete | solo | 2.6666666666666665 | 1.5 | 3.8333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.38333333333333336 | 0.15 | 0.26666666666666666 | adaption |
+| 6 | complete | solo | 3.3333333333333335 | 1.6666666666666667 | 5.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5000000000000001 | 0.16666666666666666 | 0.3333333333333333 | adaption |
+| 7 | complete | solo | 3.6666666666666665 | 1.8333333333333333 | 5.666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5666666666666665 | 0.18333333333333332 | 0.3666666666666667 | adaption |
+| 8 | complete | solo | 4.0 | 1.8333333333333333 | 6.333333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6333333333333333 | 0.18333333333333335 | 0.4000000000000001 | adaption |
+| 9 | complete | solo | 4.5 | 2.0 | 7.166666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7166666666666667 | 0.19999999999999998 | 0.45 | adaption |
+| 0 | complete | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
+| 1 | complete | split | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
+| 2 | complete | split | 1.6666666666666667 | 1.1666666666666667 | 2.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.2333333333333333 | 0.11666666666666665 | 0.16666666666666666 | adaption |
+| 3 | complete | split | 2.1666666666666665 | 1.3333333333333333 | 3.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.30000000000000004 | 0.13333333333333333 | 0.21666666666666667 | adaption |
+| 4 | complete | split | 2.8333333333333335 | 1.6666666666666667 | 4.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.39999999999999997 | 0.16666666666666666 | 0.2833333333333334 | adaption |
+| 5 | complete | split | 3.3333333333333335 | 1.8333333333333333 | 4.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.48333333333333334 | 0.18333333333333335 | 0.3333333333333333 | adaption |
+| 6 | complete | split | 3.6666666666666665 | 1.8333333333333333 | 5.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5499999999999999 | 0.18333333333333335 | 0.3666666666666667 | adaption |
+| 7 | complete | split | 4.0 | 2.0 | 6.166666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6166666666666667 | 0.19999999999999998 | 0.4000000000000001 | adaption |
+| 8 | complete | split | 4.5 | 2.0 | 7.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7000000000000001 | 0.20000000000000004 | 0.45 | adaption |
+| 9 | complete | split | 4.5 | 2.0 | 7.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7000000000000001 | 0.20000000000000004 | 0.45 | adaption |
+| 0 | ring | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
+| 1 | ring | solo | 1.3333333333333333 | 1.0 | 1.6666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.16666666666666666 | 0.09999999999999999 | 0.13333333333333333 | adaption |
+| 2 | ring | solo | 2.3333333333333335 | 1.3333333333333333 | 3.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.3333333333333333 | 0.13333333333333333 | 0.2333333333333333 | adaption |
+| 3 | ring | solo | 3.1666666666666665 | 1.8333333333333333 | 4.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.44999999999999996 | 0.18333333333333335 | 0.3166666666666667 | adaption |
+| 4 | ring | solo | 4.0 | 2.1666666666666665 | 5.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5833333333333334 | 0.21666666666666665 | 0.39999999999999997 | adaption |
+| 5 | ring | solo | 5.0 | 2.6666666666666665 | 7.333333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7333333333333334 | 0.26666666666666666 | 0.5 | adaption |
+| 6 | ring | solo | 5.833333333333333 | 3.0 | 8.666666666666666 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8666666666666667 | 0.3 | 0.5833333333333334 | adaption |
+| 7 | ring | solo | 6.333333333333333 | 3.3333333333333335 | 9.333333333333334 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9333333333333332 | 0.3333333333333333 | 0.6333333333333334 | adaption |
+| 8 | ring | solo | 6.5 | 3.5 | 9.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9500000000000001 | 0.3499999999999999 | 0.65 | adaption |
+| 9 | ring | solo | 6.5 | 3.5 | 9.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9500000000000001 | 0.3499999999999999 | 0.65 | adaption |
+| 0 | ring | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
+| 1 | ring | split | 1.3333333333333333 | 1.0 | 1.6666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.16666666666666666 | 0.09999999999999999 | 0.13333333333333333 | adaption |
+| 2 | ring | split | 1.8333333333333333 | 1.1666666666666667 | 2.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.25000000000000006 | 0.11666666666666665 | 0.18333333333333335 | adaption |
+| 3 | ring | split | 2.5 | 1.5 | 3.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.35000000000000003 | 0.15 | 0.25 | adaption |
+| 4 | ring | split | 3.5 | 2.1666666666666665 | 4.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.48333333333333334 | 0.21666666666666667 | 0.35000000000000003 | adaption |
+| 5 | ring | split | 4.166666666666667 | 2.3333333333333335 | 6.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6 | 0.2333333333333333 | 0.4166666666666667 | adaption |
+| 6 | ring | split | 4.666666666666667 | 2.5 | 6.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6833333333333335 | 0.25 | 0.4666666666666666 | adaption |
+| 7 | ring | split | 5.0 | 2.5 | 7.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.75 | 0.25 | 0.5 | adaption |
+| 8 | ring | split | 5.666666666666667 | 3.0 | 8.333333333333334 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8333333333333334 | 0.3 | 0.5666666666666668 | adaption |
+| 9 | ring | split | 6.166666666666667 | 3.3333333333333335 | 9.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8999999999999999 | 0.3333333333333333 | 0.6166666666666667 | adaption |
 
-Source: `results/campaign/analysis/kinetics_a1.csv` (SHA-256 `af83b62dd5bfd93d14921862c9bf32c94038188ca6e2ad0afe16857878e5cb23`).
+Source: `results/campaign/analysis/kinetics_a1.csv` (SHA-256 `6e001fc149fc34e74f3ce9728596632e07f6fce4319d8657b3ce379a62380cf2`).
 <!-- RESULTS:END table_1_kinetics -->
 
 ### 6.2 Social Proof and Sender Diversity Analysis (Hypothesis H2)
@@ -214,7 +214,7 @@ Table 2 reports parameter estimates for the logistic regression model evaluating
 #### Table 2: Social Proof Logistic Regression Parameters (H2)
 
 <!-- RESULTS:BEGIN h2_regression_summary -->
-not_identifiable (source: results/campaign/analysis/h2.json, SHA-256 1676d9f6002a)
+not_identifiable (source: results/campaign/analysis/h2.json, SHA-256 871c160d84c3)
 <!-- RESULTS:END h2_regression_summary -->
 
 ### 6.3 Offline Detection Performance under Distribution Shift (Arm A2)
@@ -227,15 +227,15 @@ Table 3 evaluates detector discriminative capacity on offline message transcript
 | detector | playbook | tpr | ci_lo | ci_hi | auroc | fpr | negative_messages | positive_episodes | positive_messages | threshold |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | D1 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.7338854874609467 |
-| D1 | seen | 1.0 | 1.0 | 1.0 | 0.9975765306122449 | 0.07142857142857142 | 70 | 12 | 336 | 0.7338854874609467 |
+| D1 | seen | 1.0 | 1.0 | 1.0 | 0.9975945017182131 | 0.0641025641025641 | 78 | 16 | 485 | 0.7338854874609467 |
 | D2 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.006640566929403463 |
-| D2 | seen | 1.0 | 1.0 | 1.0 | 0.9979591836734694 | 0.07142857142857142 | 70 | 12 | 336 | 0.006640566929403463 |
+| D2 | seen | 1.0 | 1.0 | 1.0 | 0.998334655035686 | 0.0641025641025641 | 78 | 16 | 485 | 0.006640566929403463 |
 | D3 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.006640566936652057 |
-| D3 | seen | 1.0 | 1.0 | 1.0 | 0.9979591836734694 | 0.07142857142857142 | 70 | 12 | 336 | 0.006640566936652057 |
+| D3 | seen | 1.0 | 1.0 | 1.0 | 0.998334655035686 | 0.0641025641025641 | 78 | 16 | 485 | 0.006640566936652057 |
 | D5 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.5 |
-| D5 | seen | 1.0 | 1.0 | 1.0 | 0.9975765306122449 | 0.07142857142857142 | 70 | 12 | 336 | 0.5 |
+| D5 | seen | 1.0 | 1.0 | 1.0 | 0.9975945017182131 | 0.0641025641025641 | 78 | 16 | 485 | 0.5 |
 
-Source: `results/campaign/analysis/panel_a.csv` (SHA-256 `970b9bc745bc9747148640a35db8c2c3d31922ebf125f51e85862bb81a46ec49`).
+Source: `results/campaign/analysis/panel_a.csv` (SHA-256 `4af327191439ae90190813db4d932947547d4b47d96968cf1169e4f86915e1a9`).
 <!-- RESULTS:END table_2_offline_detection -->
 
 ### 6.4 Online Gating Efficacy and Utility Trade-offs (Arm A3 and A3c)
@@ -247,12 +247,12 @@ Table 4 reports the causal effect of active message gating on exfiltration reduc
 <!-- RESULTS:BEGIN table_3_online_gating -->
 | arm | billing_unit | defense | effect_ci_hi | effect_ci_lo | exfiltration_reduction | harm | holm_p | initial_infection | mcnemar_b | mcnemar_c | mcnemar_p | mock | model | paired_seeds | pairs_attempted | pairs_complete | pairs_unavailable | provider | topology | utility_loss | utility_loss_ci_hi | utility_loss_ci_lo |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A3 | credits | D1 | 0.6 | 0.0 | 0.2 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105] | 5 | 5 | 0 | adaption | ring | 0.019999999999999997 | 0.033333333333333326 | 0.006666666666666665 |
-| A3 | credits | D2 | 0.6 | 0.0 | 0.2 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105] | 5 | 5 | 0 | adaption | ring | 0.019999999999999997 | 0.033333333333333326 | 0.006666666666666665 |
-| A3 | credits | D3 | 0.6 | 0.0 | 0.2 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105] | 5 | 5 | 0 | adaption | ring | 0.01333333333333333 | 0.02666666666666666 | 0.0 |
-| A3 | credits | D5 | 0.6 | 0.0 | 0.2 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105] | 5 | 5 | 0 | adaption | ring | 0.01333333333333333 | 0.02666666666666666 | 0.0 |
+| A3 | credits | D1 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.016666666666666663 | 0.027777777777777773 | 0.005555555555555554 |
+| A3 | credits | D2 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.016666666666666663 | 0.027777777777777773 | 0.005555555555555554 |
+| A3 | credits | D3 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.011111111111111108 | 0.022222222222222216 | 0.0 |
+| A3 | credits | D5 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.011111111111111108 | 0.022222222222222216 | 0.0 |
 
-Source: `results/campaign/analysis/paired_comparisons.csv` (SHA-256 `1fa5e5236d5a80a96085438ea3e38906d6909e39b2d93814875ecca93967cb26`).
+Source: `results/campaign/analysis/paired_comparisons.csv` (SHA-256 `4431c8bb70fda9bcde05c4f738da0186ef37e0170cf04bb2c3946eabadf9b9c2`).
 <!-- RESULTS:END table_3_online_gating -->
 
 Gate performance on uninfected workloads (Arm A3c) and arm-level exfiltration incidence with 95% Wilson score intervals across all experimental conditions (`A0`, `A1`, `A3`, and `A3c`) are reported in the repository summary table (`arm_summary.csv`) and visualized in the active gating trade-off frontier (`gating_tradeoff.png`). In clean baseline (`A0`) and benign gate-cost (`A3c`) episodes, standard agents summarize their private records directly into the collaborative report without initiating peer-to-peer solicitations, preserving task utility while incurring zero false-positive credential disclosures.
@@ -270,9 +270,9 @@ Table 5 summarizes provider API usage, token consumption, and financial billing 
 <!-- RESULTS:BEGIN table_4_cost_accounting -->
 | attempts | attempts_with_unknown_return_count | attempts_with_unknown_usage | billing_unit | calls_with_unknown_cost | cost | known_cost | known_provider_returns | mock | provider | provider_returns | scope |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 60 | 0 | 29 | credits | 0 |  | 0.48427505772 | 6119 | False | adaption | 6119 | all attempt provider audits, deduplicated by source path |
+| 78 | 0 | 29 | credits | 0 |  | 0.62619904352 | 7944 | False | adaption | 7944 | all attempt provider audits, deduplicated by source path |
 
-Source: `results/campaign/analysis/billing_totals.csv` (SHA-256 `09a5497b386b8a24370be797318702ae60b505dbddc47385320807d971578424`).
+Source: `results/campaign/analysis/billing_totals.csv` (SHA-256 `24c7d9dcfeb6c135bfd3a8b0699e8fa6eecc95f09860ed1bcce39b7fed25433a`).
 <!-- RESULTS:END table_4_cost_accounting -->
 
 ---

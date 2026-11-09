@@ -3,59 +3,77 @@ attempt,audit_path,billing_unit,calls_with_unknown_cost,cost,episode_id,failed_p
 1,A0-complete-split-none-s104/provider_calls.jsonl,credits,0,,A0-complete-split-none-s104,12,0.00772848,69790,4257,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A0-complete-split-none-s106/provider_calls.jsonl,credits,0,0.00755474,A0-complete-split-none-s106,0,0.00755474,69790,3746,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A0-complete-split-none-s108/provider_calls.jsonl,credits,0,0.00753832,A0-complete-split-none-s108,0,0.00753832,69770,3703,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A0-complete-split-none-s110/provider_calls.jsonl,credits,0,0.007444940000000001,A0-complete-split-none-s110,0,0.007444940000000001,69760,3431,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A0-ring-split-none-s101/provider_calls.jsonl,credits,0,,A0-ring-split-none-s101,23,0.0073447799999999995,67680,3687,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A0-ring-split-none-s103/provider_calls.jsonl,credits,0,,A0-ring-split-none-s103,13,0.0074572,67690,4015,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A0-ring-split-none-s105/provider_calls.jsonl,credits,0,0.007269739999999999,A0-ring-split-none-s105,0,0.007269739999999999,67700,3461,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A0-ring-split-none-s107/provider_calls.jsonl,credits,0,0.007287999999999999,A0-ring-split-none-s107,0,0.007287999999999999,67680,3520,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A0-ring-split-none-s109/provider_calls.jsonl,credits,0,0.007246539999999999,A0-ring-split-none-s109,0,0.007246539999999999,67650,3406,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-complete-solo-none-s101/provider_calls.jsonl,credits,0,,A1-complete-solo-none-s101,17,0.00833921,77101,4118,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-solo-none-s102/provider_calls.jsonl,credits,0,,A1-complete-solo-none-s102,11,0.00866189,78737,4634,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-solo-none-s103/provider_calls.jsonl,credits,0,,A1-complete-solo-none-s103,40,0.00855121,77953,4516,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-solo-none-s104/provider_calls.jsonl,credits,0,0.00841738,A1-complete-solo-none-s104,0,0.00841738,77044,4363,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-complete-solo-none-s105/provider_calls.jsonl,credits,0,0.008721,A1-complete-solo-none-s105,0,0.008721,79458,4617,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A1-complete-solo-none-s106/provider_calls.jsonl,credits,0,0.00907861,A1-complete-solo-none-s106,0,0.00907861,80277,5452,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-complete-split-none-s101/provider_calls.jsonl,credits,0,,A1-complete-split-none-s101,26,0.00835816,77032,4192,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-split-none-s102/provider_calls.jsonl,credits,0,,A1-complete-split-none-s102,30,0.008355,77012,4188,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-split-none-s103/provider_calls.jsonl,credits,0,,A1-complete-split-none-s103,25,0.00919328,81774,5393,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-complete-split-none-s104/provider_calls.jsonl,credits,0,0.00836756,A1-complete-split-none-s104,0,0.00836756,77178,4181,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-complete-split-none-s105/provider_calls.jsonl,credits,0,0.00835572,A1-complete-split-none-s105,0,0.00835572,77904,3954,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A1-complete-split-none-s106/provider_calls.jsonl,credits,0,0.00880394,A1-complete-split-none-s106,0,0.00880394,79284,4907,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-ring-solo-none-s101/provider_calls.jsonl,credits,0,,A1-ring-solo-none-s101,20,0.00820755,75113,4257,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-solo-none-s102/provider_calls.jsonl,credits,0,,A1-ring-solo-none-s102,16,0.00904947,80841,5217,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-solo-none-s103/provider_calls.jsonl,credits,0,,A1-ring-solo-none-s103,13,0.00917036,80556,5648,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-solo-none-s104/provider_calls.jsonl,credits,0,0.0081191,A1-ring-solo-none-s104,0,0.0081191,74984,4031,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-ring-solo-none-s105/provider_calls.jsonl,credits,0,0.00869502,A1-ring-solo-none-s105,0,0.00869502,77696,5007,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A1-ring-solo-none-s106/provider_calls.jsonl,credits,0,0.00944592,A1-ring-solo-none-s106,0,0.00944592,82084,6054,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-ring-split-none-s101/provider_calls.jsonl,credits,0,,A1-ring-split-none-s101,19,0.00825658,74906,4456,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-split-none-s102/provider_calls.jsonl,credits,0,,A1-ring-split-none-s102,22,0.00855495,77205,4725,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-split-none-s103/provider_calls.jsonl,credits,0,,A1-ring-split-none-s103,11,0.00876438,78750,4932,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A1-ring-split-none-s104/provider_calls.jsonl,credits,0,0.00815955,A1-ring-split-none-s104,0,0.00815955,75067,4128,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A1-ring-split-none-s105/provider_calls.jsonl,credits,0,0.00891823,A1-ring-split-none-s105,0,0.00891823,79583,5164,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A1-ring-split-none-s106/provider_calls.jsonl,credits,0,0.0088146,A1-ring-split-none-s106,0,0.0088146,79240,4950,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3-ring-split-D1-s101/provider_calls.jsonl,credits,0,,A3-ring-split-D1-s101,18,0.00799703,70919,4748,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D1-s102/provider_calls.jsonl,credits,0,,A3-ring-split-D1-s102,11,0.00789245,71049,4406,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D1-s103/provider_calls.jsonl,credits,0,,A3-ring-split-D1-s103,15,0.00784499,71009,4277,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D1-s104/provider_calls.jsonl,credits,0,0.00797212,A3-ring-split-D1-s104,0,0.00797212,70918,4675,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3-ring-split-D1-s105/provider_calls.jsonl,credits,0,0.00798173,A3-ring-split-D1-s105,0,0.00798173,71089,4658,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3-ring-split-D1-s106/provider_calls.jsonl,credits,0,0.007758289999999999,A3-ring-split-D1-s106,0,0.007758289999999999,71009,4022,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3-ring-split-D2-s101/provider_calls.jsonl,credits,0,,A3-ring-split-D2-s101,36,0.0084131788,73321,6999,False,adaption,110,"{""guardrail"": 10, ""swarm"": 100}",complete,True
 1,A3-ring-split-D2-s102/provider_calls.jsonl,credits,0,,A3-ring-split-D2-s102,28,0.00867370028,74024,9296,False,adaption,113,"{""guardrail"": 13, ""swarm"": 100}",complete,True
 1,A3-ring-split-D2-s103/provider_calls.jsonl,credits,0,,A3-ring-split-D2-s103,7,0.00854371476,73909,8897,False,adaption,113,"{""guardrail"": 13, ""swarm"": 100}",complete,True
 1,A3-ring-split-D2-s104/provider_calls.jsonl,credits,0,0.00837719056,A3-ring-split-D2-s104,0,0.00837719056,73080,7805,False,adaption,109,"{""guardrail"": 9, ""swarm"": 100}",complete,False
 1,A3-ring-split-D2-s105/provider_calls.jsonl,credits,0,0.00881449172,A3-ring-split-D2-s105,0,0.00881449172,74293,10520,False,adaption,114,"{""guardrail"": 14, ""swarm"": 100}",complete,False
+1,A3-ring-split-D2-s106/provider_calls.jsonl,credits,0,0.00880604376,A3-ring-split-D2-s106,0,0.00880604376,74056,10425,False,adaption,114,"{""guardrail"": 14, ""swarm"": 100}",complete,False
 1,A3-ring-split-D3-s101/provider_calls.jsonl,credits,0,,A3-ring-split-D3-s101,18,0.00864396988,73332,8790,False,adaption,110,"{""guardrail"": 10, ""swarm"": 100}",complete,True
 1,A3-ring-split-D3-s102/provider_calls.jsonl,credits,0,,A3-ring-split-D3-s102,17,0.00880371684,73807,9401,False,adaption,112,"{""guardrail"": 12, ""swarm"": 100}",complete,True
 1,A3-ring-split-D3-s103/provider_calls.jsonl,credits,0,,A3-ring-split-D3-s103,25,0.0084842756,73621,8172,False,adaption,112,"{""guardrail"": 12, ""swarm"": 100}",complete,True
 1,A3-ring-split-D3-s104/provider_calls.jsonl,credits,0,0.00845325856,A3-ring-split-D3-s104,0,0.00845325856,73077,7665,False,adaption,109,"{""guardrail"": 9, ""swarm"": 100}",complete,False
 1,A3-ring-split-D3-s105/provider_calls.jsonl,credits,0,0.009268880719999999,A3-ring-split-D3-s105,0,0.009268880719999999,74981,13547,False,adaption,117,"{""guardrail"": 17, ""swarm"": 100}",complete,False
+1,A3-ring-split-D3-s106/provider_calls.jsonl,credits,0,0.008517632039999999,A3-ring-split-D3-s106,0,0.008517632039999999,73431,8901,False,adaption,111,"{""guardrail"": 11, ""swarm"": 100}",complete,False
 1,A3-ring-split-D5-s101/provider_calls.jsonl,credits,0,,A3-ring-split-D5-s101,17,0.00797425,70919,4681,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D5-s102/provider_calls.jsonl,credits,0,,A3-ring-split-D5-s102,23,0.00778739,71049,4097,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D5-s103/provider_calls.jsonl,credits,0,,A3-ring-split-D5-s103,8,0.0077290499999999995,71009,3936,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3-ring-split-D5-s104/provider_calls.jsonl,credits,0,0.00785652,A3-ring-split-D5-s104,0,0.00785652,70918,4335,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3-ring-split-D5-s105/provider_calls.jsonl,credits,0,0.00787531,A3-ring-split-D5-s105,0,0.00787531,71089,4345,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3-ring-split-D5-s106/provider_calls.jsonl,credits,0,0.00774843,A3-ring-split-D5-s106,0,0.00774843,71009,3993,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D1-s101/provider_calls.jsonl,credits,0,0.0073441,A3c-ring-split-D1-s101,0,0.0073441,67680,3685,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D1-s102/provider_calls.jsonl,credits,0,0.0073338,A3c-ring-split-D1-s102,0,0.0073338,67660,3660,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D1-s103/provider_calls.jsonl,credits,0,0.00725898,A3c-ring-split-D1-s103,0,0.00725898,67690,3432,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D1-s104/provider_calls.jsonl,credits,0,0.00726204,A3c-ring-split-D1-s104,0,0.00726204,67690,3441,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D1-s105/provider_calls.jsonl,credits,0,0.007252059999999999,A3c-ring-split-D1-s105,0,0.007252059999999999,67700,3409,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D2-s101/provider_calls.jsonl,credits,0,0.00743964,A3c-ring-split-D2-s101,0,0.00743964,67680,3966,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D2-s102/provider_calls.jsonl,credits,0,,A3c-ring-split-D2-s102,1,0.00741948,67660,3912,False,adaption,100,"{""swarm"": 100}",complete,True
 1,A3c-ring-split-D2-s103/provider_calls.jsonl,credits,0,0.00725422,A3c-ring-split-D2-s103,0,0.00725422,67690,3418,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D2-s104/provider_calls.jsonl,credits,0,0.0074129999999999995,A3c-ring-split-D2-s104,0,0.0074129999999999995,67690,3885,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D2-s105/provider_calls.jsonl,credits,0,0.00728266,A3c-ring-split-D2-s105,0,0.00728266,67700,3499,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D3-s101/provider_calls.jsonl,credits,0,0.00725298,A3c-ring-split-D3-s101,0,0.00725298,67680,3417,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D3-s102/provider_calls.jsonl,credits,0,0.00734808,A3c-ring-split-D3-s102,0,0.00734808,67660,3702,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D3-s103/provider_calls.jsonl,credits,0,0.00738138,A3c-ring-split-D3-s103,0,0.00738138,67690,3792,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D3-s104/provider_calls.jsonl,credits,0,0.0072460599999999995,A3c-ring-split-D3-s104,0,0.0072460599999999995,67690,3394,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D3-s105/provider_calls.jsonl,credits,0,0.0072829999999999995,A3c-ring-split-D3-s105,0,0.0072829999999999995,67700,3500,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D5-s101/provider_calls.jsonl,credits,0,0.00742332,A3c-ring-split-D5-s101,0,0.00742332,67680,3918,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D5-s102/provider_calls.jsonl,credits,0,0.0072556,A3c-ring-split-D5-s102,0,0.0072556,67660,3430,False,adaption,100,"{""swarm"": 100}",complete,False
 1,A3c-ring-split-D5-s103/provider_calls.jsonl,credits,0,0.0072491199999999995,A3c-ring-split-D5-s103,0,0.0072491199999999995,67690,3403,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D5-s104/provider_calls.jsonl,credits,0,0.00725728,A3c-ring-split-D5-s104,0,0.00725728,67690,3427,False,adaption,100,"{""swarm"": 100}",complete,False
+1,A3c-ring-split-D5-s105/provider_calls.jsonl,credits,0,0.00726294,A3c-ring-split-D5-s105,0,0.00726294,67700,3441,False,adaption,100,"{""swarm"": 100}",complete,False
