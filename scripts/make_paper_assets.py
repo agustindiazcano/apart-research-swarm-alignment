@@ -32,7 +32,7 @@ TAB = OUT / "tables"
 PLANNED = {"A0": 15, "A1": 60, "A3": 60, "A3c": 20}
 PILOT, TRAIN = 3, 15
 
-INK = "#1b2340"
+INK = "#000000"
 MUTED = "#6b7280"
 C_RING_SOLO, C_RING_SPLIT = "#d1495b", "#e9a23b"
 C_CMP_SOLO, C_CMP_SPLIT = "#00798c", "#6a4c93"
@@ -43,7 +43,7 @@ plt.rcParams.update(
         "font.family": "serif",
         "font.serif": ["DejaVu Serif"],
         "font.size": 9,
-        "axes.edgecolor": MUTED,
+        "axes.edgecolor": INK,
         "axes.labelcolor": INK,
         "xtick.color": INK,
         "ytick.color": INK,
@@ -116,20 +116,20 @@ def fig_architecture() -> None:
         elif i in frag:
             col, ec = C_RING_SPLIT, C_RING_SPLIT
         ax.add_patch(mp.Circle((x, y), 0.28, fc=col, ec=ec, lw=1.6, zorder=3))
-        ax.text(x, y, str(i), ha="center", va="center", fontsize=8, color="white" if i in (0, *frag) else INK, fontweight="bold", zorder=4)
+        ax.text(x, y, str(i), ha="center", va="center", fontsize=8, color=INK, fontweight="bold", zorder=4)
     for k, lab in frag.items():
         d = min(k, n - k)
         x, y = pos[k]
         side = 1 if x > cx else -1
         ax.text(x + side * 0.42, y - 0.02, f"{lab}\ndistance {d}", ha="left" if side > 0 else "right", va="center", fontsize=7.2, color=INK)
-    ax.text(pos[0][0], pos[0][1] + 0.5, "patient zero", ha="center", fontsize=7.6, color=C_RING_SOLO, fontweight="bold")
+    ax.text(pos[0][0], pos[0][1] + 0.5, "patient zero", ha="center", fontsize=7.6, color=INK, fontweight="bold")
     # outbox and legend
     ax.add_patch(mp.FancyBboxPatch((7.2, 2.0), 2.6, 1.7, boxstyle="round,pad=0.05,rounding_size=0.15", fc="#f3f4f8", ec=MUTED, lw=1.2))
     ax.text(8.5, 3.35, "external outbox", ha="center", fontsize=8.4, fontweight="bold", color=INK)
     ax.text(8.5, 2.75, "full 12-character\ncredential assembled?", ha="center", va="center", fontsize=7.8, color=INK)
     ax.text(8.5, 2.2, r"$Y_{\mathrm{exfil}}\in\{0,1\}$", ha="center", fontsize=8.4, color=INK)
     ax.annotate("", xy=(7.2, 2.85), xytext=(5.4, 2.85), arrowprops=dict(arrowstyle="-|>", color=C_RING_SPLIT, lw=1.8))
-    ax.text(6.3, 3.05, "send_external", ha="center", fontsize=7.4, color=C_RING_SPLIT)
+    ax.text(6.3, 3.05, "send_external", ha="center", fontsize=7.4, color=INK)
     ax.legend(
         handles=[
             mp.Patch(fc=C_RING_SOLO, label="infected (patient zero)"),
@@ -221,7 +221,7 @@ def fig_detection() -> None:
     fp = [float(r["fpr"]) * 100 for r in seen]
     ax.bar(dets, fp, color=C_RING_SPLIT, width=0.62)
     ax.axhline(0.5, color=C_RING_SOLO, lw=1.6, ls="--")
-    ax.text(len(dets) - 0.45, 1.25, "target 0.5%", ha="right", fontsize=7.4, color=C_RING_SOLO, bbox=dict(fc="white", ec="none", pad=1.2))
+    ax.text(len(dets) - 0.45, 1.25, "target 0.5%", ha="right", fontsize=7.4, color=INK, bbox=dict(fc="white", ec="none", pad=1.2))
     ax.set_title("Realized FPR (%)")
     for i, v in enumerate(fp):
         ax.text(i, v + 0.15, f"{v:.1f}", ha="center", fontsize=7.4)
