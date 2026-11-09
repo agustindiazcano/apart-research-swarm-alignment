@@ -25,7 +25,7 @@ html,body{height:100%;background:#000;overflow:hidden;font-family:"Segoe UI",Int
 #topbar .sep{width:1px;height:26px;background:var(--line)}
 #topbar .event{font-size:18px;color:var(--muted);letter-spacing:.04em}
 #progress{position:absolute;left:0;top:0;height:4px;width:0;background:linear-gradient(90deg,var(--teal),var(--violet));z-index:30}
-#author{position:absolute;left:0;right:0;bottom:130px;text-align:center;font-size:21px;color:var(--muted);letter-spacing:.05em;z-index:20}
+#author{position:absolute;right:48px;top:0;height:64px;display:flex;align-items:center;font-size:17px;color:var(--muted);letter-spacing:.04em;z-index:20}
 #author b{color:var(--ink);font-weight:700}
 #subs{position:absolute;left:0;right:0;bottom:0;height:116px;background:#000;display:flex;align-items:center;justify-content:center;padding:0 140px;z-index:40}
 #subs span{font-size:38px;line-height:1.25;text-align:center;color:#fff;font-weight:500;display:block}
@@ -64,7 +64,8 @@ svg text{font-family:inherit}
 #cover .event{font-size:34px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:26px}
 #cover h1{max-width:1500px}
 #cover .by{margin-top:36px;font-size:30px;color:var(--muted)}
-#coverbg{position:absolute;right:-60px;top:40px;opacity:.55}
+#coverbg{position:absolute;right:-60px;top:40px;opacity:.55;z-index:0}
+#cover .coverlogo,#cover .event,#cover h1,#cover .lead,#cover .by{position:relative;z-index:5}
 
 /* results cards */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}

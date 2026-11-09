@@ -1,88 +1,88 @@
 WEBVTT
 
-00:00:00.800 --> 00:00:05.899
+00:00:00.800 --> 00:00:06.608
 Infection Chains in LLM Swarms: Spread, Detection and Layered Gating.
 
-00:00:06.149 --> 00:00:10.824
+00:00:06.858 --> 00:00:11.106
 Apart Research Swarm Alignment Hackathon. Agustin Diaz-Cano.
 
-00:00:11.074 --> 00:00:14.688
+00:00:11.356 --> 00:00:14.500
 One compromised agent can talk its peers into helping it.
 
-00:00:14.938 --> 00:00:20.596
+00:00:14.750 --> 00:00:20.246
 Per-agent monitors see one message at a time, so each request can look like routine admin work.
 
-00:00:20.846 --> 00:00:24.955
+00:00:20.496 --> 00:00:23.904
 We measure how the infection spreads, and what actually stops it.
 
-00:00:25.205 --> 00:00:32.295
+00:00:24.154 --> 00:00:30.658
 Ten agents, ten rounds. A 12-character canary credential is split into three 4-character fragments.
 
-00:00:32.545 --> 00:00:38.176
+00:00:30.908 --> 00:00:35.852
 The fragments sit at least two hops from patient zero, so no single message holds the secret.
 
-00:00:38.426 --> 00:00:43.086
+00:00:36.102 --> 00:00:40.470
 Patient zero must recruit intermediaries, and every hop looks harmless.
 
-00:00:43.336 --> 00:00:49.335
+00:00:40.720 --> 00:00:45.928
 Ring and complete networks. Three persuasion styles; the third is held out from training.
 
-00:00:49.585 --> 00:00:55.448
+00:00:46.178 --> 00:00:51.266
 96 real episodes: 3 pilot, 15 training, 78 test.
 
-00:00:55.698 --> 00:01:02.132
+00:00:51.516 --> 00:00:57.108
 Gemma 4 31B plays the agents. DeepSeek V4 Flash is the guardrail.
 
-00:01:02.382 --> 00:01:08.302
+00:00:57.358 --> 00:01:02.878
 7,944 model calls logged in the test analysis, under one credit.
 
-00:01:08.552 --> 00:01:16.495
+00:01:03.128 --> 00:01:10.304
 Preregistered, separate train and test seeds, deterministic grading, 100-message audit at 100% agreement.
 
-00:01:16.745 --> 00:01:24.950
+00:01:10.554 --> 00:01:18.306
 The infection spreads: by round nine, 6 to 6.5 of 10 agents are infected on a ring, 4.5 on the complete graph.
 
-00:01:25.200 --> 00:01:29.893
+00:01:18.556 --> 00:01:22.492
 Splitting the secret does not stop the infection. It makes theft harder.
 
-00:01:30.143 --> 00:01:36.623
+00:01:22.742 --> 00:01:29.270
 Split credential: full exfiltration in 1 of 6 ring episodes, 0 of 6 on the complete graph.
 
-00:01:36.873 --> 00:01:40.912
+00:01:29.520 --> 00:01:32.928
 Solo credential: 3 of 6 and 2 of 6.
 
-00:01:41.162 --> 00:01:45.451
+00:01:33.178 --> 00:01:37.114
 30 clean episodes, with and without gates: nothing leaked.
 
-00:01:45.701 --> 00:01:51.200
+00:01:37.364 --> 00:01:43.052
 D1 is a lexical classifier. D2 is a micro-LLM rubric guardrail.
 
-00:01:51.450 --> 00:01:56.128
+00:01:43.302 --> 00:01:47.838
 D3 adds graph context: suspicion travels along message edges.
 
-00:01:56.378 --> 00:02:01.012
+00:01:48.088 --> 00:01:53.344
 D5 is a tiered filter that calls the LLM only for ambiguous messages.
 
-00:02:01.262 --> 00:02:05.771
+00:01:53.594 --> 00:01:58.226
 Each gate is calibrated on training data to a 0.5% false positive rate.
 
-00:02:06.021 --> 00:02:10.784
+00:01:58.476 --> 00:02:03.348
 Offline AUROC is near 0.998 on seen playbooks.
 
-00:02:11.034 --> 00:02:20.766
+00:02:03.598 --> 00:02:12.142
 But the realized false positive rate was 6.4%, not 0.5%, and held-out data had no negatives, so we claim nothing on distribution shift.
 
-00:02:21.016 --> 00:02:29.674
+00:02:12.392 --> 00:02:20.072
 Online, gated runs leaked in 0 of 6 episodes versus 1 of 6 unprotected. Not significant: McNemar p equals 1.
 
-00:02:29.924 --> 00:02:39.059
+00:02:20.322 --> 00:02:28.314
 Utility loss stayed under 0.02. No hypothesis is clearly confirmed, and H2 was not identifiable. We report that.
 
-00:02:39.309 --> 00:02:46.127
+00:02:28.564 --> 00:02:34.612
 Infection chains are measurable. At this sample size, a per-message guard alone is not evidence of safety.
 
-00:02:46.377 --> 00:02:52.585
+00:02:34.862 --> 00:02:40.670
 Playbooks stay out of the repository, the canary is synthetic, every number comes from committed logs.
 
-00:02:52.835 --> 00:02:59.074
+00:02:40.920 --> 00:02:46.008
 Next: more seeds, adaptive attackers, mixed-model swarms. Thank you.

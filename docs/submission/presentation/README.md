@@ -15,7 +15,7 @@ Options: the page plays `narration.wav` by itself; `?audio=0` mutes it (use this
 | File | Purpose |
 |---|---|
 | `index.html` | Slides, animations, subtitles, player |
-| `narration.wav` | Voice track (Windows System.Speech, voice David, rate +1, about +10%) |
+| `narration.wav` | Voice track (neural voice en-US-AndrewNeural via edge-tts at +10% speed) |
 | `subtitles.srt`, `subtitles.vtt` | Subtitle files with the same timings as the on-screen bar |
 | `SCRIPT_TIMINGS.md` | Narration script with start time of every sentence |
 | `script.json` | Source of narration and subtitle text |

@@ -40,6 +40,44 @@ def synthesize(sentences: list[dict], voice: str, rate: int) -> None:
     tmp.unlink()
 
 
+def synthesize_edge(sentences: list[dict], voice: str, rate: str) -> None:
+    """Neural voice via edge-tts, then convert each clip to WAV with a portable ffmpeg."""
+    import asyncio
+
+    import edge_tts
+    import imageio_ffmpeg
+
+    ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    CLIPS.mkdir(exist_ok=True)
+
+    async def run() -> None:
+        sem = asyncio.Semaphore(1)
+
+        async def one(s: dict) -> None:
+            async with sem:
+                if (CLIPS / f"{s['id']}.mp3").exists() and (CLIPS / f"{s['id']}.mp3").stat().st_size > 0:
+                    return
+                for attempt in range(10):
+                    try:
+                        await edge_tts.Communicate(s["say"], voice, rate=rate).save(str(CLIPS / f"{s['id']}.mp3"))
+                        return
+                    except edge_tts.exceptions.NoAudioReceived:
+                        await asyncio.sleep(1.0 + attempt)
+                raise RuntimeError(f"edge-tts failed for {s['id']}")
+
+        await asyncio.gather(*(one(s) for s in sentences))
+
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.run(run())
+    for s in sentences:
+        subprocess.run(
+            [ffmpeg, "-y", "-loglevel", "error", "-i", str(CLIPS / f"{s['id']}.mp3"),
+             "-ac", "1", "-ar", "24000", "-sample_fmt", "s16", str(CLIPS / f"{s['id']}.wav")],
+            check=True,
+        )
+
+
 def srt_time(t: float, sep: str) -> str:
     ms = int(round(t * 1000))
     h, rem = divmod(ms, 3600000)
@@ -56,7 +94,10 @@ def main() -> int:
             sentences.append({"id": f"{slide['id']}_{i}", "slide": slide["id"], **s})
 
     if "--skip-tts" not in sys.argv:
-        synthesize(sentences, spec["voice"], spec["rate"])
+        if spec.get("engine") == "edge":
+            synthesize_edge(sentences, spec["edge_voice"], spec["edge_rate"])
+        else:
+            synthesize(sentences, spec["voice"], spec["rate"])
 
     params = None
     frames: dict[str, bytes] = {}
