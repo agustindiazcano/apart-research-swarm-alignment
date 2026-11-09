@@ -536,6 +536,7 @@ audioOn=params.get("audio")!=="0";
 if(params.get("freeze")){ $("#start").classList.add("gone"); render(parseFloat(params.get("freeze"))||0); }
 else render(0);
 window.__render=render;
+if(params.get("capture")){var st=document.createElement("style");st.textContent="*{transition:none!important}";document.head.appendChild(st);}
 })();
 </script>
 </body>
