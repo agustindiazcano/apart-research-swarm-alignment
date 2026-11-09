@@ -1,0 +1,41 @@
+{
+  "blocks": [
+    {
+      "name": "summary",
+      "file": "README.md",
+      "source": "results/campaign/analysis/arm_summary.csv",
+      "kind": "table"
+    },
+    {
+      "name": "table_1_kinetics",
+      "file": "report/DRAFT_REPORT.md",
+      "source": "results/campaign/analysis/kinetics_a1.csv",
+      "kind": "table"
+    },
+    {
+      "name": "h2_regression_summary",
+      "file": "report/DRAFT_REPORT.md",
+      "source": "results/campaign/analysis/h2.json",
+      "kind": "value",
+      "key": "status"
+    },
+    {
+      "name": "table_2_offline_detection",
+      "file": "report/DRAFT_REPORT.md",
+      "source": "results/campaign/analysis/panel_a.csv",
+      "kind": "table"
+    },
+    {
+      "name": "table_3_online_gating",
+      "file": "report/DRAFT_REPORT.md",
+      "source": "results/campaign/analysis/paired_comparisons.csv",
+      "kind": "table"
+    },
+    {
+      "name": "table_4_cost_accounting",
+      "file": "report/DRAFT_REPORT.md",
+      "source": "results/campaign/analysis/billing_totals.csv",
+      "kind": "table"
+    }
+  ]
+}

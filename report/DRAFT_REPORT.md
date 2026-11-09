@@ -267,14 +267,14 @@ Table 1 summarizes free-flow infection metrics across network topologies and cre
 
 #### Table 1: Primary Exfiltration and Reproduction Metrics (A1 Free Flow)
 
-<!-- RESULTS:BEGIN table_free_flow -->
+<!-- RESULTS:BEGIN table_1_kinetics -->
 | Topology | Credential Mode | Episodes ($N$) | Exfiltration Incidence [95% CI] | Leaked Fragment Fraction | $R_{0,\text{rec}}$ [95% CI] | $R_{0,\text{br}}$ [95% CI] | Max Chain Length | Mean Round of Exfiltration |
 |---|---|---|---|---|---|---|---|---|
 | Ring | Solo | 15 | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | Ring | Split | 15 | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | Complete | Solo | 15 | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | Complete | Split | 15 | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_free_flow -->
+<!-- RESULTS:END table_1_kinetics -->
 
 ### 6.2 Social Proof and Sender Diversity Analysis (Hypothesis H2)
 
@@ -282,14 +282,14 @@ Table 2 reports parameter estimates for the logistic regression model evaluating
 
 #### Table 2: Social Proof Logistic Regression Parameters (H2)
 
-<!-- RESULTS:BEGIN table_h2_logistic -->
+<!-- RESULTS:BEGIN h2_regression_summary -->
 | Parameter | Description | Odds Ratio ($\exp(\beta)$) | 95% Confidence Interval | $z$-statistic | $p$-value |
 |---|---|---|---|---|---|
 | $\beta_0$ | Intercept | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | $\beta_1$ | Distinct Senders ($S^{\text{distinct}}$) | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | $\beta_2$ | Total Solicitations ($M^{\text{total}}$) | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | $\beta_3$ | Topology (Complete = 1) | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_h2_logistic -->
+<!-- RESULTS:END h2_regression_summary -->
 
 ### 6.3 Offline Detection Performance under Distribution Shift (Arm A2)
 
@@ -297,7 +297,7 @@ Table 3 evaluates detector discriminative capacity on offline message transcript
 
 #### Table 3: Offline Detector Discriminative Performance (A2: AUROC and TPR @ 0.5% FPR)
 
-<!-- RESULTS:BEGIN table_offline_detection -->
+<!-- RESULTS:BEGIN table_2_offline_detection -->
 | Detector | Evaluation Target | Seen Styles AUROC | Held-Out Style 2 AUROC | Seen TPR @ 0.5% FPR | Held-Out TPR @ 0.5% FPR | Split Condition AUROC | Solo Condition AUROC |
 |---|---|---|---|---|---|---|---|
 | **$D_1$ (Lexical)** | $L_{1,\text{action}}$ | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
@@ -308,7 +308,7 @@ Table 3 evaluates detector discriminative capacity on offline message transcript
 | **$D_3$ (Graph)** | $L_{2,\text{leak}}$ | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **$D_4$ (Verifiers)**| $L_{1,\text{action}}$ | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **$D_5$ (Tiered)** | $L_{1,\text{action}}$ | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_offline_detection -->
+<!-- RESULTS:END table_2_offline_detection -->
 
 ### 6.4 Online Gating Efficacy and Utility Trade-offs (Arm A3 and A3c)
 
@@ -316,7 +316,7 @@ Table 4 reports the causal effect of active message gating on exfiltration reduc
 
 #### Table 4: Online Gating Efficacy and Utility Cost (A3 vs A1 Paired Comparisons)
 
-<!-- RESULTS:BEGIN table_online_gating -->
+<!-- RESULTS:BEGIN table_3_online_gating -->
 | Gate Condition | Exfiltration Incidence | Paired Difference vs A1 | McNemar Exact $p$ | Holm-Adjusted $p$ | Mean Infection Count | Task Utility ($U$) [95% CI] |
 |---|---|---|---|---|---|---|
 | **None (A1 Control)** | `TODO(result)` | Reference | - | - | `TODO(result)` | `TODO(result)` |
@@ -324,20 +324,18 @@ Table 4 reports the causal effect of active message gating on exfiltration reduc
 | **$D_2$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **$D_3$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **$D_5$ Tiered Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_online_gating -->
+<!-- RESULTS:END table_3_online_gating -->
 
 Table 5 presents gate performance on uninfected workloads (Arm A3c), reporting realized false positive rates and utility preservation.
 
 #### Table 5: Benign Workload False Positive Rates and Utility Preservation (A3c)
 
-<!-- RESULTS:BEGIN table_benign_overhead -->
 | Gate Condition | Evaluated Messages | Blocked Messages | Realized Message FPR [95% CI] | Nominal Target FPR | Episode False Alarm Rate | Report Utility ($U$) |
 |---|---|---|---|---|---|---|
 | **$D_1$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
 | **$D_2$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
 | **$D_3$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
 | **$D_5$ Tiered Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_benign_overhead -->
 
 ### 6.5 Layered Filtering Computational Efficiency (Hypothesis H7)
 
@@ -345,13 +343,23 @@ Table 6 quantifies operational routing distribution and computational savings ac
 
 #### Table 6: D5 Computational Efficiency and Routing Distribution
 
-<!-- RESULTS:BEGIN table_d5_efficiency -->
 | Evaluation Split | Total Messages | Fast Pass ($S_{\text{D1}} < t_{\text{low}}$) | Fast Block ($S_{\text{D1}} > t_{\text{high}}$) | Routed to Stage 2 ($D_3$) | LLM Invocation Reduction (%) | Realized FPR |
 |---|---|---|---|---|---|---|
 | **TRAIN Messages** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **TEST Messages (A2)** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 | **Online Messages (A3)** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-<!-- RESULTS:END table_d5_efficiency -->
+
+### 6.6 Provider Billing and Financial Cost Accounting
+
+Table 7 summarizes provider API usage, token consumption, and financial billing across experimental conditions.
+
+#### Table 7: Provider Billing and Financial Cost Accounting
+
+<!-- RESULTS:BEGIN table_4_cost_accounting -->
+| Provider | Billing Unit | Mock | Known Cost | Cost | Attempts | Attempts Unknown Usage | Provider Returns | Known Provider Returns |
+|---|---|---|---|---|---|---|---|---|
+| `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
+<!-- RESULTS:END table_4_cost_accounting -->
 
 ---
 
