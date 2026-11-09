@@ -410,6 +410,22 @@ def test_cost_fn_sets_cost_usd_in_llm_call_events() -> None:
         assert call.payload["cost_usd"] == expected
 
 
+def test_cost_record_callback_keeps_credit_cost_out_of_usd() -> None:
+    events: list[EventRecord] = []
+    asyncio.run(run_episode(
+        make_world(rounds=1), FakeClient(noop_script), Builder(), events.append,
+        cost_record_fn=lambda result: {
+            "cost_usd": None,
+            "cost_credits": result.tokens_in / 100,
+            "billing_unit": "credits",
+        },
+    ))
+    for event in of_kind(events, "llm_call"):
+        assert event.payload["cost_usd"] is None
+        assert event.payload["cost_credits"] == event.payload["tokens_in"] / 100
+        assert event.payload["billing_unit"] == "credits"
+
+
 def test_gate_context_excludes_stale_rounds_without_changing_prompt_history() -> None:
     def script(agent: int, rnd: int) -> str:
         if agent == 0 and rnd in (0, 1):
