@@ -272,8 +272,8 @@ def test_render_results_end_to_end_with_synthetic_fixtures(tmp_path: Path) -> No
     assert "round | topology | harm | infected_mean | ci_lo | ci_hi" in report_rendered
     assert "estimated" in report_rendered
     assert "D1 | seen | 0.850 | 0.720 | 0.940" in report_rendered
-    assert "D1 | 15 | 0.400 | 0.031" in report_rendered
-    assert "adaption | credits | 125.5 | 30" in report_rendered
+    assert "D1 | n/a | n/a | 15 | 0.400 |" in report_rendered
+    assert "adaption | credits | 30 | n/a | 125.500 |" in report_rendered
 
     # Execute render_results in check mode; should pass with exit code 0
     check_exit_code = render_results.main(["--root", str(tmp_path), "--check"])

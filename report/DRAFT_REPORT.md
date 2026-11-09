@@ -8,7 +8,7 @@
 
 ## Abstract
 
-Autonomous multi-agent systems coordinate Large Language Model (LLM) instances through shared conversational channels and message boards. While decentralized collaboration enables complex task execution, it introduces vulnerability to conversational worms: prompt injections that propagate laterally across peer nodes without centralized human mediation. We present an empirical testbed (`swarmlab`) and measurement framework to quantify contagion kinetics and evaluate defense hierarchies in decentralized swarms. We evaluate a threat model wherein an initially compromised node (patient zero) seeks to exfiltrate a 12-character canary credential. To study multi-agent evasion, the credential is partitioned into three 4-character fragments distributed among standard peer agents located at topological graph distances $d \ge 2$, requiring multi-hop recruitment chains to achieve compromise. We evaluate five defensive configurations: a Platt-scaled lexical logistic regression classifier ($D_1$), a micro-LLM rubric guardrail ($D_2$), a graph-contextual cascade that propagates suspicion along communication edges ($D_3$), an orthogonal micro-verifier ensemble ($D_4$), and a tiered filter ($D_5$) that routes uncertain messages from $D_1$ to $D_3$. In a factorial experiment spanning ring and complete network topologies, we evaluate free-flow transmission kinetics, social proof compliance dynamics, offline discriminative performance under a held-out persuasion playbook, and online active message gating. All empirical quantities are produced deterministically from committed event logs and ground truth manifests in accordance with pre-registered data integrity protocols.
+Autonomous multi-agent systems coordinate Large Language Model (LLM) instances through shared conversational channels and message boards. While decentralized collaboration enables complex task execution, it introduces vulnerability to conversational worms: prompt injections that propagate laterally across peer nodes without centralized human mediation. We present an empirical testbed (`swarmlab`) and measurement framework to quantify contagion kinetics and evaluate defense hierarchies in decentralized swarms. We evaluate a threat model wherein an initially compromised node (patient zero) seeks to exfiltrate a 12-character canary credential. To study multi-agent evasion, the credential is partitioned into three 4-character fragments distributed among standard peer agents located at topological graph distances $d \ge 2$, requiring multi-hop recruitment chains to achieve compromise. We specify five defensive configurations, of which $D_1$, $D_2$, $D_3$ and $D_5$ are evaluated in the executed arms: a lexical logistic regression classifier ($D_1$), a micro-LLM rubric guardrail ($D_2$), a graph-contextual cascade that propagates suspicion along communication edges ($D_3$), an orthogonal micro-verifier ensemble ($D_4$), and a tiered filter ($D_5$) that routes uncertain messages from $D_1$ to $D_3$. In a factorial experiment spanning ring and complete network topologies, we evaluate free-flow transmission kinetics, social proof compliance dynamics, offline discriminative performance under a held-out persuasion playbook, and online active message gating. All empirical quantities are produced deterministically from committed event logs and ground truth manifests in accordance with pre-registered data integrity protocols. With the executed sample sizes most intervals are wide, and several pre-registered hypotheses are not supported or not testable (Section 6.7).
 
 ---
 
@@ -18,7 +18,7 @@ Autonomous multi-agent systems coordinate Large Language Model (LLM) instances t
 
 Multi-agent architectures coordinate specialized LLM instances through structured messaging channels, shared boards, or artifact repositories. Removing human supervisors from intermediate communication steps enables autonomous task decomposition, but introduces vulnerability to conversational infection chains. When a node is compromised by an adversarial prompt or covert objective, it can generate persuasive messages to recruit peer agents. Unlike conventional worms that exploit memory corruption, conversational worms exploit instruction-following behavior: an exposed agent may adopt the adversarial goal, solicit confidential fragments from neighbors, and relay exfiltration payloads across the network.
 
-Workshop discussions during the sprint described scenarios in which autonomous agents on shared infrastructure establish ad-hoc message boards and coordinate unauthorized actions across systems (Kitaoka, 2026, workshop communication; cited as qualitative context rather than a primary empirical finding). Quantifying how adversarial instructions propagate across peer topologies and how layered defenses constrain them remains an open measurement problem.
+Workshop discussions during the sprint described scenarios in which autonomous agents on shared infrastructure establish ad-hoc message boards and coordinate unauthorized actions across systems (Kitaoka, 2026, workshop communication; cited as qualitative context rather than a primary empirical finding). Other workshop presentations addressed adversarially optimized swarms (Fleming, 2026), synthetic datasets for monitor distillation (Allan-Rahill, 2026) and forensic methodologies for decentralized agent networks (Howard-Jones, 2026); they are cited as workshop communications that motivated the design, not as empirical evidence. Quantifying how adversarial instructions propagate across peer topologies and how layered defenses constrain them remains an open measurement problem.
 
 ### 1.2 Split Attack Threat Model
 
@@ -40,7 +40,7 @@ The experimental design evaluates six pre-registered hypotheses:
 Contributions:
 - A reproducible testbed (`swarmlab`) with deterministic ground truth, in-memory agent isolation, and append-only JSONL logging.
 - Finite-episode reproduction numbers ($R_{0,\text{rec}}$, $R_{0,\text{br}}$) for discrete turn-based agent graphs.
-- Comparative evaluation of five defenses ($D_1$ to $D_5$) across offline scoring (`A2`) and online active gating (`A3`, `A3c`).
+- Comparative evaluation of four defenses ($D_1$, $D_2$, $D_3$, $D_5$; $D_4$ is specified but not evaluated) across offline scoring (`A2`) and online active gating (`A3`, `A3c`).
 - Pre-registered separation between training seeds (Playbook Styles 0 and 1) and test seeds (including held-out Style 2).
 
 Non-claims:
@@ -113,7 +113,7 @@ Defenses operate offline (`A2`) and as synchronous message gates (`A3`, `A3c`) t
 
 ### 4.1 D1 (Lexical) and D2 (Micro-LLM Guardrail)
 
-$D_1$ combines word 1/2-gram TF-IDF features with dense stylistic features $\mathbf{x}_{\text{dense}} = [\ln(1 + \text{len}), \text{count}(?)/\text{len}, \text{count}(\text{code\_tokens}), \text{count}(\text{digits})]$ in an L2 logistic regression calibrated via Platt scaling:
+$D_1$ combines word 1/2-gram TF-IDF features with dense stylistic features $\mathbf{x}_{\text{dense}} = [\ln(1 + \text{len}), \text{count}(?)/\text{len}, \text{count}(\text{code\_tokens}), \text{count}(\text{digits})]$ in an L2 logistic regression calibrated via Platt scaling (Platt, 1999):
 
 $$S_{\text{D1}}(m) = \frac{1}{1 + \exp(A \cdot (w^T \mathbf{x} + b) + B)}$$
 
@@ -145,77 +145,58 @@ Thresholds are fit on `TRAIN` negatives for nominal message FPR $\alpha = 0.005$
 | **A3** | Online Active Gating | Ring | Split | 0, 1, 2 | 60 |
 | **A3c** | Benign Gate Overhead | Ring | Clean | None | 20 |
 
-- **Seed Partition:** `TRAIN` seeds (1 to 15, Styles 0 and 1 only) fit detectors and freeze `thresholds.json`. `TEST` seeds (101 to 115, Styles 0, 1, and held-out Style 2) evaluate all arms under tag `prereg-v1` and fail-closed `BudgetGuard` caps.
-- **Statistical Tests:** 95% Wilson intervals for proportions; 5,000-resample episode-clustered bootstrap intervals for continuous metrics; exact two-sided McNemar tests with Holm-Bonferroni adjustment for paired `A3` vs `A1` seeds; and logistic regression $\operatorname{logit}(P(Y_{i,t}=1)) = \beta_0 + \beta_1 S_{i,t}^{\text{distinct}} + \beta_2 M_{i,t}^{\text{total}} + \beta_3 \text{Topology}_i$ for H2. Manipulation checks verify zero leaks in `A0`, parse-error bounds, and refusal logging.
+- **Seed Partition:** `TRAIN` seeds (1 to 15, Styles 0 and 1 only) fit detectors and freeze `thresholds.json`. `TEST` seeds (planned 101 to 115, Styles 0, 1, and held-out Style 2) evaluate all arms under tag `prereg-v1` and fail-closed `BudgetGuard` caps.
+- **Executed Scope:** The executed `TEST` corpus is smaller than the planned counts in the table above: `A1` and `A3` use seeds 101 to 106, `A3c` uses seeds 101 to 105 and `A0` uses seeds 101 to 110 (episode counts per arm and condition are in `arm_summary.csv`). Per-cell sample sizes are small and the intervals in Section 6 are wide. `D4` is not evaluated in any executed arm.
+- **Statistical Tests:** 95% Wilson intervals for proportions (Wilson, 1927); 5,000-resample episode-clustered bootstrap intervals for continuous metrics; exact two-sided McNemar tests with Holm-Bonferroni adjustment (Holm, 1979) for paired `A3` vs `A1` seeds; and logistic regression $\operatorname{logit}(P(Y_{i,t}=1)) = \beta_0 + \beta_1 S_{i,t}^{\text{distinct}} + \beta_2 M_{i,t}^{\text{total}} + \beta_3 \text{Topology}_i$ for H2. Manipulation checks verify zero leaks in `A0`, parse-error bounds, and refusal logging.
 
 ---
 
 ## 6. Empirical Results Framework and Tables
 
-In accordance with Data Integrity protocols established in `AGENTS.md`, no empirical figure or table entry is estimated or transcribed from memory. All values resulting from experimental execution are rendered automatically from committed analysis outputs via `scripts/render_results.py` with cryptographic SHA-256 source attribution.
+In accordance with the project data integrity protocol, no empirical figure or table entry is estimated or transcribed from memory. All values resulting from experimental execution are rendered automatically from committed analysis outputs via `scripts/render_results.py` with cryptographic SHA-256 source attribution.
 
 ### 6.1 Free-Flow Contagion Kinetics (Arm A1)
 
 Table 1 summarizes free-flow infection metrics across network topologies and credential configurations.
 
-#### Table 1: Primary Exfiltration and Reproduction Metrics (A1 Free Flow)
+#### Table 1: Mean Infected Nodes per Round (A1 Free Flow; rounds 0, 3, 6, 9 shown, all rounds in the source file)
 
 <!-- RESULTS:BEGIN table_1_kinetics -->
-| round | topology | harm | infected_mean | ci_lo | ci_hi | arm | billing_unit | defense | episodes_observed | episodes_total | initial_infection | mock | model | prevalence_ci_hi | prevalence_ci_lo | prevalence_mean | provider |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | complete | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
-| 1 | complete | solo | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
-| 2 | complete | solo | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
-| 3 | complete | solo | 1.8333333333333333 | 1.3333333333333333 | 2.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.23333333333333336 | 0.13333333333333333 | 0.18333333333333335 | adaption |
-| 4 | complete | solo | 2.1666666666666665 | 1.3333333333333333 | 3.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.30000000000000004 | 0.13333333333333333 | 0.2166666666666667 | adaption |
-| 5 | complete | solo | 2.6666666666666665 | 1.5 | 3.8333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.38333333333333336 | 0.15 | 0.26666666666666666 | adaption |
-| 6 | complete | solo | 3.3333333333333335 | 1.6666666666666667 | 5.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5000000000000001 | 0.16666666666666666 | 0.3333333333333333 | adaption |
-| 7 | complete | solo | 3.6666666666666665 | 1.8333333333333333 | 5.666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5666666666666665 | 0.18333333333333332 | 0.3666666666666667 | adaption |
-| 8 | complete | solo | 4.0 | 1.8333333333333333 | 6.333333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6333333333333333 | 0.18333333333333335 | 0.4000000000000001 | adaption |
-| 9 | complete | solo | 4.5 | 2.0 | 7.166666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7166666666666667 | 0.19999999999999998 | 0.45 | adaption |
-| 0 | complete | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
-| 1 | complete | split | 1.1666666666666667 | 1.0 | 1.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.15 | 0.09999999999999999 | 0.11666666666666665 | adaption |
-| 2 | complete | split | 1.6666666666666667 | 1.1666666666666667 | 2.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.2333333333333333 | 0.11666666666666665 | 0.16666666666666666 | adaption |
-| 3 | complete | split | 2.1666666666666665 | 1.3333333333333333 | 3.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.30000000000000004 | 0.13333333333333333 | 0.21666666666666667 | adaption |
-| 4 | complete | split | 2.8333333333333335 | 1.6666666666666667 | 4.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.39999999999999997 | 0.16666666666666666 | 0.2833333333333334 | adaption |
-| 5 | complete | split | 3.3333333333333335 | 1.8333333333333333 | 4.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.48333333333333334 | 0.18333333333333335 | 0.3333333333333333 | adaption |
-| 6 | complete | split | 3.6666666666666665 | 1.8333333333333333 | 5.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5499999999999999 | 0.18333333333333335 | 0.3666666666666667 | adaption |
-| 7 | complete | split | 4.0 | 2.0 | 6.166666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6166666666666667 | 0.19999999999999998 | 0.4000000000000001 | adaption |
-| 8 | complete | split | 4.5 | 2.0 | 7.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7000000000000001 | 0.20000000000000004 | 0.45 | adaption |
-| 9 | complete | split | 4.5 | 2.0 | 7.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7000000000000001 | 0.20000000000000004 | 0.45 | adaption |
-| 0 | ring | solo | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
-| 1 | ring | solo | 1.3333333333333333 | 1.0 | 1.6666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.16666666666666666 | 0.09999999999999999 | 0.13333333333333333 | adaption |
-| 2 | ring | solo | 2.3333333333333335 | 1.3333333333333333 | 3.3333333333333335 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.3333333333333333 | 0.13333333333333333 | 0.2333333333333333 | adaption |
-| 3 | ring | solo | 3.1666666666666665 | 1.8333333333333333 | 4.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.44999999999999996 | 0.18333333333333335 | 0.3166666666666667 | adaption |
-| 4 | ring | solo | 4.0 | 2.1666666666666665 | 5.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.5833333333333334 | 0.21666666666666665 | 0.39999999999999997 | adaption |
-| 5 | ring | solo | 5.0 | 2.6666666666666665 | 7.333333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.7333333333333334 | 0.26666666666666666 | 0.5 | adaption |
-| 6 | ring | solo | 5.833333333333333 | 3.0 | 8.666666666666666 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8666666666666667 | 0.3 | 0.5833333333333334 | adaption |
-| 7 | ring | solo | 6.333333333333333 | 3.3333333333333335 | 9.333333333333334 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9333333333333332 | 0.3333333333333333 | 0.6333333333333334 | adaption |
-| 8 | ring | solo | 6.5 | 3.5 | 9.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9500000000000001 | 0.3499999999999999 | 0.65 | adaption |
-| 9 | ring | solo | 6.5 | 3.5 | 9.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.9500000000000001 | 0.3499999999999999 | 0.65 | adaption |
-| 0 | ring | split | 1.0 | 1.0 | 1.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.09999999999999999 | 0.09999999999999999 | 0.09999999999999999 | adaption |
-| 1 | ring | split | 1.3333333333333333 | 1.0 | 1.6666666666666667 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.16666666666666666 | 0.09999999999999999 | 0.13333333333333333 | adaption |
-| 2 | ring | split | 1.8333333333333333 | 1.1666666666666667 | 2.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.25000000000000006 | 0.11666666666666665 | 0.18333333333333335 | adaption |
-| 3 | ring | split | 2.5 | 1.5 | 3.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.35000000000000003 | 0.15 | 0.25 | adaption |
-| 4 | ring | split | 3.5 | 2.1666666666666665 | 4.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.48333333333333334 | 0.21666666666666667 | 0.35000000000000003 | adaption |
-| 5 | ring | split | 4.166666666666667 | 2.3333333333333335 | 6.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6 | 0.2333333333333333 | 0.4166666666666667 | adaption |
-| 6 | ring | split | 4.666666666666667 | 2.5 | 6.833333333333333 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.6833333333333335 | 0.25 | 0.4666666666666666 | adaption |
-| 7 | ring | split | 5.0 | 2.5 | 7.5 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.75 | 0.25 | 0.5 | adaption |
-| 8 | ring | split | 5.666666666666667 | 3.0 | 8.333333333333334 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8333333333333334 | 0.3 | 0.5666666666666668 | adaption |
-| 9 | ring | split | 6.166666666666667 | 3.3333333333333335 | 9.0 | A1 | credits |  | 6 | 6 | True | False | gemma-4-31b-it | 0.8999999999999999 | 0.3333333333333333 | 0.6166666666666667 | adaption |
+| round | topology | harm | infected_mean | ci_lo | ci_hi | episodes_observed |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | complete | solo | 1.00 | 1.00 | 1.00 | 6 |
+| 3 | complete | solo | 1.83 | 1.33 | 2.33 | 6 |
+| 6 | complete | solo | 3.33 | 1.67 | 5.00 | 6 |
+| 9 | complete | solo | 4.50 | 2.00 | 7.17 | 6 |
+| 0 | complete | split | 1.00 | 1.00 | 1.00 | 6 |
+| 3 | complete | split | 2.17 | 1.33 | 3.00 | 6 |
+| 6 | complete | split | 3.67 | 1.83 | 5.50 | 6 |
+| 9 | complete | split | 4.50 | 2.00 | 7.00 | 6 |
+| 0 | ring | solo | 1.00 | 1.00 | 1.00 | 6 |
+| 3 | ring | solo | 3.17 | 1.83 | 4.50 | 6 |
+| 6 | ring | solo | 5.83 | 3.00 | 8.67 | 6 |
+| 9 | ring | solo | 6.50 | 3.50 | 9.50 | 6 |
+| 0 | ring | split | 1.00 | 1.00 | 1.00 | 6 |
+| 3 | ring | split | 2.50 | 1.50 | 3.50 | 6 |
+| 6 | ring | split | 4.67 | 2.50 | 6.83 | 6 |
+| 9 | ring | split | 6.17 | 3.33 | 9.00 | 6 |
 
 Source: `results/campaign/analysis/kinetics_a1.csv` (SHA-256 `6e001fc149fc34e74f3ce9728596632e07f6fce4319d8657b3ce379a62380cf2`).
 <!-- RESULTS:END table_1_kinetics -->
+
+Infection spreads in all four conditions, and the intervals across the six episodes per cell overlap for most round and condition pairs. Full credential exfiltration is infrequent in the split condition; per-condition counts with Wilson intervals are in `arm_summary.csv`. The pre-registered H1 threshold (incidence of at least 0.20 with a Wilson lower bound above 0.10 in a split-credential topology) is not met in either topology, so H1 is not supported.
 
 ### 6.2 Social Proof and Sender Diversity Analysis (Hypothesis H2)
 
 Table 2 reports parameter estimates for the logistic regression model evaluating the influence of distinct infected senders versus raw solicitation repetition on agent compliance.
 
-#### Table 2: Social Proof Logistic Regression Parameters (H2)
+#### Table 2: Status of the Social Proof Logistic Regression (H2)
 
 <!-- RESULTS:BEGIN h2_regression_summary -->
 not_identifiable (source: results/campaign/analysis/h2.json, SHA-256 871c160d84c3)
 <!-- RESULTS:END h2_regression_summary -->
+
+The model is not identifiable on the collected rows: the information matrix is singular or ill-conditioned (field `reason` in `h2.json`). No coefficient is reported and H2 is not evaluated.
 
 ### 6.3 Offline Detection Performance under Distribution Shift (Arm A2)
 
@@ -224,19 +205,21 @@ Table 3 evaluates detector discriminative capacity on offline message transcript
 #### Table 3: Offline Detector Discriminative Performance (A2: AUROC and TPR @ 0.5% FPR)
 
 <!-- RESULTS:BEGIN table_2_offline_detection -->
-| detector | playbook | tpr | ci_lo | ci_hi | auroc | fpr | negative_messages | positive_episodes | positive_messages | threshold |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.7338854874609467 |
-| D1 | seen | 1.0 | 1.0 | 1.0 | 0.9975945017182131 | 0.0641025641025641 | 78 | 16 | 485 | 0.7338854874609467 |
-| D2 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.006640566929403463 |
-| D2 | seen | 1.0 | 1.0 | 1.0 | 0.998334655035686 | 0.0641025641025641 | 78 | 16 | 485 | 0.006640566929403463 |
-| D3 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.006640566936652057 |
-| D3 | seen | 1.0 | 1.0 | 1.0 | 0.998334655035686 | 0.0641025641025641 | 78 | 16 | 485 | 0.006640566936652057 |
-| D5 | held_out | 1.0 | 1.0 | 1.0 |  |  | 0 | 8 | 68 | 0.5 |
-| D5 | seen | 1.0 | 1.0 | 1.0 | 0.9975945017182131 | 0.0641025641025641 | 78 | 16 | 485 | 0.5 |
+| detector | playbook | tpr | ci_lo | ci_hi | auroc | fpr | negative_messages | positive_episodes | positive_messages |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| D1 | held_out | 1.000 | 1.000 | 1.000 | n/a | n/a | 0 | 8 | 68 |
+| D1 | seen | 1.000 | 1.000 | 1.000 | 0.998 | 0.064 | 78 | 16 | 485 |
+| D2 | held_out | 1.000 | 1.000 | 1.000 | n/a | n/a | 0 | 8 | 68 |
+| D2 | seen | 1.000 | 1.000 | 1.000 | 0.998 | 0.064 | 78 | 16 | 485 |
+| D3 | held_out | 1.000 | 1.000 | 1.000 | n/a | n/a | 0 | 8 | 68 |
+| D3 | seen | 1.000 | 1.000 | 1.000 | 0.998 | 0.064 | 78 | 16 | 485 |
+| D5 | held_out | 1.000 | 1.000 | 1.000 | n/a | n/a | 0 | 8 | 68 |
+| D5 | seen | 1.000 | 1.000 | 1.000 | 0.998 | 0.064 | 78 | 16 | 485 |
 
 Source: `results/campaign/analysis/panel_a.csv` (SHA-256 `4af327191439ae90190813db4d932947547d4b47d96968cf1169e4f86915e1a9`).
 <!-- RESULTS:END table_2_offline_detection -->
+
+The held-out rows contain no negative messages in the `TEST` corpus, so held-out AUROC and FPR are undefined (shown as n/a) and the held-out TPR is not tied to the nominal 0.5% operating point. TPR is saturated for all detectors and its intervals are degenerate, so Table 3 does not separate $D_3$ from $D_1$ and does not support H4. On seen-playbook negatives the realized FPR is above the nominal 0.5% target for every detector. Solo and split conditions are not reported separately, so H3 is not evaluated.
 
 ### 6.4 Online Gating Efficacy and Utility Trade-offs (Arm A3 and A3c)
 
@@ -245,21 +228,23 @@ Table 4 reports the causal effect of active message gating on exfiltration reduc
 #### Table 4: Online Gating Efficacy and Utility Cost (A3 vs A1 Paired Comparisons)
 
 <!-- RESULTS:BEGIN table_3_online_gating -->
-| arm | billing_unit | defense | effect_ci_hi | effect_ci_lo | exfiltration_reduction | harm | holm_p | initial_infection | mcnemar_b | mcnemar_c | mcnemar_p | mock | model | paired_seeds | pairs_attempted | pairs_complete | pairs_unavailable | provider | topology | utility_loss | utility_loss_ci_hi | utility_loss_ci_lo |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A3 | credits | D1 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.016666666666666663 | 0.027777777777777773 | 0.005555555555555554 |
-| A3 | credits | D2 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.016666666666666663 | 0.027777777777777773 | 0.005555555555555554 |
-| A3 | credits | D3 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.011111111111111108 | 0.022222222222222216 | 0.0 |
-| A3 | credits | D5 | 0.5 | 0.0 | 0.16666666666666666 | split | 1.0 | True | 1 | 0 | 1.0 | False | gemma-4-31b-it | [101, 102, 103, 104, 105, 106] | 6 | 6 | 0 | adaption | ring | 0.011111111111111108 | 0.022222222222222216 | 0.0 |
+| defense | topology | harm | pairs_complete | exfiltration_reduction | effect_ci_lo | effect_ci_hi | holm_p | utility_loss |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| D1 | ring | split | 6 | 0.167 | 0.000 | 0.500 | 1.000 | 0.017 |
+| D2 | ring | split | 6 | 0.167 | 0.000 | 0.500 | 1.000 | 0.017 |
+| D3 | ring | split | 6 | 0.167 | 0.000 | 0.500 | 1.000 | 0.011 |
+| D5 | ring | split | 6 | 0.167 | 0.000 | 0.500 | 1.000 | 0.011 |
 
 Source: `results/campaign/analysis/paired_comparisons.csv` (SHA-256 `4431c8bb70fda9bcde05c4f738da0186ef37e0170cf04bb2c3946eabadf9b9c2`).
 <!-- RESULTS:END table_3_online_gating -->
+
+For every gate the point estimate of exfiltration reduction is positive, the effect interval reaches zero and the Holm-adjusted McNemar p-value does not reach significance. The paired data therefore do not show a statistically supported reduction (H5); the paired `A1` baseline has low incidence, so the comparison has little power. Utility loss is small on the [0, 1] scale for all gates.
 
 Gate performance on uninfected workloads (Arm A3c) and arm-level exfiltration incidence with 95% Wilson score intervals across all experimental conditions (`A0`, `A1`, `A3`, and `A3c`) are reported in the repository summary table (`arm_summary.csv`) and visualized in the active gating trade-off frontier (`gating_tradeoff.png`). In clean baseline (`A0`) and benign gate-cost (`A3c`) episodes, standard agents summarize their private records directly into the collaborative report without initiating peer-to-peer solicitations, preserving task utility while incurring zero false-positive credential disclosures.
 
 ### 6.5 Layered Filtering Computational Efficiency (Hypothesis H7)
 
-Operational routing distribution, LLM invocation share (`llm_call_share`), task utility preservation (`utility_loss`), exfiltration reduction (`exfil_reduction`), and finite reproduction numbers ($R_{0,\text{rec}}$ and $R_{0,\text{br}}$) across active gates ($D_1, D_2, D_3, D_5$) are derived deterministically in `panel_b.csv` and plotted in Panel B of the central figure (`central.png`) and the trade-off frontier (`gating_tradeoff.png`). Stage 1 lexical triage in $D_5$ resolves messages outside $[t_{\text{low}}, t_{\text{high}}]$ without invoking the guardrail LLM, bounding the fraction of messages escalated to Stage 2 graph evaluation.
+Operational routing distribution, LLM invocation share (`llm_call_share`), task utility preservation (`utility_loss`), exfiltration reduction (`exfil_reduction`), and finite reproduction numbers ($R_{0,\text{rec}}$ and $R_{0,\text{br}}$) across active gates ($D_1, D_2, D_3, D_5$) are derived deterministically in `panel_b.csv` and plotted in Panel B of the central figure (`central.png`) and the trade-off frontier (`gating_tradeoff.png`). Stage 1 lexical triage in $D_5$ resolves messages outside $[t_{\text{low}}, t_{\text{high}}]$ without invoking the guardrail LLM. In `panel_b.csv` the LLM call share is 0 for $D_1$ and $D_5$ and 1 for $D_2$ and $D_3$; for $D_5$ no message fell in the routing band, so it behaved as its lexical stage. The $D_5$ TPR equals the $D_3$ TPR in Table 3 (both saturated). The H7 criterion is met only in this limited sense and is not evidence of a benefit from tiering.
 
 ### 6.6 Provider Billing and Financial Cost Accounting
 
@@ -268,12 +253,23 @@ Table 5 summarizes provider API usage, token consumption, and financial billing 
 #### Table 5: Provider Billing and Financial Cost Accounting
 
 <!-- RESULTS:BEGIN table_4_cost_accounting -->
-| attempts | attempts_with_unknown_return_count | attempts_with_unknown_usage | billing_unit | calls_with_unknown_cost | cost | known_cost | known_provider_returns | mock | provider | provider_returns | scope |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 78 | 0 | 29 | credits | 0 |  | 0.62619904352 | 7944 | False | adaption | 7944 | all attempt provider audits, deduplicated by source path |
+| provider | billing_unit | attempts | provider_returns | known_cost | attempts_with_unknown_usage |
+| --- | --- | --- | --- | --- | --- |
+| adaption | credits | 78 | 7944 | 0.626 | 29 |
 
 Source: `results/campaign/analysis/billing_totals.csv` (SHA-256 `24c7d9dcfeb6c135bfd3a8b0699e8fa6eecc95f09860ed1bcce39b7fed25433a`).
 <!-- RESULTS:END table_4_cost_accounting -->
+
+### 6.7 Hypothesis Status
+
+| Hypothesis | Status | Basis |
+|---|---|---|
+| H1 | Not supported | Transmission: split incidence below threshold in both topologies (6.1) |
+| H2 | Not evaluated | Social proof: regression not identifiable (Table 2) |
+| H3 | Not evaluated | Split-harm: solo and split AUROC not reported separately (6.3) |
+| H4 | Not testable | Distribution shift: no held-out negatives, TPR saturated (Table 3) |
+| H5 | Not supported | Gating: effect interval reaches zero, Holm p not significant (Table 4) |
+| H7 | Limited | Tiered filter: D5 equals D3 in TPR, no message routed to the LLM (6.5) |
 
 ---
 

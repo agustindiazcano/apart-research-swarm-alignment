@@ -37,12 +37,34 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(list(argv) if argv is not None else None)
 
 
+def _format_cell(value: str, precision: int | None) -> str:
+    """Round a numeric-looking cell to ``precision`` decimals; leave other text unchanged."""
+    if precision is None:
+        return value
+    if value == "":
+        return "n/a"
+    if "." not in value:
+        return value
+    try:
+        number = float(value)
+    except ValueError:
+        return value
+    return f"{number:.{precision}f}"
+
+
 def render_table_block(
     source_path: Path,
     source_rel: str,
     columns: list[str] | None,
+    precision: int | None = None,
+    row_filter: dict[str, list[str]] | None = None,
 ) -> str:
-    """Render a CSV file as a Markdown table with source attribution."""
+    """Render a CSV file as a Markdown table with source attribution.
+
+    ``columns`` selects and orders columns. ``row_filter`` keeps only rows whose
+    value in a column is in the allowed list. ``precision`` rounds float-looking
+    cells for display only; the SHA-256 is always of the unmodified source file.
+    """
     source_bytes = source_path.read_bytes()
     sha256_hex = hashlib.sha256(source_bytes).hexdigest()
 
@@ -52,6 +74,11 @@ def render_table_block(
         rows = list(reader)
 
     cols = list(columns) if columns else list(fieldnames)
+    if row_filter:
+        rows = [
+            r for r in rows
+            if all((r.get(k) or "") in allowed for k, allowed in row_filter.items())
+        ]
 
     lines: list[str] = [
         f"| {' | '.join(cols)} |",
@@ -60,7 +87,7 @@ def render_table_block(
 
     for row in rows:
         # A pipe inside a cell would split the Markdown cell; escape it, change nothing else.
-        row_cells = [(row.get(col) or "").replace("|", "\\|") for col in cols]
+        row_cells = [_format_cell(row.get(col) or "", precision).replace("|", "\\|") for col in cols]
         lines.append(f"| {' | '.join(row_cells)} |")
 
     lines.append("")
@@ -112,7 +139,9 @@ def render_block(
         columns = block.get("columns")
         if columns is not None and not isinstance(columns, list):
             raise ValueError(f"columns must be a list in block '{block.get('name')}'")
-        content = render_table_block(source_path, source_rel, columns)
+        precision = block.get("precision")
+        row_filter = block.get("row_filter")
+        content = render_table_block(source_path, source_rel, columns, precision, row_filter)
         return content, True
     elif kind == "value":
         key = block.get("key")

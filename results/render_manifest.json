@@ -10,7 +10,25 @@
       "name": "table_1_kinetics",
       "file": "report/DRAFT_REPORT.md",
       "source": "results/campaign/analysis/kinetics_a1.csv",
-      "kind": "table"
+      "kind": "table",
+      "columns": [
+        "round",
+        "topology",
+        "harm",
+        "infected_mean",
+        "ci_lo",
+        "ci_hi",
+        "episodes_observed"
+      ],
+      "row_filter": {
+        "round": [
+          "0",
+          "3",
+          "6",
+          "9"
+        ]
+      },
+      "precision": 2
     },
     {
       "name": "h2_regression_summary",
@@ -23,19 +41,53 @@
       "name": "table_2_offline_detection",
       "file": "report/DRAFT_REPORT.md",
       "source": "results/campaign/analysis/panel_a.csv",
-      "kind": "table"
+      "kind": "table",
+      "columns": [
+        "detector",
+        "playbook",
+        "tpr",
+        "ci_lo",
+        "ci_hi",
+        "auroc",
+        "fpr",
+        "negative_messages",
+        "positive_episodes",
+        "positive_messages"
+      ],
+      "precision": 3
     },
     {
       "name": "table_3_online_gating",
       "file": "report/DRAFT_REPORT.md",
       "source": "results/campaign/analysis/paired_comparisons.csv",
-      "kind": "table"
+      "kind": "table",
+      "columns": [
+        "defense",
+        "topology",
+        "harm",
+        "pairs_complete",
+        "exfiltration_reduction",
+        "effect_ci_lo",
+        "effect_ci_hi",
+        "holm_p",
+        "utility_loss"
+      ],
+      "precision": 3
     },
     {
       "name": "table_4_cost_accounting",
       "file": "report/DRAFT_REPORT.md",
       "source": "results/campaign/analysis/billing_totals.csv",
-      "kind": "table"
+      "kind": "table",
+      "columns": [
+        "provider",
+        "billing_unit",
+        "attempts",
+        "provider_returns",
+        "known_cost",
+        "attempts_with_unknown_usage"
+      ],
+      "precision": 3
     }
   ]
 }
