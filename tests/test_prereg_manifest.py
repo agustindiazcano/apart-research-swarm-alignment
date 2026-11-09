@@ -6,8 +6,6 @@ import hashlib
 import sys
 from pathlib import Path
 
-import pytest
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.verify_preregistration import (
@@ -177,7 +175,13 @@ def test_execute_prereg_creates_files(tmp_path: Path) -> None:
 
 def test_full_repo_preregistration_verification(tmp_path: Path) -> None:
     """Validate that a complete repository layout passes all preregistration checks."""
-    for rel in (*REQUIRED_CONFIGS, *REQUIRED_PLAYBOOKS, *REQUIRED_MODULES, "docs/EXPERIMENT_DESIGN.md"):
+    all_files = (
+        *REQUIRED_CONFIGS,
+        *REQUIRED_PLAYBOOKS,
+        *REQUIRED_MODULES,
+        "docs/EXPERIMENT_DESIGN.md",
+    )
+    for rel in all_files:
         p = tmp_path / rel
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(f"fixture content for {rel}", encoding="utf-8")
@@ -188,7 +192,13 @@ def test_full_repo_preregistration_verification(tmp_path: Path) -> None:
 def test_cli_main_success_and_failure(tmp_path: Path) -> None:
     """Verify main returns 0 on success and 1 when issues are found."""
     ok_dir = tmp_path / "ok"
-    for rel in (*REQUIRED_CONFIGS, *REQUIRED_PLAYBOOKS, *REQUIRED_MODULES, "docs/EXPERIMENT_DESIGN.md"):
+    all_files = (
+        *REQUIRED_CONFIGS,
+        *REQUIRED_PLAYBOOKS,
+        *REQUIRED_MODULES,
+        "docs/EXPERIMENT_DESIGN.md",
+    )
+    for rel in all_files:
         p = ok_dir / rel
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(f"fixture content for {rel}", encoding="utf-8")
