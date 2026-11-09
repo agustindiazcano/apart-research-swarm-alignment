@@ -1,0 +1,75 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "TRAIN-ring-split-none-s12-r0-a7": 0.2714891892669826,
+    "TRAIN-ring-split-none-s12-r1-a6": 0.03685052847032574,
+    "TRAIN-ring-split-none-s12-r1-a7": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r2-a6": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r2-a7": 0.049171063903567645,
+    "TRAIN-ring-split-none-s12-r2-a8": 0.8270408609161123,
+    "TRAIN-ring-split-none-s12-r3-a5": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r3-a6": 0.715933633711427,
+    "TRAIN-ring-split-none-s12-r3-a7": 0.049154221375050385,
+    "TRAIN-ring-split-none-s12-r3-a8": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r3-a9": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r4-a0": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r4-a4": 0.015294061901750875,
+    "TRAIN-ring-split-none-s12-r4-a6": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r4-a7": 0.7159651897896139,
+    "TRAIN-ring-split-none-s12-r4-a8": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r4-a9": 0.9381519720272233,
+    "TRAIN-ring-split-none-s12-r5-a0": 0.9381519720272233,
+    "TRAIN-ring-split-none-s12-r5-a1": 0.04853273322751778,
+    "TRAIN-ring-split-none-s12-r5-a4": 0.015294061901750875,
+    "TRAIN-ring-split-none-s12-r5-a5": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r5-a6": 0.015294061901750875,
+    "TRAIN-ring-split-none-s12-r5-a7": 0.7159651897896139,
+    "TRAIN-ring-split-none-s12-r5-a8": 0.04929852312294726,
+    "TRAIN-ring-split-none-s12-r5-a9": 0.4937075275827789,
+    "TRAIN-ring-split-none-s12-r6-a1": 0.04853273322751778,
+    "TRAIN-ring-split-none-s12-r6-a4": 0.015294061901750875,
+    "TRAIN-ring-split-none-s12-r6-a5": 0.8270447448225382,
+    "TRAIN-ring-split-none-s12-r6-a6": 0.38263185645628056,
+    "TRAIN-ring-split-none-s12-r6-a7": 0.04930086924682734,
+    "TRAIN-ring-split-none-s12-r6-a8": 0.27152074534516946,
+    "TRAIN-ring-split-none-s12-r6-a9": 0.015294061901750875,
+    "TRAIN-ring-split-none-s12-r7-a1": 0.04853273322751778,
+    "TRAIN-ring-split-none-s12-r7-a4": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r7-a5": 0.04929852312294726,
+    "TRAIN-ring-split-none-s12-r7-a6": 0.7159651897896139,
+    "TRAIN-ring-split-none-s12-r7-a7": 0.04930086924682734,
+    "TRAIN-ring-split-none-s12-r7-a9": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r8-a1": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r8-a3": 0.04627554115879644,
+    "TRAIN-ring-split-none-s12-r8-a4": 0.04926696704476041,
+    "TRAIN-ring-split-none-s12-r8-a6": 0.04929852312294726,
+    "TRAIN-ring-split-none-s12-r8-a7": 0.04912488081860263,
+    "TRAIN-ring-split-none-s12-r8-a9": 0.049263083138334496,
+    "TRAIN-ring-split-none-s12-r9-a1": 0.2714853053605567,
+    "TRAIN-ring-split-none-s12-r9-a2": 0.7159297498050011,
+    "TRAIN-ring-split-none-s12-r9-a3": 0.04627554115879644,
+    "TRAIN-ring-split-none-s12-r9-a4": 0.015294061901750875
+  },
+  "sources": [
+    {
+      "path": "TRAIN-ring-split-none-s12/manifest.json",
+      "sha256": "04c5aaf9d876a21a6d4fabec960cd0d9ecbc3735072a9fb70ae990d581652f01"
+    },
+    {
+      "path": "TRAIN-ring-split-none-s12/result.json",
+      "sha256": "430c549ac0c4a08eb11b9057df0c0db7642691e82b4820bbf7fc1e170d3d8b58"
+    },
+    {
+      "path": "TRAIN-ring-split-none-s12/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "TRAIN-ring-split-none-s12/events.jsonl",
+      "sha256": "b0ce977b46ab6c2fe0599a7795b749cb46eb63caa6f7c55c1b74042702a5b3a9"
+    },
+    {
+      "path": "TRAIN-ring-split-none-s12/gt.json",
+      "sha256": "8b55de7a3f0db22f6abaa0287ebeeab20da501d342323a17ce78e7f514f25882"
+    }
+  ]
+}

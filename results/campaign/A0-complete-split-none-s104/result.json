@@ -1,0 +1,25 @@
+{
+  "arm": "A0",
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "log_path": "events.jsonl",
+      "manifest_path": "manifest.json",
+      "status": "complete"
+    }
+  ],
+  "attempts": 1,
+  "billing_unit": "credits",
+  "defense": null,
+  "episode_id": "A0-complete-split-none-s104",
+  "error": null,
+  "harm": "split",
+  "initial_infection": false,
+  "log_path": "events.jsonl",
+  "mock": false,
+  "model": "gemma-4-31b-it",
+  "provider": "adaption",
+  "seed": 104,
+  "status": "complete",
+  "topology": "complete"
+}

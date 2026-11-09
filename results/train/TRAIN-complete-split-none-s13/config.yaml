@@ -1,0 +1,44 @@
+arm: A1
+billing:
+  cap: 500.0
+  checked_on: '2026-11-08'
+  input_accounting: uncached_rate
+  input_per_m: 0.09
+  ledger_path: artifacts/provider_spend.json
+  output_per_m: 0.34
+  source: https://docs.adaptionlabs.ai/inference-stacks/models/
+  unit: credits
+  verified: true
+detector_artifact_dir: results/detectors
+guardrail:
+  billing:
+    cap: 500.0
+    checked_on: '2026-11-08'
+    input_accounting: uncached_rate
+    input_per_m: 0.04444
+    ledger_path: artifacts/provider_spend.json
+    output_per_m: 0.13332
+    source: https://docs.adaptionlabs.ai/inference-stacks/models/
+    unit: credits
+    verified: true
+  max_retries: 3
+  max_tokens: 600
+  mode: rubric
+  model: deepseek-v4-flash
+  provider: adaption
+  provider_concurrency: 1
+  timeout_s: 30
+harm: split
+initial_infection: true
+k_inbox: 10
+max_retries: 6
+max_tokens: 600
+model: gemma-4-31b-it
+n_agents: 10
+output_dir: results/campaign
+playbook_dir: experiments/payloads
+provider: adaption
+provider_concurrency: 1
+rounds: 10
+timeout_s: 30
+wording: B

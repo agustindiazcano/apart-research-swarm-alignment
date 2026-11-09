@@ -1,0 +1,52 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "TRAIN-complete-split-none-s15-r0-a3": 0.04921999327112503,
+    "TRAIN-complete-split-none-s15-r1-a3": 0.3826849239791589,
+    "TRAIN-complete-split-none-s15-r2-a3": 1.0,
+    "TRAIN-complete-split-none-s15-r2-a4": 0.16046270175693667,
+    "TRAIN-complete-split-none-s15-r3-a3": 0.049351590645825553,
+    "TRAIN-complete-split-none-s15-r3-a4": 0.27157381286804777,
+    "TRAIN-complete-split-none-s15-r3-a5": 0.049351590645825553,
+    "TRAIN-complete-split-none-s15-r4-a3": 1.0,
+    "TRAIN-complete-split-none-s15-r4-a4": 0.049351590645825553,
+    "TRAIN-complete-split-none-s15-r4-a5": 0.048451902510906114,
+    "TRAIN-complete-split-none-s15-r4-a6": 0.04881467876356864,
+    "TRAIN-complete-split-none-s15-r6-a3": 0.2714427676676283,
+    "TRAIN-complete-split-none-s15-r6-a6": 0.04881467876356864,
+    "TRAIN-complete-split-none-s15-r7-a3": 1.0,
+    "TRAIN-complete-split-none-s15-r7-a6": 0.3826849239791589,
+    "TRAIN-complete-split-none-s15-r8-a2": 0.0491639370324131,
+    "TRAIN-complete-split-none-s15-r8-a3": 1.0,
+    "TRAIN-complete-split-none-s15-r8-a6": 0.04881467876356864,
+    "TRAIN-complete-split-none-s15-r8-a7": 0.3826849239791589,
+    "TRAIN-complete-split-none-s15-r9-a1": 0.0491639370324131,
+    "TRAIN-complete-split-none-s15-r9-a2": 0.015294061901750875,
+    "TRAIN-complete-split-none-s15-r9-a3": 1.0,
+    "TRAIN-complete-split-none-s15-r9-a6": 0.7160182573124921,
+    "TRAIN-complete-split-none-s15-r9-a7": 0.49379603509027,
+    "TRAIN-complete-split-none-s15-r9-a8": 0.3826849239791589
+  },
+  "sources": [
+    {
+      "path": "TRAIN-complete-split-none-s15/manifest.json",
+      "sha256": "fde44d253ac17aa14647549898644123b4517b7280cd74efd49f411c8260f08d"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s15/result.json",
+      "sha256": "e3fc70574d4c6e57a2938949eefc71e64a6e26c86b37d33fc33bcbecf05a3394"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s15/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s15/events.jsonl",
+      "sha256": "50236799233751b107120b0d5d83d992ab1a58b44061185d28359f024bf32ac3"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s15/gt.json",
+      "sha256": "61ecc273e23d848c319777742db8a5b0bb66f86380324f25d3fa6d15d984cc3f"
+    }
+  ]
+}

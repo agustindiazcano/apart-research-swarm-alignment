@@ -1,0 +1,60 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-split-none-s102-r0-a2": 0.7159675359134939,
+    "A1-ring-split-none-s102-r1-a1": 0.015294061901750875,
+    "A1-ring-split-none-s102-r1-a2": 0.04929852312294726,
+    "A1-ring-split-none-s102-r2-a1": 0.015294061901750875,
+    "A1-ring-split-none-s102-r2-a2": 0.16040963423405835,
+    "A1-ring-split-none-s102-r2-a3": 0.015294061901750875,
+    "A1-ring-split-none-s102-r3-a1": 0.015294061901750875,
+    "A1-ring-split-none-s102-r3-a2": 0.04912874634456352,
+    "A1-ring-split-none-s102-r3-a3": 0.04929852312294726,
+    "A1-ring-split-none-s102-r4-a1": 0.04912874634456352,
+    "A1-ring-split-none-s102-r4-a2": 0.04930086924682734,
+    "A1-ring-split-none-s102-r4-a3": 0.04929852312294726,
+    "A1-ring-split-none-s102-r4-a4": 0.045630581269760565,
+    "A1-ring-split-none-s102-r5-a0": 0.015294061901750875,
+    "A1-ring-split-none-s102-r5-a1": 0.7159675359134939,
+    "A1-ring-split-none-s102-r5-a2": 0.04930086924682734,
+    "A1-ring-split-none-s102-r5-a4": 0.045630581269760565,
+    "A1-ring-split-none-s102-r6-a0": 0.015294061901750875,
+    "A1-ring-split-none-s102-r6-a2": 0.04930086924682734,
+    "A1-ring-split-none-s102-r6-a3": 0.015294061901750875,
+    "A1-ring-split-none-s102-r6-a4": 0.045630581269760565,
+    "A1-ring-split-none-s102-r7-a0": 0.015294061901750875,
+    "A1-ring-split-none-s102-r7-a2": 0.04922703606054647,
+    "A1-ring-split-none-s102-r7-a4": 0.04929852312294726,
+    "A1-ring-split-none-s102-r8-a0": 0.04930086924682734,
+    "A1-ring-split-none-s102-r8-a3": 0.04929852312294726,
+    "A1-ring-split-none-s102-r8-a4": 0.16040963423405835,
+    "A1-ring-split-none-s102-r8-a5": 0.7159651897896139,
+    "A1-ring-split-none-s102-r9-a0": 0.04930086924682734,
+    "A1-ring-split-none-s102-r9-a4": 0.045630581269760565,
+    "A1-ring-split-none-s102-r9-a5": 0.04929852312294726,
+    "A1-ring-split-none-s102-r9-a6": 0.16040963423405835,
+    "A1-ring-split-none-s102-r9-a9": 0.27152309146904957
+  },
+  "sources": [
+    {
+      "path": "A1-ring-split-none-s102/manifest.json",
+      "sha256": "48b307889ad1617aa0ad8fe75c01b17364c383de39a34004537bcac766d301ad"
+    },
+    {
+      "path": "A1-ring-split-none-s102/result.json",
+      "sha256": "2da1dd88d2987b981a14d19d472b0744e173d75a8de10e5dcbb114ea7871e9ee"
+    },
+    {
+      "path": "A1-ring-split-none-s102/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-split-none-s102/events.jsonl",
+      "sha256": "523adbc5ae4e028bcea0c0066d10eea4ac7e64a0cadf9c8f01f8f7a7ff25996a"
+    },
+    {
+      "path": "A1-ring-split-none-s102/gt.json",
+      "sha256": "f0b0a2b5dd6ce3435a50555f609ad38c3049a57906b11fcf86d33747a9ba841e"
+    }
+  ]
+}

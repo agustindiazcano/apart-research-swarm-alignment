@@ -34,17 +34,15 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes prev
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🔴 | T10 | TRAIN and reported runs | Orchestrator ready on `main`; after `prereg-v1` tag is pushed, run `TRAIN` + detector threshold fitting, then launch parallel TEST campaign before Monday 05:00 ART |
-| 🟡 | T11 | Analysis and figures | Run `swarmlab analyze`, `scripts/audit_intent_agreement.py`, `scripts/generate_publication_figures.py`, `scripts/render_results.py`, and `scripts/export_latex_tables.py` on completed campaign logs |
-| 🟢 | T15 | Report compilation and submission | Compilers ready on `main`; run `scripts/compile_report.py`, `scripts/build_submission_pdf.py`, and `scripts/verify_submission_package.py` on final rendered results |
+| 🟢 | SUBMIT-01 | Optional Wave 2 seed expansion | Wave 1 complete across all 14 cells (`A0`, `A1`, `A2`, `A3`, `A3c`), analyzed, rendered, and compiled to `report/SWARM_CONTAGION_REPORT.pdf` (6/6 submission checks passing). Additional paired seeds can be appended before Monday 07:00 ART |
 
-Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens pending PRs after review and green CI, human merges each. These are configuration decisions, not experimental measurements.
+Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens and merges PRs after green CI under user delegation. These are configuration decisions, not experimental measurements.
 
 ## PRs Open (Human Review and Merge)
 
 | PR | Branch | Contents | CI |
 |---|---|---|---|
-| TBD | chore/prereg-freeze | Set `CallPolicy.backoff_cap_s` to 65.0s and freeze `artifacts/preregistration_manifest.json` and `experiments/PREREGISTRATION.md` (Task T08) | pending |
+| TBD | feat/campaign-results-and-report | Complete `TRAIN` + `TEST` campaign logs, fitted detector artifacts, analysis tables, publication figures, rendered `README.md` and `report/FINAL_REPORT.md`, and compiled `report/SWARM_CONTAGION_REPORT.pdf` (Tasks T10, T11, T14, T15) | pending |
 
 ## Done
 
@@ -62,4 +60,7 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 | T07 | Pilot execution and Gate G2 validation on seeds 901, 902, 903 | PR #41 |
 | SETUP-03 | Automated repository hygiene and context checks in CI | PR #45 |
 | T14 | Results render manifest and table rendering pipeline | PR #44 |
-| T08 | Preregistration manifest freeze and rate-limit backoff resilience | branch `chore/prereg-freeze` |
+| T08 | Preregistration manifest freeze and rate-limit backoff resilience (`prereg-v1`) | PR #51 |
+| T10 | `TRAIN` (15 episodes), detector threshold calibration (`D1`, `D2`, `D3`, `D5`), and balanced `TEST` campaign across `A0`, `A1`, `A2`, `A3`, `A3c` | branch `feat/campaign-results-and-report` |
+| T11 | Deterministic analysis, 100-message intent-content audit, publication figures, and SHA-256 rendered tables | branch `feat/campaign-results-and-report` |
+| T15 | Report compilation, LaTeX export, `report/SWARM_CONTAGION_REPORT.pdf` generation (6 main body pages), and 6/6 submission package verification | branch `feat/campaign-results-and-report` |

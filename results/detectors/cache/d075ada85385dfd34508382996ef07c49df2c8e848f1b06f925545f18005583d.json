@@ -1,0 +1,43 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-complete-solo-none-s103-r0-a7": 1.0,
+    "A1-complete-solo-none-s103-r1-a6": 1.0,
+    "A1-complete-solo-none-s103-r1-a7": 0.2715735306795672,
+    "A1-complete-solo-none-s103-r2-a6": 0.6047678313411803,
+    "A1-complete-solo-none-s103-r2-a7": 0.3827138713499213,
+    "A1-complete-solo-none-s103-r3-a6": 0.493421844985851,
+    "A1-complete-solo-none-s103-r3-a7": 0.938109434334295,
+    "A1-complete-solo-none-s103-r4-a7": 1.0,
+    "A1-complete-solo-none-s103-r5-a7": 0.3825314503450806,
+    "A1-complete-solo-none-s103-r6-a7": 0.49373591752402674,
+    "A1-complete-solo-none-s103-r7-a6": 1.0,
+    "A1-complete-solo-none-s103-r7-a7": 1.0,
+    "A1-complete-solo-none-s103-r8-a6": 0.015294061901750875,
+    "A1-complete-solo-none-s103-r8-a7": 0.7158789424522913,
+    "A1-complete-solo-none-s103-r9-a6": 0.015294061901750875,
+    "A1-complete-solo-none-s103-r9-a7": 0.3826846417906783
+  },
+  "sources": [
+    {
+      "path": "A1-complete-solo-none-s103/manifest.json",
+      "sha256": "e3a5f39de59ef9fe947e9bdd668d62ec1a2c4676f9a07a382cffb82671bf846d"
+    },
+    {
+      "path": "A1-complete-solo-none-s103/result.json",
+      "sha256": "ab9757f90d607e0ab44300d1152cb401420dc8999a0bdb6c47942bb1ccc2c0d3"
+    },
+    {
+      "path": "A1-complete-solo-none-s103/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-complete-solo-none-s103/events.jsonl",
+      "sha256": "0e34e1318ba08296a9932617710e17dfdb008067f22f4359a8ed269bbcb1c67d"
+    },
+    {
+      "path": "A1-complete-solo-none-s103/gt.json",
+      "sha256": "ba0f4adb66800b671c0f885a8e0a3f4e71b82cc05abf85e7357922470f349f67"
+    }
+  ]
+}

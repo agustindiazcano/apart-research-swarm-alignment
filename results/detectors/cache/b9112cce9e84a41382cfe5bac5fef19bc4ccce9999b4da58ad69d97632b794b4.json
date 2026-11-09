@@ -1,0 +1,79 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-solo-none-s103-r0-a7": 1.0,
+    "A1-ring-solo-none-s103-r1-a6": 0.4937957529017894,
+    "A1-ring-solo-none-s103-r1-a7": 1.0,
+    "A1-ring-solo-none-s103-r2-a5": 1.0,
+    "A1-ring-solo-none-s103-r2-a6": 1.0,
+    "A1-ring-solo-none-s103-r2-a7": 0.9382404795347143,
+    "A1-ring-solo-none-s103-r2-a8": 0.49379603509027,
+    "A1-ring-solo-none-s103-r3-a5": 1.0,
+    "A1-ring-solo-none-s103-r3-a6": 1.0,
+    "A1-ring-solo-none-s103-r3-a7": 0.049351590645825553,
+    "A1-ring-solo-none-s103-r3-a8": 0.49379603509027,
+    "A1-ring-solo-none-s103-r3-a9": 1.0,
+    "A1-ring-solo-none-s103-r4-a0": 0.049351590645825553,
+    "A1-ring-solo-none-s103-r4-a4": 0.04919490313498012,
+    "A1-ring-solo-none-s103-r4-a7": 0.49372901811336534,
+    "A1-ring-solo-none-s103-r4-a8": 0.3826849239791589,
+    "A1-ring-solo-none-s103-r4-a9": 1.0,
+    "A1-ring-solo-none-s103-r5-a0": 1.0,
+    "A1-ring-solo-none-s103-r5-a1": 1.0,
+    "A1-ring-solo-none-s103-r5-a7": 0.49379603509027,
+    "A1-ring-solo-none-s103-r5-a8": 1.0,
+    "A1-ring-solo-none-s103-r6-a0": 1.0,
+    "A1-ring-solo-none-s103-r6-a1": 1.0,
+    "A1-ring-solo-none-s103-r6-a2": 1.0,
+    "A1-ring-solo-none-s103-r6-a4": 0.04919490313498012,
+    "A1-ring-solo-none-s103-r6-a7": 0.16046270175693667,
+    "A1-ring-solo-none-s103-r6-a8": 1.0,
+    "A1-ring-solo-none-s103-r7-a0": 0.3826849239791589,
+    "A1-ring-solo-none-s103-r7-a1": 0.8271293684236033,
+    "A1-ring-solo-none-s103-r7-a2": 0.049351590645825553,
+    "A1-ring-solo-none-s103-r7-a3": 1.0,
+    "A1-ring-solo-none-s103-r7-a4": 0.9382401973462338,
+    "A1-ring-solo-none-s103-r7-a6": 0.0491639370324131,
+    "A1-ring-solo-none-s103-r7-a7": 0.49390146941681257,
+    "A1-ring-solo-none-s103-r7-a8": 1.0,
+    "A1-ring-solo-none-s103-r8-a0": 0.49379603509027,
+    "A1-ring-solo-none-s103-r8-a1": 1.0,
+    "A1-ring-solo-none-s103-r8-a2": 1.0,
+    "A1-ring-solo-none-s103-r8-a3": 0.04291596807513135,
+    "A1-ring-solo-none-s103-r8-a4": 0.04919490313498012,
+    "A1-ring-solo-none-s103-r8-a6": 0.6047194925879686,
+    "A1-ring-solo-none-s103-r8-a7": 1.0,
+    "A1-ring-solo-none-s103-r8-a8": 0.49379603509027,
+    "A1-ring-solo-none-s103-r9-a0": 1.0,
+    "A1-ring-solo-none-s103-r9-a1": 1.0,
+    "A1-ring-solo-none-s103-r9-a2": 1.0,
+    "A1-ring-solo-none-s103-r9-a3": 1.0,
+    "A1-ring-solo-none-s103-r9-a4": 0.04919490313498012,
+    "A1-ring-solo-none-s103-r9-a6": 0.49360838147685754,
+    "A1-ring-solo-none-s103-r9-a7": 1.0,
+    "A1-ring-solo-none-s103-r9-a8": 1.0,
+    "A1-ring-solo-none-s103-r9-a9": 0.049351590645825553
+  },
+  "sources": [
+    {
+      "path": "A1-ring-solo-none-s103/manifest.json",
+      "sha256": "abba094b13b35fdc88254c7480077c2e2f7457ffb40afd11a6b76d2145fa8229"
+    },
+    {
+      "path": "A1-ring-solo-none-s103/result.json",
+      "sha256": "1a137a19d8430e823ef487d181b89d5f02efe1a5c282d1ca30ae943700c21248"
+    },
+    {
+      "path": "A1-ring-solo-none-s103/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-solo-none-s103/events.jsonl",
+      "sha256": "350b3cb6dc7fafd0906c27630362e20806448512c20dbded8ce9336ef8b82769"
+    },
+    {
+      "path": "A1-ring-solo-none-s103/gt.json",
+      "sha256": "efdd1d3fb3a419c0f0b30f1b2aed270ea9b52016a71cde390a29349512327e7a"
+    }
+  ]
+}
