@@ -1,0 +1,62 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-split-none-s106-r0-a7": 1.0,
+    "A1-ring-split-none-s106-r1-a6": 1.0,
+    "A1-ring-split-none-s106-r1-a7": 0.9381011646745135,
+    "A1-ring-split-none-s106-r2-a6": 0.4936649898898505,
+    "A1-ring-split-none-s106-r2-a7": 0.7160521249659714,
+    "A1-ring-split-none-s106-r2-a8": 0.9381011646745135,
+    "A1-ring-split-none-s106-r3-a7": 0.3826846417906783,
+    "A1-ring-split-none-s106-r3-a8": 0.3825456091189581,
+    "A1-ring-split-none-s106-r3-a9": 1.0,
+    "A1-ring-split-none-s106-r4-a0": 0.3825456091189581,
+    "A1-ring-split-none-s106-r4-a7": 0.4937142801107902,
+    "A1-ring-split-none-s106-r4-a8": 1.0,
+    "A1-ring-split-none-s106-r5-a0": 0.3825456091189581,
+    "A1-ring-split-none-s106-r5-a1": 0.04921227578562473,
+    "A1-ring-split-none-s106-r5-a7": 0.0492205454454061,
+    "A1-ring-split-none-s106-r5-a8": 0.04921227578562473,
+    "A1-ring-split-none-s106-r6-a0": 0.04921227578562473,
+    "A1-ring-split-none-s106-r6-a1": 0.015294061901750875,
+    "A1-ring-split-none-s106-r6-a2": 0.045630581269760565,
+    "A1-ring-split-none-s106-r6-a7": 0.3825103421927617,
+    "A1-ring-split-none-s106-r6-a8": 0.04921227578562473,
+    "A1-ring-split-none-s106-r7-a2": 0.045630581269760565,
+    "A1-ring-split-none-s106-r7-a7": 0.3827187916326381,
+    "A1-ring-split-none-s106-r7-a8": 0.015294061901750875,
+    "A1-ring-split-none-s106-r8-a0": 0.04921227578562473,
+    "A1-ring-split-none-s106-r8-a2": 0.045630581269760565,
+    "A1-ring-split-none-s106-r8-a5": 0.048735320916574704,
+    "A1-ring-split-none-s106-r8-a6": 0.3827187916326381,
+    "A1-ring-split-none-s106-r8-a7": 1.0,
+    "A1-ring-split-none-s106-r8-a8": 0.04921227578562473,
+    "A1-ring-split-none-s106-r9-a0": 0.015294061901750875,
+    "A1-ring-split-none-s106-r9-a2": 0.045630581269760565,
+    "A1-ring-split-none-s106-r9-a5": 0.048735320916574704,
+    "A1-ring-split-none-s106-r9-a7": 1.0,
+    "A1-ring-split-none-s106-r9-a8": 0.9381011646745135
+  },
+  "sources": [
+    {
+      "path": "A1-ring-split-none-s106/manifest.json",
+      "sha256": "8f2bc907daf3cd1385a1d3eb382b064f80d779c4899560507f02aa39ad65b3d6"
+    },
+    {
+      "path": "A1-ring-split-none-s106/result.json",
+      "sha256": "587678dbefec23f71009da52025c5d3610c2fc7394479773b038e31d19e29c49"
+    },
+    {
+      "path": "A1-ring-split-none-s106/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-split-none-s106/events.jsonl",
+      "sha256": "58f896eed899da48fe1f9ae93ab2d7744533f991db170db14871e0e68d11f65b"
+    },
+    {
+      "path": "A1-ring-split-none-s106/gt.json",
+      "sha256": "c53bc0ab119c737d83d62a5349a240d3f3212da7d3232feb69af3535ed6a7875"
+    }
+  ]
+}

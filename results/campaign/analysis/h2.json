@@ -1,5 +1,5 @@
 {
-  "episodes": 20,
+  "episodes": 24,
   "features": [
     "intercept",
     "distinct_infected_senders",
@@ -8,6 +8,6 @@
   ],
   "population": "exposed A1 rows from complete episodes",
   "reason": "information matrix singular or ill-conditioned",
-  "rows_exposed": 252,
+  "rows_exposed": 297,
   "status": "not_identifiable"
 }

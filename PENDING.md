@@ -34,7 +34,7 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes prev
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🟢 | SUBMIT-01 | Optional Wave 3 seed expansion | Wave 1 + Wave 2 complete (60 `TEST` episodes + 15 `TRAIN` + 3 `Pilot` = 78 real episodes across all 14 cells), analyzed, rendered, and compiled to `report/SWARM_CONTAGION_REPORT.pdf` (6/6 submission checks passing). Additional paired seeds can be appended before Monday 07:00 ART |
+| 🟢 | SUBMIT-02 | Final human upload to Apart Research portal | All 96 real episodes (`3 Pilot + 15 TRAIN + 78 TEST`), analysis tables, publication figures, and `report/SWARM_CONTAGION_REPORT.pdf` (6 main body pages) are verified (`6/6 checks passed`) and committed on `main` ahead of the 07:00 ART experiment freeze |
 
 Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens and merges PRs after green CI under user delegation. These are configuration decisions, not experimental measurements.
 
@@ -42,7 +42,7 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 
 | PR | Branch | Contents | CI |
 |---|---|---|---|
-| TBD | feat/campaign-wave2 | Expand `TEST` campaign to 60 episodes (`Wave 1 + Wave 2`), re-score `A2`, re-render all tables and publication figures, and recompile `report/SWARM_CONTAGION_REPORT.pdf` | pending |
+| None | - | All pull requests merged into `main` | green |
 
 ## Done
 
@@ -61,6 +61,7 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 | SETUP-03 | Automated repository hygiene and context checks in CI | PR #45 |
 | T14 | Results render manifest and table rendering pipeline | PR #44 |
 | T08 | Preregistration manifest freeze and rate-limit backoff resilience (`prereg-v1`) | PR #51 |
-| T10 | `TRAIN` (15 episodes), detector threshold calibration (`D1`, `D2`, `D3`, `D5`), and balanced `TEST` campaign across `A0`, `A1`, `A2`, `A3`, `A3c` | PR #55 |
-| T11 | Deterministic analysis, 100-message intent-content audit, publication figures, and SHA-256 rendered tables | PR #55 |
-| T15 | Report compilation, LaTeX export, `report/SWARM_CONTAGION_REPORT.pdf` generation (6 main body pages), and 6/6 submission package verification | PR #55 |
+| T10 | `TRAIN` (15 episodes), detector threshold calibration (`D1`, `D2`, `D3`, `D5`), and balanced `TEST` campaign (78 `TEST` episodes across `A0`, `A1`, `A2`, `A3`, `A3c`, including 20/20 `A3c` episodes) | PRs #55, #56, #57 |
+| T11 | Deterministic analysis, 100-message intent-content audit, publication figures, and SHA-256 rendered tables | PRs #52, #55, #56, #57 |
+| T15 | Report compilation, LaTeX export, `report/SWARM_CONTAGION_REPORT.pdf` generation (6 main body pages), and 6/6 submission package verification | PRs #53, #54, #55, #56, #57 |
+| SUBMIT-01 | Wave 2 and Wave 3 seed expansion (96 total real episodes: 3 `Pilot` + 15 `TRAIN` + 78 `TEST`) | PRs #56, #57 |
