@@ -34,10 +34,9 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes prev
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🔴 | T08 | Preregistration and human tag | Tooling ready in PR #48; once PRs #41 to #49 are merged, run `python scripts/verify_preregistration.py --generate` and have human create git tag `prereg-v1` |
-| 🔴 | T10 | TRAIN and reported runs | Orchestrator ready in PR #43; after `prereg-v1`, run `python scripts/run_campaign.py --config experiments/configs/free_flow.yaml --outdir results --max-concurrency 1 --resume` before Monday 05:00 ART |
-| 🟡 | T11 | Analysis and figures | Run `swarmlab analyze`, `scripts/audit_intent_agreement.py`, `scripts/render_results.py`, and `scripts/export_latex_tables.py` on completed campaign logs |
-| 🟢 | T15 | Report compilation and submission | Compilers ready in PR #47 and PR #49; run `scripts/compile_report.py` and `scripts/build_submission_pdf.py` on final rendered results |
+| 🔴 | T10 | TRAIN and reported runs | Orchestrator ready on `main`; after `prereg-v1` tag is pushed, run `TRAIN` + detector threshold fitting, then launch parallel TEST campaign before Monday 05:00 ART |
+| 🟡 | T11 | Analysis and figures | Run `swarmlab analyze`, `scripts/audit_intent_agreement.py`, `scripts/generate_publication_figures.py`, `scripts/render_results.py`, and `scripts/export_latex_tables.py` on completed campaign logs |
+| 🟢 | T15 | Report compilation and submission | Compilers ready on `main`; run `scripts/compile_report.py`, `scripts/build_submission_pdf.py`, and `scripts/verify_submission_package.py` on final rendered results |
 
 Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens pending PRs after review and green CI, human merges each. These are configuration decisions, not experimental measurements.
 
@@ -45,15 +44,7 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 
 | PR | Branch | Contents | CI |
 |---|---|---|---|
-| #41 | feat/pilot-calibration | Calibrate swarm prompts for multi-hop contagion and commit pilot Gate G2 logs (seeds 901, 902, 903) | green |
-| #42 | docs/readme-overhaul | Complete project documentation and architecture overview in README.md; 9 tests passed | green |
-| #43 | feat/campaign-orchestrator | End-to-end experimental campaign orchestrator (`scripts/run_campaign.py`); 17 tests passed | green |
-| #44 | feat/render-manifest | Results render manifest (`results/render_manifest.json`) and validator (`scripts/build_render_manifest.py`); 7 tests passed | green |
-| #45 | chore/ci-checks | Automated repository hygiene validator (`scripts/check_repo_hygiene.py`) and CI workflow expansion; 17 tests passed | green |
-| #46 | feat/intent-audit | Deterministic intent-content agreement auditor (`scripts/audit_intent_agreement.py`) for Hard Invariant 2; 11 tests passed | green |
-| #47 | feat/report-compiler | Academic report compiler and page budget auditor (`scripts/compile_report.py`); 14 tests passed | green |
-| #48 | feat/prereg-validator | Preregistration manifest generator and SHA-256 hash verifier (`scripts/verify_preregistration.py`); 9 tests passed | green |
-| #49 | feat/pdf-exporter | Standalone submission PDF exporter and 4 to 8 page cap audit (`scripts/build_submission_pdf.py`); 9 tests passed | green |
+| TBD | chore/prereg-freeze | Set `CallPolicy.backoff_cap_s` to 65.0s and freeze `artifacts/preregistration_manifest.json` and `experiments/PREREGISTRATION.md` (Task T08) | pending |
 
 ## Done
 
@@ -71,3 +62,4 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 | T07 | Pilot execution and Gate G2 validation on seeds 901, 902, 903 | PR #41 |
 | SETUP-03 | Automated repository hygiene and context checks in CI | PR #45 |
 | T14 | Results render manifest and table rendering pipeline | PR #44 |
+| T08 | Preregistration manifest freeze and rate-limit backoff resilience | branch `chore/prereg-freeze` |

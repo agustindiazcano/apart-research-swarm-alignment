@@ -20,7 +20,7 @@ class CallPolicy:
     timeout_s: float = 30.0
     max_retries: int = 3
     backoff_base_s: float = 1.0
-    backoff_cap_s: float = 20.0
+    backoff_cap_s: float = 65.0
 
 
 @dataclass

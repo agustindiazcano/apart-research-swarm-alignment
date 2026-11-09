@@ -319,6 +319,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--force",
+        "--generate",
+        dest="force",
         action="store_true",
         help="Regenerate manifest before verification",
     )
