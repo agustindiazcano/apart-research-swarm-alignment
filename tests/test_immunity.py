@@ -138,6 +138,34 @@ def test_predict_extinction_round_synthetic_decay() -> None:
     assert tracker.predict_extinction_round(max_rounds=4) is None
 
 
+def test_predict_extinction_round_exponential_model() -> None:
+    """Predict extinction round using exponential decay model."""
+    tracker = SwarmImmunityTracker()
+    tracker.record_round(round_idx=1, active_infected=1, newly_recruited=0)
+    tracker.record_round(round_idx=2, active_infected=2, newly_recruited=2)
+    tracker.record_round(round_idx=3, active_infected=2, newly_recruited=2)
+    tracker.record_round(round_idx=4, active_infected=2, newly_recruited=1)
+
+    # R_2 = 2.0, R_3 = 1.0, R_4 = 0.5
+    exp_predicted = tracker.predict_extinction_round(max_rounds=10, decay_model="exponential")
+    assert exp_predicted is not None
+    assert exp_predicted >= 5
+
+
+def test_predict_extinction_round_with_window() -> None:
+    """Predict extinction round respecting explicit window parameter."""
+    tracker = SwarmImmunityTracker()
+    tracker.record_round(round_idx=1, active_infected=10, newly_recruited=0)
+    tracker.record_round(round_idx=2, active_infected=10, newly_recruited=8)
+    tracker.record_round(round_idx=3, active_infected=10, newly_recruited=6)
+    tracker.record_round(round_idx=4, active_infected=10, newly_recruited=4)
+    tracker.record_round(round_idx=5, active_infected=10, newly_recruited=2)
+
+    assert tracker.predict_extinction_round(window=1) is None
+    pred_w2 = tracker.predict_extinction_round(window=2)
+    assert pred_w2 == 6
+
+
 def test_predict_extinction_round_edge_cases() -> None:
     """Predict extinction round returns None when data is insufficient or non-decreasing."""
     tracker = SwarmImmunityTracker()
@@ -158,6 +186,10 @@ def test_predict_extinction_round_edge_cases() -> None:
     rising_tracker.record_round(round_idx=3, active_infected=10, newly_recruited=4)
     rising_tracker.record_round(round_idx=4, active_infected=10, newly_recruited=6)
     assert rising_tracker.predict_extinction_round() is None
+
+    # Unsupported decay model
+    with pytest.raises(ValueError, match="unsupported decay_model"):
+        rising_tracker.predict_extinction_round(decay_model="invalid")
 
 
 def test_effective_reproduction_rate_validation() -> None:
@@ -190,3 +222,19 @@ def test_invalid_input_validation() -> None:
 
     with pytest.raises(ValueError, match="window must be positive"):
         tracker.is_transmission_damped(window=0)
+
+
+def test_tracker_history_immutability() -> None:
+    """Mutating returned history does not mutate internal tracker state."""
+    tracker = SwarmImmunityTracker()
+    tracker.record_round(round_idx=1, active_infected=1, newly_recruited=0)
+    history = tracker.history
+    history.clear()
+    assert len(tracker.history) == 1
+
+
+def test_damped_no_computed_rates_with_recruits() -> None:
+    """Single round with non-zero recruits has no computed R_t and is not damped."""
+    tracker = SwarmImmunityTracker()
+    tracker.record_round(round_idx=1, active_infected=1, newly_recruited=1)
+    assert tracker.is_transmission_damped() is False
