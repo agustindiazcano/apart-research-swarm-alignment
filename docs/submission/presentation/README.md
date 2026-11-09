@@ -22,4 +22,4 @@ Options: `?audio=1` plays `narration.wav` from the page itself, `?t=95` starts a
 | `build_presentation.py`, `tts.ps1` | Regenerate audio, timeline and data (`python build_presentation.py`) |
 | `timeline.js`, `data.js` | Generated: slide timings and numbers read from `results/campaign/analysis` |
 
-Numbers on the slides are read from `data.js`, which is generated from the committed analysis files. Drop the official logo at `assets/apart-logo.png` to replace the text wordmark.
+Numbers on the slides are read from `data.js`, which is generated from the committed analysis files. The logo is `assets/apart-logo.png`.

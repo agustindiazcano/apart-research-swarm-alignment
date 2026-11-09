@@ -51,6 +51,7 @@ svg text{font-family:inherit}
 .big{font-size:120px;font-weight:800;line-height:1;letter-spacing:-.03em}
 .num{font-variant-numeric:tabular-nums}
 
+.logopill{background:#fff;border-radius:14px;display:inline-flex;align-items:center}.logopill img{display:block}.logopill.small{padding:6px 14px}.logopill.small img{height:34px}.logopill.big{padding:16px 30px;border-radius:22px}.logopill.big img{height:104px}
 /* cover */
 #cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:130px}
 #cover .coverlogo{display:flex;align-items:center;gap:26px;margin-bottom:40px}
@@ -59,7 +60,7 @@ svg text{font-family:inherit}
 #cover .coverlogo .glyph:before{left:14px;top:14px}#cover .coverlogo .glyph:after{right:14px;bottom:14px}
 #cover .coverlogo .word{font-size:70px;font-weight:800;letter-spacing:.14em;line-height:1}
 #cover .coverlogo .word small{display:block;font-size:26px;letter-spacing:.42em;color:var(--muted);font-weight:600;margin-top:8px}
-#cover .coverlogo img{height:110px;display:none}
+
 #cover .event{font-size:34px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:26px}
 #cover h1{max-width:1500px}
 #cover .by{margin-top:36px;font-size:30px;color:var(--muted)}
@@ -92,7 +93,7 @@ svg text{font-family:inherit}
  <div id="stage">
   <div id="progress"></div>
   <div id="topbar">
-   <div class="mark"><div class="glyph"></div><div>APART<small>RESEARCH</small></div></div>
+   <div class="logopill small"><img src="assets/apart-logo.png" alt="Apart Research"></div>
    <div class="sep"></div>
    <div class="event">Swarm Alignment Hackathon 2026</div>
   </div>
@@ -100,9 +101,7 @@ svg text{font-family:inherit}
   <!-- 1 COVER -->
   <section class="slide" id="cover" data-slide="cover">
    <svg id="coverbg" width="760" height="760" viewBox="0 0 760 760"></svg>
-   <div class="coverlogo"><div class="glyph"></div>
-    <img id="apartimg" src="assets/apart-logo.png" alt="Apart Research">
-    <div class="word">APART<small>RESEARCH</small></div></div>
+   <div class="coverlogo"><div class="logopill big"><img src="assets/apart-logo.png" alt="Apart Research"></div></div>
    <div class="event">Swarm Alignment Hackathon 2026</div>
    <h1>Infection Chains in LLM Swarms</h1>
    <div class="lead" style="margin-top:20px;font-size:44px">Spread, Detection and Layered Gating</div>
@@ -243,10 +242,6 @@ function ease(x){x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
 function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform="scale("+s+")";}
 addEventListener("resize",fit);fit();
 
-/* optional official logo: drop assets/apart-logo.png and it replaces the text wordmark */
-const img=$("#apartimg");
-img.onload=function(){img.style.display="block";document.querySelector("#cover .word").style.display="none";document.querySelector("#cover .coverlogo .glyph").style.display="none";};
-img.src="assets/apart-logo.png";
 
 /* data derived values */
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
