@@ -30,7 +30,9 @@ def extract_swarmlab_subcommands(markdown_text: str) -> list[str]:
             stripped = line.strip()
             match = re.search(r"\bswarmlab\s+([a-zA-Z0-9_-]+)", stripped)
             if match:
-                subcommands.append(match.group(1))
+                cmd = match.group(1)
+                if not cmd.startswith("-"):
+                    subcommands.append(cmd)
     return subcommands
 
 
