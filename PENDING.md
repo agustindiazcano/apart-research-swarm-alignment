@@ -43,7 +43,7 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes the 
 | 🔴 | BUILD-01 | Real provider adapters | PR #29 open, CI passed; coordinator reran mock tests, no real calls |
 | 🔴 | BUILD-02 | CLI integration and end-to-end mock episode | In progress on `feat/runtime-cli`; commands, budget aborts, logs and clean arms |
 | 🔴 | BUILD-03 | TRAIN and offline scoring pipeline | In progress on `feat/training-pipeline`; episode calibration, frozen thresholds, D3 and D5 |
-| 🔴 | BUILD-04 | Unit-aware provider billing | `feat/billing-units` complete, coordinator review and CI pending; Adaption costs remain in credits |
+| 🔴 | BUILD-04 | Unit-aware provider billing | PR #31 open, CI passed; Adaption costs remain in credits |
 | 🟡 | T07 | Pilot and model choice | After runtime integration and provider prices; primary load on Adaption |
 | 🟡 | T08 | Preregistration and human tag | Manifest generator merged; freeze after pilot |
 | 🟡 | T10 | TRAIN and reported runs | After pilot and preregistration; no new experiments after Monday 05:00 ART |
@@ -84,3 +84,5 @@ Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adapt
 | T14a | Result renderer | PR #19 merged |
 | SETUP-17 | Delegation skill and launch helper | PR #20 merged |
 | BUILD-REVIEW-01 | Audit LLM, extraction, lexical and guardrail branches | Corrected on dedicated review branches; PR and integration state above |
+
+Campaign accounting: coordinator integration branch `chore/integration-check` adds a shared persistent ledger and a successful-response audit hook before budget aborts. CLI, TRAIN and analysis integration remain in progress. Docker Desktop was stopped at the maintainer request; the Python runtime does not require it.

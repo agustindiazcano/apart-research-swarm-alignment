@@ -62,6 +62,7 @@ class GuardedClient:
         *,
         provider: str,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
+        on_result: Callable[[LLMResult, CallStats, CostRecord], None] | None = None,
     ) -> None:
         try:
             guard_unit = guard.unit(provider)
@@ -81,6 +82,7 @@ class GuardedClient:
         self._prices = prices
         self._provider = provider
         self._sleep = sleep
+        self._on_result = on_result
         self.stats = CallStats()
         self.last_cost_usd: float | None = 0.0 if prices.unit == "usd" else None
         self.last_cost_credits: float | None = 0.0 if prices.unit == "credits" else None
@@ -150,10 +152,15 @@ class GuardedClient:
         cost = self.cost_of(result)
         self.last_cost_usd = cost if self.billing_unit == "usd" else None
         self.last_cost_credits = cost if self.billing_unit == "credits" else None
-        self._guard.record(self._provider, cost)
-
         if not result.timestamp_utc:
             result.timestamp_utc = datetime.now(UTC).isoformat()
+
+        try:
+            if self._on_result is not None:
+                self._on_result(result, call_stats, self.cost_record(result))
+        finally:
+            # Persist returned usage even if the observer or budget check aborts the run.
+            self._guard.record(self._provider, cost)
 
         logger.debug(
             "Call finished for provider %s: cost=%.6f %s, tokens_in=%d, tokens_out=%d",

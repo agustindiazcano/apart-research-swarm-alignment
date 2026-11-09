@@ -6,7 +6,7 @@ Last updated: 2026-11-08. All operational times use Argentina time (ART).
 
 The current coordinator continued the preceding session by reading AGENTS.md, the context files, design documents, provider branch record, hackathon rules and delegation instructions. The working checkout main matched origin/main at b5e0a06 when checked. No edits were made in the primary checkout or prior agents' worktrees.
 
-The human authorized opening all pending PRs after review and green CI. Every PR targets main; the human reviews and merges. PRs #22 to #30 are open; every base is main. Swarm and prompts are combined in #30 instead of duplicate PRs. No merges were performed by this coordinator.
+The human authorized opening all pending PRs after review and green CI. Every PR targets main; the human reviews and merges. PRs #22 to #32 are open; every base is main. Swarm and prompts are combined in #30 instead of duplicate PRs. No merges were performed by this coordinator.
 
 ## Human decisions
 
@@ -30,11 +30,12 @@ All paths below are siblings of the primary checkout, prefixed `apart-research-s
 | chore/review-detector-guardrail | review-guardrail | New agent-owned continuation of feat/detector-guardrail, reviewed and coordinator-validated, CI passed, PR #27 open |
 | chore/review-swarm-runtime | review-runtime | New agent-owned combined continuation of world, swarm and prompts; coordinator-validated, CI passed, PR #30 open |
 | feat/provider-adapters | provider-adapters | New agent-owned implementation, coordinator-validated with mocks, CI passed, PR #29 open |
-| feat/billing-units | billing-units | Unit-aware caps and cost records complete; coordinator review pending |
+| feat/billing-units | billing-units | Unit-aware caps and cost records reviewed, CI passed, PR #31 open |
 | feat/runtime-cli | runtime-cli | Run/batch/prereg CLI integration in progress |
 | feat/analysis-pipeline | analysis-pipeline | Event-log analysis and H2 integration in progress |
 | feat/training-pipeline | training-pipeline | TRAIN and offline scoring integration in progress |
-| docs/coordinator-state | coordinator-state | This handoff and design clarification branch |
+| docs/coordinator-state | coordinator-state | Handoff and design clarification, PR #32 open |
+| chore/integration-check | integration-check | Combined reviewed modules; shared spend ledger and response observer implemented, integration checks in progress |
 
 Prior worktrees and branches remain untouched. Primary checkout has untracked add_docs_prompt.md and swarm-utils/. Prior swarm and prompts worktrees contain untracked world types. Do not delete, edit or commit those files. The mock experiment worktree is outside this task and supplies no reported results. No services were started by this coordinator.
 
@@ -59,3 +60,11 @@ Prior worktrees and branches remain untouched. Primary checkout has untracked ad
 ## Next actions
 
 Open the coordinator handoff PR and remaining validated integration PRs. Human merges world first (#22), then LLM (#25) before adapters (#29); #30 includes both swarm and prompts. All reviewed branches have been pushed. Complete runtime integration with a mock end-to-end test before any pilot. Then pilot, human preregistration tag, TRAIN and reported runs. After 05:00 ART only analysis, writing and checks.
+
+## Current integration work
+
+- PersistentBudgetGuard in llm/ledger.py shares charges across CLI processes and factories. It locks and atomically updates a campaign ledger, preserves billing units, rejects cap increases and corrupt/missing initialized state, and keeps returned charges even when a cap aborts.
+- GuardedClient exposes on_result(result, call_stats, cost_record) before recording cost against the cap. Runtime integration writes provider_calls.jsonl per attempt; it is the authoritative billing source, separate from runner action/parse events. Analysis must not count both copies of a call.
+- RuntimeFactory accepts an injected guard and limiter. The final integration must supply the persistent guard, with a campaign path shared by swarm, guardrail, pilot, TRAIN and TEST.
+- Docker Desktop was stopped on explicit maintainer request. Its processes were no longer running when checked. No containers, images or volumes were deleted.
+- Branches opened for review retain main as their base. No merges or paid model calls were performed by the coordinator.
