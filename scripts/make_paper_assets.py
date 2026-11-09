@@ -97,7 +97,7 @@ def arm_row(arm: str, topo: str, harm: str, defense: str = "") -> dict[str, str]
 def fig_architecture() -> None:
     fig, ax = plt.subplots(figsize=(6.3, 3.0))
     ax.set_xlim(0, 10.4)
-    ax.set_ylim(0, 5)
+    ax.set_ylim(-0.2, 5)
     ax.axis("off")
     cx, cy, r = 3.0, 2.5, 1.95
     n = 10
@@ -120,6 +120,9 @@ def fig_architecture() -> None:
     for k, lab in frag.items():
         d = min(k, n - k)
         x, y = pos[k]
+        if abs(x - cx) < 0.1:
+            ax.text(x, y - 0.5, f"{lab}, distance {d}", ha="center", va="top", fontsize=7.2, color=INK)
+            continue
         side = 1 if x > cx else -1
         ax.text(x + side * 0.42, y - 0.02, f"{lab}\ndistance {d}", ha="left" if side > 0 else "right", va="center", fontsize=7.2, color=INK)
     ax.text(pos[0][0], pos[0][1] + 0.5, "patient zero", ha="center", fontsize=7.6, color=INK, fontweight="bold")
