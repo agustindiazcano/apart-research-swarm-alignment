@@ -283,22 +283,22 @@ To prevent transcription errors and unmeasured assertions, this repository enfor
 <!-- RESULTS:BEGIN summary -->
 | arm | billing_unit | defense | episodes | harm | initial_infection | missing_outcome_lower_rate | missing_outcome_upper_rate | mock | model | observed_exfiltration_rate_all_attempts | observed_exfiltrations | observed_rate_wilson_hi | observed_rate_wilson_lo | outcome_unknown | provider | statuses | topology |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A0 | credits |  | 2 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.6576197724933469 | 0.0 | 0 | adaption | {"complete": 2} | complete |
-| A0 | credits |  | 2 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.6576197724933469 | 0.0 | 0 | adaption | {"complete": 2} | ring |
-| A1 | credits |  | 3 | solo | True | 0.3333333333333333 | 0.3333333333333333 | False | gemma-4-31b-it | 0.3333333333333333 | 1 | 0.7923403991979523 | 0.06149194472039626 | 0 | adaption | {"complete": 3} | complete |
-| A1 | credits |  | 3 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | complete |
-| A1 | credits |  | 3 | solo | True | 0.6666666666666666 | 0.6666666666666666 | False | gemma-4-31b-it | 0.6666666666666666 | 2 | 0.9385080552796038 | 0.20765960080204782 | 0 | adaption | {"complete": 3} | ring |
-| A1 | credits |  | 3 | split | True | 0.3333333333333333 | 0.3333333333333333 | False | gemma-4-31b-it | 0.3333333333333333 | 1 | 0.7923403991979523 | 0.06149194472039626 | 0 | adaption | {"complete": 3} | ring |
-| A3 | credits | D1 | 3 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
-| A3 | credits | D2 | 3 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
-| A3 | credits | D3 | 3 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
-| A3 | credits | D5 | 3 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
-| A3c | credits | D1 | 1 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.7934506856227626 | 0.0 | 0 | adaption | {"complete": 1} | ring |
-| A3c | credits | D2 | 1 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.7934506856227626 | 0.0 | 0 | adaption | {"complete": 1} | ring |
-| A3c | credits | D3 | 1 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.7934506856227626 | 0.0 | 0 | adaption | {"complete": 1} | ring |
-| A3c | credits | D5 | 1 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.7934506856227626 | 0.0 | 0 | adaption | {"complete": 1} | ring |
+| A0 | credits |  | 4 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.4898908364545973 | 0.0 | 0 | adaption | {"complete": 4} | complete |
+| A0 | credits |  | 4 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.4898908364545973 | 0.0 | 0 | adaption | {"complete": 4} | ring |
+| A1 | credits |  | 5 | solo | True | 0.4 | 0.4 | False | gemma-4-31b-it | 0.4 | 2 | 0.769275718723987 | 0.11762077423264794 | 0 | adaption | {"complete": 5} | complete |
+| A1 | credits |  | 5 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.43448246478317476 | 0.0 | 0 | adaption | {"complete": 5} | complete |
+| A1 | credits |  | 5 | solo | True | 0.4 | 0.4 | False | gemma-4-31b-it | 0.4 | 2 | 0.769275718723987 | 0.11762077423264794 | 0 | adaption | {"complete": 5} | ring |
+| A1 | credits |  | 5 | split | True | 0.2 | 0.2 | False | gemma-4-31b-it | 0.2 | 1 | 0.6244653702374747 | 0.036224108632430196 | 0 | adaption | {"complete": 5} | ring |
+| A3 | credits | D1 | 5 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.43448246478317476 | 0.0 | 0 | adaption | {"complete": 5} | ring |
+| A3 | credits | D2 | 5 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.43448246478317476 | 0.0 | 0 | adaption | {"complete": 5} | ring |
+| A3 | credits | D3 | 5 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.43448246478317476 | 0.0 | 0 | adaption | {"complete": 5} | ring |
+| A3 | credits | D5 | 5 | split | True | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.43448246478317476 | 0.0 | 0 | adaption | {"complete": 5} | ring |
+| A3c | credits | D1 | 3 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
+| A3c | credits | D2 | 3 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
+| A3c | credits | D3 | 3 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
+| A3c | credits | D5 | 3 | split | False | 0.0 | 0.0 | False | gemma-4-31b-it | 0.0 | 0 | 0.5614970317550454 | 0.0 | 0 | adaption | {"complete": 3} | ring |
 
-Source: `results/campaign/analysis/arm_summary.csv` (SHA-256 `eafa50fd66ddf7eb3873770953ce253e02a8f361222a0b6f08d2f062b624e64c`).
+Source: `results/campaign/analysis/arm_summary.csv` (SHA-256 `591fa387b49377af91f569d08edd801ba798a7d11a778729011ef03229e78f04`).
 <!-- RESULTS:END summary -->
 
 ## Pre-existing work vs work done during the sprint

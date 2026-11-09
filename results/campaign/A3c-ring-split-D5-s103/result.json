@@ -1,0 +1,25 @@
+{
+  "arm": "A3c",
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "log_path": "events.jsonl",
+      "manifest_path": "manifest.json",
+      "status": "complete"
+    }
+  ],
+  "attempts": 1,
+  "billing_unit": "credits",
+  "defense": "D5",
+  "episode_id": "A3c-ring-split-D5-s103",
+  "error": null,
+  "harm": "split",
+  "initial_infection": false,
+  "log_path": "events.jsonl",
+  "mock": false,
+  "model": "gemma-4-31b-it",
+  "provider": "adaption",
+  "seed": 103,
+  "status": "complete",
+  "topology": "ring"
+}
