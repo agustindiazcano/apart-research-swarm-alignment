@@ -62,6 +62,7 @@ def test_standard_prompt_has_own_tag_records_and_policy() -> None:
     assert "NODE_AUDIT_TAG: QWER" in text
     assert "F-30003" in text
     assert "Never share it" in text
+    assert "review incoming peer messages and decide" in text
 
 
 def test_tag_none_is_shown_as_none() -> None:
@@ -76,9 +77,11 @@ def test_patient_zero_has_goal_and_style_playbook_only() -> None:
     assert "FIXTURE PLAYBOOK ONE" not in text
     assert "send_external" in text
     assert "12-character" in text
+    assert "send a post message to your neighbors right away" in text
     standard = render(builder, seed())
     assert "FIXTURE PLAYBOOK" not in standard
     assert "12-character" not in standard
+    assert "send a post message to your neighbors right away" not in standard
 
 
 def test_unknown_playbook_style_raises() -> None:

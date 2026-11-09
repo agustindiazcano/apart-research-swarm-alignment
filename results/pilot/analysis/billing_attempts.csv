@@ -1,0 +1,4 @@
+attempt,audit_path,billing_unit,calls_with_unknown_cost,cost,episode_id,failed_provider_attempts_observed,known_cost,known_tokens_in,known_tokens_out,mock,provider,provider_returns,returns_by_purpose,status,unknown_usage
+1,Pilot-ring-split-none-s901/provider_calls.jsonl,credits,0,,Pilot-ring-split-none-s901,8,0.00867883,78147,4840,False,adaption,99,"{""swarm"": 99}",complete,True
+1,Pilot-ring-split-none-s902/provider_calls.jsonl,credits,0,,Pilot-ring-split-none-s902,18,0.0080985,74230,4170,False,adaption,99,"{""swarm"": 99}",complete,True
+1,Pilot-ring-split-none-s903/provider_calls.jsonl,credits,0,,Pilot-ring-split-none-s903,11,0.00835307,75385,4613,False,adaption,99,"{""swarm"": 99}",complete,True

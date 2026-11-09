@@ -1,0 +1,12 @@
+{
+  "features": [
+    "intercept",
+    "distinct_infected_senders",
+    "total_solicitations_received",
+    "complete_topology"
+  ],
+  "population": "exposed A1 rows from complete episodes",
+  "reason": "insufficient distinct-sender variation",
+  "rows_exposed": 0,
+  "status": "not_identifiable"
+}
