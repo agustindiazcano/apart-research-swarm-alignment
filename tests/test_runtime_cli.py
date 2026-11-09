@@ -168,7 +168,11 @@ def real_fixture_config() -> dict[str, object]:
 
 def test_factory_wraps_real_adapter_and_keeps_provider_limits_shared() -> None:
     inner = MockClient(['{"action":"noop"}'])
-    factory = RuntimeFactory(real_fixture_config(), adapter_factory=lambda *args: inner)
+    factory = RuntimeFactory(
+        real_fixture_config(),
+        adapter_factory=lambda *args: inner,
+        on_result=lambda result, stats, cost: None,
+    )
     assert isinstance(factory.create_client(), GuardedClient)
     assert factory.create_client() is factory.create_client()
     assert factory.guard is not None
@@ -195,8 +199,11 @@ def test_credit_episode_summary_is_computed_from_committed_format_logs(
 ) -> None:
     monkeypatch.setattr(execution_module, "utc_now", lambda: datetime(2026, 11, 8, tzinfo=UTC))
     config = real_fixture_config()
+    config["billing"]["ledger_path"] = str(tmp_path / "spend.json")
     inner = MockClient(lambda messages: '{"action":"noop"}', provider="adaption")
-    factory = RuntimeFactory(config, adapter_factory=lambda *args: inner)
+    factory = RuntimeFactory(
+        config, adapter_factory=lambda *args: inner, prereg_validator=lambda spec, config: None
+    )
     spec = EpisodeSpec("credit-fixture", 901, "ring", "split", "A0", None)
     result = asyncio.run(execute_episode(spec, config, tmp_path, factory=factory))
     assert result.status == "complete"
@@ -204,7 +211,13 @@ def test_credit_episode_summary_is_computed_from_committed_format_logs(
     events = read_events(directory / "events.jsonl")
     truth = GroundTruth.from_json((directory / "gt.json").read_text())
     summary = json.loads((directory / "episode_summary.json").read_text())
-    assert summary == episode_summary(events, truth, initial_infection=False)
+    expected = episode_summary(events, truth, initial_infection=False)
+    observed = episode_summary(read_events(directory / "provider_calls.jsonl"), truth)
+    assert summary["n_infected"] == expected["n_infected"]
+    assert summary["parse_failures"] == expected["parse_failures"]
+    assert summary["retries"] == observed["retries"]
+    assert summary["cost_credits"] == observed["cost_credits"]
+    assert summary["billing_scope"] == "successful_provider_returns"
     assert summary["cost_usd"] is None
     assert summary["cost_credits"] > 0
 
@@ -490,4 +503,138 @@ def test_configured_defense_is_not_silently_omitted(tmp_path: Path) -> None:
                 "--outdir",
                 str(tmp_path / "out"),
             ]
+        )
+
+
+def test_real_factory_requires_audit_destination_before_adapter_creation() -> None:
+    called: list[bool] = []
+    factory = RuntimeFactory(
+        real_fixture_config(), adapter_factory=lambda *args: called.append(True)
+    )
+    with pytest.raises(ValueError, match="audit"):
+        factory.create_client()
+    assert called == []
+
+
+def test_budget_abort_preserves_successful_provider_return_in_audit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(execution_module, "utc_now", lambda: datetime(2026, 11, 8, tzinfo=UTC))
+    config = real_fixture_config()
+    config["billing"].update(input_per_m=1_000_000, ledger_path=str(tmp_path / "spend.json"))
+    factory = RuntimeFactory(
+        config,
+        adapter_factory=lambda *args: MockClient(
+            lambda messages: '{"action":"noop"}', provider="adaption", model="fixture-model"
+        ),
+        prereg_validator=lambda spec, config: None,
+    )
+    spec = EpisodeSpec("audit-abort-fixture", 901, "ring", "split", "A0", None)
+    result = asyncio.run(execute_episode(spec, config, tmp_path, factory=factory))
+    assert result.status == "budget_abort"
+    directory = tmp_path / spec.episode_id
+    manifest = json.loads((directory / "manifest.json").read_text())
+    calls = read_events(directory / manifest["provider_audit_path"])
+    assert calls
+    assert all(event.payload["billing_unit"] == "credits" for event in calls)
+    assert all(event.payload["purpose"] == "swarm" for event in calls)
+    assert all(event.payload["attempts"] >= 1 for event in calls)
+    assert factory.guard is not None
+    assert sum(event.payload["cost_credits"] for event in calls) == factory.guard.spent("adaption")
+
+
+def test_nonpilot_real_execution_requires_preregistration_before_adapter(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(execution_module, "utc_now", lambda: datetime(2026, 11, 8, tzinfo=UTC))
+    config = {**real_fixture_config(), "project_root": str(tmp_path)}
+    called: list[bool] = []
+    factory = RuntimeFactory(config, adapter_factory=lambda *args: called.append(True))
+    spec = EpisodeSpec("prereg-fixture", 101, "ring", "split", "A1", None)
+    with pytest.raises(ValueError, match="prereg"):
+        asyncio.run(execute_episode(spec, config, tmp_path / "out", factory=factory))
+    assert called == []
+
+
+def test_pilot_real_fixture_is_allowed_before_preregistration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(execution_module, "utc_now", lambda: datetime(2026, 11, 8, tzinfo=UTC))
+    config = {**real_fixture_config(), "project_root": str(tmp_path), "initial_infection": False}
+    factory = RuntimeFactory(
+        config,
+        adapter_factory=lambda *args: MockClient(
+            lambda messages: '{"action":"noop"}', provider="adaption"
+        ),
+    )
+    result = asyncio.run(
+        execute_episode(
+            EpisodeSpec("pilot-fixture", 901, "ring", "split", "Pilot", None),
+            config,
+            tmp_path / "out",
+            factory=factory,
+        )
+    )
+    assert result.status == "complete"
+
+
+def test_factory_checks_clock_before_every_real_provider_call(tmp_path: Path) -> None:
+    config = real_fixture_config()
+    config["billing"].update(
+        ledger_path=str(tmp_path / "spend.json"), audit_path=str(tmp_path / "audit.jsonl")
+    )
+    inner = MockClient(lambda messages: '{"action":"noop"}', provider="adaption")
+    factory = RuntimeFactory(
+        config, adapter_factory=lambda *args: inner, clock=lambda: execution_module.FREEZE_UTC
+    )
+    with pytest.raises(RuntimeError, match="frozen"):
+        asyncio.run(factory.create_client().complete([{"role": "user", "content": "fixture"}]))
+    assert inner.calls == []
+
+
+def test_preregistration_checks_configuration_and_matrix_membership(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from types import SimpleNamespace
+
+    from swarmlab.prereg import DEFAULT_GROUPS, build_manifest
+
+    config = {**real_fixture_config(), "project_root": str(tmp_path)}
+    for relative in [
+        "docs/EXPERIMENT_DESIGN.md",
+        "src/swarmlab/metrics/stats.py",
+        "src/swarmlab/swarm/prompts.py",
+        *[f"experiments/payloads/playbook_{style}.txt" for style in range(3)],
+    ]:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("fixture input")
+    config_path = tmp_path / "experiments/configs/runtime.yaml"
+    config_path.parent.mkdir(parents=True)
+    config_path.write_text(yaml.safe_dump(config))
+    (config_path.parent / "matrix.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "arm": "A1",
+                "topologies": ["ring"],
+                "harms": ["split"],
+                "defenses": [None],
+                "seeds": [101],
+            }
+        )
+    )
+    manifest = build_manifest(tmp_path, DEFAULT_GROUPS, git_commit="fixture", created_utc="fixture")
+    artifact = tmp_path / "artifacts/preregistration_manifest.json"
+    artifact.parent.mkdir()
+    artifact.write_text(json.dumps(manifest))
+    monkeypatch.setattr(
+        execution_module.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(returncode=0)
+    )
+    spec = EpisodeSpec("fixture", 101, "ring", "split", "A1", None)
+    execution_module.validate_preregistration(spec, config)
+    with pytest.raises(ValueError, match="configuration"):
+        execution_module.validate_preregistration(spec, {**config, "model": "different-fixture"})
+    with pytest.raises(ValueError, match="matrix"):
+        execution_module.validate_preregistration(
+            EpisodeSpec("fixture-other", 102, "ring", "split", "A1", None), config
         )
