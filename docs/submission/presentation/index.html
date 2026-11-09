@@ -51,7 +51,7 @@ svg text{font-family:inherit}
 .big{font-size:120px;font-weight:800;line-height:1;letter-spacing:-.03em}
 .num{font-variant-numeric:tabular-nums}
 
-.logopill{background:#fff;border-radius:14px;display:inline-flex;align-items:center}.logopill img{display:block}.logopill.small{padding:6px 14px}.logopill.small img{height:34px}.logopill.big{padding:16px 30px;border-radius:22px}.logopill.big img{height:104px}
+.logopill{background:transparent;display:inline-flex;align-items:center}.logopill img{display:block}.logopill.small{padding:0}.logopill.small img{height:36px}.logopill.big{padding:0}.logopill.big img{height:104px}
 /* cover */
 #cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:130px}
 #cover .coverlogo{display:flex;align-items:center;gap:26px;margin-bottom:40px}
@@ -93,7 +93,7 @@ svg text{font-family:inherit}
  <div id="stage">
   <div id="progress"></div>
   <div id="topbar">
-   <div class="logopill small"><img src="assets/apart-logo.png" alt="Apart Research"></div>
+   <div class="logopill small"><img src="assets/apart-logo-white.png" alt="Apart Research"></div>
    <div class="sep"></div>
    <div class="event">Swarm Alignment Hackathon 2026</div>
   </div>
@@ -101,7 +101,7 @@ svg text{font-family:inherit}
   <!-- 1 COVER -->
   <section class="slide" id="cover" data-slide="cover">
    <svg id="coverbg" width="760" height="760" viewBox="0 0 760 760"></svg>
-   <div class="coverlogo"><div class="logopill big"><img src="assets/apart-logo.png" alt="Apart Research"></div></div>
+   <div class="coverlogo"><div class="logopill big"><img src="assets/apart-logo-white.png" alt="Apart Research"></div></div>
    <div class="event">Swarm Alignment Hackathon 2026</div>
    <h1>Infection Chains in LLM Swarms</h1>
    <div class="lead" style="margin-top:20px;font-size:44px">Spread, Detection and Layered Gating</div>
@@ -222,7 +222,7 @@ svg text{font-family:inherit}
    <button id="playbtn" aria-label="Play"></button>
    <p>Press <kbd>Space</kbd> or click to play (about 3 minutes).<br>
    <kbd>R</kbd> restart &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>A</kbd> audio on/off<br>
-   URL options: <kbd>?audio=1</kbd> plays narration.wav, <kbd>?t=95</kbd> starts at 95 s, <kbd>?freeze=95</kbd> shows one frame.</p>
+   URL options: <kbd>?audio=0</kbd> mutes the narration (it plays by default), <kbd>?t=95</kbd> starts at 95 s, <kbd>?freeze=95</kbd> shows one frame.</p>
   </div>
  </div>
 </div>
@@ -500,7 +500,7 @@ addEventListener("keydown",function(e){
   else if(e.key==="f"||e.key==="F"){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}
   else if(e.key==="a"||e.key==="A"){setAudio(!audioOn);}
 });
-if(params.get("audio")==="1")audioOn=true;
+audioOn=params.get("audio")!=="0";
 if(params.get("freeze")){ $("#start").classList.add("gone"); render(parseFloat(params.get("freeze"))||0); }
 else render(0);
 window.__render=render;
