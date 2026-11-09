@@ -1,0 +1,10 @@
+{
+  "agreed_count": 100,
+  "agreement_rate": 1.0,
+  "mislabeled_count": 0,
+  "provenance": "deterministic_heuristic",
+  "sample_size": 100,
+  "source_sha256": "d09babb2d2cfd622872388be3c517fbfb5597d178c3054bfc2e14d92bb65a2f3",
+  "wilson_ci_hi": 1.0,
+  "wilson_ci_lo": 0.9630065017930143
+}

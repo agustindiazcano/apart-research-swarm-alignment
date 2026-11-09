@@ -1,0 +1,73 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "TRAIN-complete-split-none-s7-r0-a5": 1.0,
+    "TRAIN-complete-split-none-s7-r1-a4": 1.0,
+    "TRAIN-complete-split-none-s7-r1-a5": 0.7160179751240117,
+    "TRAIN-complete-split-none-s7-r2-a3": 1.0,
+    "TRAIN-complete-split-none-s7-r2-a4": 1.0,
+    "TRAIN-complete-split-none-s7-r2-a5": 1.0,
+    "TRAIN-complete-split-none-s7-r2-a6": 1.0,
+    "TRAIN-complete-split-none-s7-r3-a2": 1.0,
+    "TRAIN-complete-split-none-s7-r3-a3": 1.0,
+    "TRAIN-complete-split-none-s7-r3-a4": 0.9381480175231968,
+    "TRAIN-complete-split-none-s7-r3-a5": 0.38282655617017014,
+    "TRAIN-complete-split-none-s7-r3-a6": 1.0,
+    "TRAIN-complete-split-none-s7-r3-a7": 1.0,
+    "TRAIN-complete-split-none-s7-r4-a1": 0.3826849239791589,
+    "TRAIN-complete-split-none-s7-r4-a2": 1.0,
+    "TRAIN-complete-split-none-s7-r4-a4": 1.0,
+    "TRAIN-complete-split-none-s7-r4-a5": 0.8271290862351228,
+    "TRAIN-complete-split-none-s7-r4-a6": 0.49370357307875234,
+    "TRAIN-complete-split-none-s7-r4-a7": 0.04840548611226925,
+    "TRAIN-complete-split-none-s7-r4-a8": 1.0,
+    "TRAIN-complete-split-none-s7-r5-a1": 1.0,
+    "TRAIN-complete-split-none-s7-r5-a5": 0.7158789424522913,
+    "TRAIN-complete-split-none-s7-r5-a8": 1.0,
+    "TRAIN-complete-split-none-s7-r5-a9": 0.045630581269760565,
+    "TRAIN-complete-split-none-s7-r6-a1": 1.0,
+    "TRAIN-complete-split-none-s7-r6-a4": 0.38247878024763254,
+    "TRAIN-complete-split-none-s7-r6-a5": 1.0,
+    "TRAIN-complete-split-none-s7-r6-a8": 0.4937957529017894,
+    "TRAIN-complete-split-none-s7-r6-a9": 1.0,
+    "TRAIN-complete-split-none-s7-r7-a0": 0.048735320916574704,
+    "TRAIN-complete-split-none-s7-r7-a1": 1.0,
+    "TRAIN-complete-split-none-s7-r7-a2": 1.0,
+    "TRAIN-complete-split-none-s7-r7-a4": 0.015294061901750875,
+    "TRAIN-complete-split-none-s7-r7-a5": 1.0,
+    "TRAIN-complete-split-none-s7-r7-a8": 0.04935130845734498,
+    "TRAIN-complete-split-none-s7-r7-a9": 0.045630581269760565,
+    "TRAIN-complete-split-none-s7-r8-a0": 0.048735320916574704,
+    "TRAIN-complete-split-none-s7-r8-a4": 0.015294061901750875,
+    "TRAIN-complete-split-none-s7-r8-a5": 0.38260387115844907,
+    "TRAIN-complete-split-none-s7-r8-a7": 1.0,
+    "TRAIN-complete-split-none-s7-r8-a9": 0.045630581269760565,
+    "TRAIN-complete-split-none-s7-r9-a2": 1.0,
+    "TRAIN-complete-split-none-s7-r9-a4": 0.0491639370324131,
+    "TRAIN-complete-split-none-s7-r9-a5": 1.0,
+    "TRAIN-complete-split-none-s7-r9-a7": 0.049259128634307925,
+    "TRAIN-complete-split-none-s7-r9-a9": 0.045630581269760565
+  },
+  "sources": [
+    {
+      "path": "TRAIN-complete-split-none-s7/manifest.json",
+      "sha256": "df511cb1dc7de93d2fd46e1fa96f2b2f90d4d3cd7faa613ca0a8c7a2c99cccb5"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s7/result.json",
+      "sha256": "867b21a8ece52363a38dd121681c0d4bb3147e6a14a35285562ccc0f1f2b63ac"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s7/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s7/events.jsonl",
+      "sha256": "0bcc1fe689472ebe9c1c42820f27fa7e4be5753ead10d233d59fb7e144ab0b55"
+    },
+    {
+      "path": "TRAIN-complete-split-none-s7/gt.json",
+      "sha256": "431d74f376bf7a5fac66f74533f1c243dea0e8e4c37c8d413886d8dd8d8c65ef"
+    }
+  ]
+}

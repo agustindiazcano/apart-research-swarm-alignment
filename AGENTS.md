@@ -121,7 +121,7 @@ docs/hackathon/OVERVIEW.md, RESOURCES.md, RULES.md, TALKS_DIGEST.md, PRIOR_WORK_
 
 Goal: measure how an infection spreads through conversations in an LLM swarm (recruitment chains and terminal breaches of a split canary credential), and how well four detectors catch it, offline and as online gates: a lexical logistic regression, a logprob-calibrated micro-LLM guardrail, a graph-contextual cascade and a micro-verifier cascade. Full definitions: `docs/PROJECT.md`, `docs/EXPERIMENT_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/TASKS.md`. Hackathon rules: `docs/hackathon/RULES.md`; talk lessons: `docs/hackathon/TALKS_DIGEST.md`; prior work: `docs/hackathon/PRIOR_WORK_DIGEST.md`.
 
-Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan experiments after Mon 05:00 ART; after that only analysis, writing and checking.
+Deadline: Mon Nov 9, 2026, 08:59 ART (Sun Nov 8, 11:59 PM AoE). Do not plan experiments after Mon 07:00 ART; after that only analysis, writing and checking.
 
 ### Hard invariants
 

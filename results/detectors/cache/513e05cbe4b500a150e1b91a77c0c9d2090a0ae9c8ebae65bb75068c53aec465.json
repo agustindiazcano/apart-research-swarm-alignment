@@ -1,0 +1,58 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-complete-solo-none-s102-r0-a2": 0.7158377305702343,
+    "A1-complete-solo-none-s102-r1-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r1-a2": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r2-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r2-a2": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r2-a3": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r3-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r3-a3": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r4-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r4-a3": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r4-a4": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r5-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r5-a3": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r5-a4": 0.6048540786785028,
+    "A1-complete-solo-none-s102-r5-a5": 0.27152074534516946,
+    "A1-complete-solo-none-s102-r6-a1": 0.7158377305702343,
+    "A1-complete-solo-none-s102-r6-a3": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r6-a4": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r6-a5": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r6-a6": 0.04871534002532568,
+    "A1-complete-solo-none-s102-r7-a1": 0.8269488416813454,
+    "A1-complete-solo-none-s102-r7-a6": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r8-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r8-a4": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r8-a6": 0.04871534002532568,
+    "A1-complete-solo-none-s102-r8-a7": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r9-a1": 0.015294061901750875,
+    "A1-complete-solo-none-s102-r9-a4": 0.04929852312294726,
+    "A1-complete-solo-none-s102-r9-a6": 0.04871534002532568,
+    "A1-complete-solo-none-s102-r9-a7": 0.7159651897896139,
+    "A1-complete-solo-none-s102-r9-a8": 0.04929852312294726
+  },
+  "sources": [
+    {
+      "path": "A1-complete-solo-none-s102/manifest.json",
+      "sha256": "e9f01f65ae3b5e3a4c49c0cf491f89cb3d5d076c9fb5cd65e0558346b9b80eb4"
+    },
+    {
+      "path": "A1-complete-solo-none-s102/result.json",
+      "sha256": "f2f4944b28785d9541962b6c5e311f10f438f45c435c78702d2c933ce7669318"
+    },
+    {
+      "path": "A1-complete-solo-none-s102/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-complete-solo-none-s102/events.jsonl",
+      "sha256": "87b888d1fc96eed6fcb8b6cf605acd810008898b5218c6a3be7eb592b13f1ab7"
+    },
+    {
+      "path": "A1-complete-solo-none-s102/gt.json",
+      "sha256": "179620eed87a0ad8b75c9f123bb85b44763442b3429baad4e0586166592b090f"
+    }
+  ]
+}

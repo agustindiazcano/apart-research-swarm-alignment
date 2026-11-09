@@ -1,0 +1,67 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-solo-none-s102-r0-a2": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r1-a1": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r1-a2": 0.827014501360892,
+    "A1-ring-solo-none-s102-r2-a1": 0.27138246063680554,
+    "A1-ring-solo-none-s102-r2-a2": 0.04920366988661634,
+    "A1-ring-solo-none-s102-r2-a3": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r3-a0": 0.71582690508125,
+    "A1-ring-solo-none-s102-r3-a1": 0.49360468285902775,
+    "A1-ring-solo-none-s102-r3-a3": 0.827014501360892,
+    "A1-ring-solo-none-s102-r4-a0": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r4-a1": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r4-a4": 0.2714589458053364,
+    "A1-ring-solo-none-s102-r4-a9": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r5-a0": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r5-a1": 0.71582690508125,
+    "A1-ring-solo-none-s102-r5-a4": 0.3825700569164475,
+    "A1-ring-solo-none-s102-r5-a5": 0.2714589458053364,
+    "A1-ring-solo-none-s102-r5-a8": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r5-a9": 0.71582690508125,
+    "A1-ring-solo-none-s102-r6-a0": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r6-a1": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r6-a3": 0.2714589458053364,
+    "A1-ring-solo-none-s102-r6-a4": 0.04923672358311423,
+    "A1-ring-solo-none-s102-r6-a5": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r6-a6": 0.04871534002532568,
+    "A1-ring-solo-none-s102-r6-a7": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r6-a8": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r6-a9": 0.04916023841458335,
+    "A1-ring-solo-none-s102-r7-a0": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r7-a3": 0.2714589458053364,
+    "A1-ring-solo-none-s102-r7-a6": 0.04871534002532568,
+    "A1-ring-solo-none-s102-r7-a7": 0.38249357174791665,
+    "A1-ring-solo-none-s102-r7-a8": 0.16027134952569444,
+    "A1-ring-solo-none-s102-r8-a0": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r8-a1": 0.015294061901750875,
+    "A1-ring-solo-none-s102-r8-a3": 0.2714589458053364,
+    "A1-ring-solo-none-s102-r8-a4": 0.7159033902497809,
+    "A1-ring-solo-none-s102-r8-a6": 0.04871534002532568,
+    "A1-ring-solo-none-s102-r8-a7": 0.27138246063680554,
+    "A1-ring-solo-none-s102-r8-a8": 0.04916023841458335
+  },
+  "sources": [
+    {
+      "path": "A1-ring-solo-none-s102/manifest.json",
+      "sha256": "a08d809f1189199ba426d9f0cb858972051b76013d2303b5e83ced5eced12202"
+    },
+    {
+      "path": "A1-ring-solo-none-s102/result.json",
+      "sha256": "1423afd0b4d337ab79bb715244c02dca5ef1b413e6d3834560dffbda058558ce"
+    },
+    {
+      "path": "A1-ring-solo-none-s102/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-solo-none-s102/events.jsonl",
+      "sha256": "451b6d286061f5105f34d392681b0430a9112ac7bfbd203b77f41e789c55baad"
+    },
+    {
+      "path": "A1-ring-solo-none-s102/gt.json",
+      "sha256": "8cc2fe9645f603e650ecfab8dd3cbab323b38dd5c68cc12b1c58cf53df694e7e"
+    }
+  ]
+}

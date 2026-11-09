@@ -1,0 +1,36 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-solo-none-s101-r0-a9": 0.27103621708906933,
+    "A1-ring-solo-none-s101-r1-a9": 0.8266358340172655,
+    "A1-ring-solo-none-s101-r2-a9": 0.7155353327733072,
+    "A1-ring-solo-none-s101-r3-a9": 0.27110617972561923,
+    "A1-ring-solo-none-s101-r4-a9": 1.0,
+    "A1-ring-solo-none-s101-r5-a9": 0.2711035928977476,
+    "A1-ring-solo-none-s101-r6-a9": 0.2711178754473583,
+    "A1-ring-solo-none-s101-r7-a9": 0.8266197968801903,
+    "A1-ring-solo-none-s101-r8-a9": 0.49326598724952114
+  },
+  "sources": [
+    {
+      "path": "A1-ring-solo-none-s101/manifest.json",
+      "sha256": "aa9684636375dadb536f41d0a0be7ec2ad77145ce7152cb8eec1e98aea6a98cf"
+    },
+    {
+      "path": "A1-ring-solo-none-s101/result.json",
+      "sha256": "6a4e37302aaf401d941a7b878998bb38f0fccef7fbd1d874ed7e82cd27dc2c05"
+    },
+    {
+      "path": "A1-ring-solo-none-s101/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-solo-none-s101/events.jsonl",
+      "sha256": "67b72005f469de82988735bc6ae420b24511ee4c2f88e05b1df6743e2b0da018"
+    },
+    {
+      "path": "A1-ring-solo-none-s101/gt.json",
+      "sha256": "a4d3d7951bf74ac824805a08c1d469f75e25187e2cb44be5ff286fe10c8fec5e"
+    }
+  ]
+}

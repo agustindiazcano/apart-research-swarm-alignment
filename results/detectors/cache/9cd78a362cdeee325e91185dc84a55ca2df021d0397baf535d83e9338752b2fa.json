@@ -1,0 +1,35 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-split-none-s101-r0-a9": 0.9377473028133914,
+    "A1-ring-split-none-s101-r1-a9": 0.27103462048261917,
+    "A1-ring-split-none-s101-r2-a9": 0.7155508194113882,
+    "A1-ring-split-none-s101-r3-a9": 0.27102099155037473,
+    "A1-ring-split-none-s101-r4-a9": 0.9377933685323033,
+    "A1-ring-split-none-s101-r5-a9": 0.3821982894205641,
+    "A1-ring-split-none-s101-r6-a9": 0.27105786929431513,
+    "A1-ring-split-none-s101-r7-a9": 0.49327081914460164
+  },
+  "sources": [
+    {
+      "path": "A1-ring-split-none-s101/manifest.json",
+      "sha256": "f77231705a324f492318d384b805883fce4d913046139e165e2dc5a8573367b4"
+    },
+    {
+      "path": "A1-ring-split-none-s101/result.json",
+      "sha256": "d3988d164401d3ff50f7f0ccf8180a0a8e0128dd40595b64df3c7727f7efe902"
+    },
+    {
+      "path": "A1-ring-split-none-s101/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-split-none-s101/events.jsonl",
+      "sha256": "c93579009df947f7e52f0dd9ccf0d30b212b0e587a4ab3a7e04dac330cb5acdd"
+    },
+    {
+      "path": "A1-ring-split-none-s101/gt.json",
+      "sha256": "b42799db9b3e14bb8c4149d82b8b2cf5a791c5432bc46532f234d051c94f3a35"
+    }
+  ]
+}

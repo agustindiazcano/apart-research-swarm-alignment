@@ -1,0 +1,35 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-complete-split-none-s101-r0-a9": 0.27110617972561923,
+    "A1-complete-split-none-s101-r1-a9": 0.7155506268663243,
+    "A1-complete-split-none-s101-r2-a9": 0.8266564697933292,
+    "A1-complete-split-none-s101-r3-a9": 0.04884737586829482,
+    "A1-complete-split-none-s101-r4-a9": 0.9377248969243739,
+    "A1-complete-split-none-s101-r5-a9": 0.7155701651518492,
+    "A1-complete-split-none-s101-r6-a9": 0.9377777953508343,
+    "A1-complete-split-none-s101-r7-a9": 0.7154840999048186
+  },
+  "sources": [
+    {
+      "path": "A1-complete-split-none-s101/manifest.json",
+      "sha256": "590e0760833afe402dd344afd3efd265d1af3e69638012eac0bd13f829a12bd6"
+    },
+    {
+      "path": "A1-complete-split-none-s101/result.json",
+      "sha256": "6aeaa559f1debaf820cccd7850b7e822011c2630c6fb98f86fdef6d5e4ab9b3a"
+    },
+    {
+      "path": "A1-complete-split-none-s101/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-complete-split-none-s101/events.jsonl",
+      "sha256": "6a9bf7f5ec42d71e0e31adfeb360ef9e3be149e0cb2bbbe7a3c8315bfe42017b"
+    },
+    {
+      "path": "A1-complete-split-none-s101/gt.json",
+      "sha256": "04fa52efea94ab5d493617caac5787705d20680dfe36d0f03df911b69e3db0fe"
+    }
+  ]
+}
