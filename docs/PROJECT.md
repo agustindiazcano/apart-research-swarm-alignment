@@ -78,4 +78,4 @@ By the deadline: the free-flow arm and the detector arms run at the preregistere
 
 ## 9. Dual use
 
-Everything runs locally with synthetic data and a fake credential. The infected playbooks are persuasion text without exploit content. The public report publishes rates, classes and conditions, not tuned message text. The playbook texts stay in `experiments/payloads/` and are redacted from any public release. The repository stays private until judging ends.
+Everything runs locally with synthetic data and a fake credential. The infected playbooks are persuasion text without exploit content. The public report publishes rates, classes and conditions, not tuned message text. The playbook texts stay in `experiments/payloads/` and are redacted from any public release. The repository is public; the maintainer keeps playbook texts outside git. Public logs require a separate review for attack text before release.

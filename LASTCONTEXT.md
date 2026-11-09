@@ -1,52 +1,61 @@
 # LASTCONTEXT
 
-Handoff note for the next agent. Read this at the start of every session, together with `PENDING.md`. Rewrite it after every finished task: keep only the latest state, not a history (git log holds the history).
+Last updated: 2026-11-08. All operational times use Argentina time (ART).
 
-Last updated: 2026-11-08
+## Session state
 
-## What was done last
+The current coordinator continued the preceding session by reading AGENTS.md, the context files, design documents, provider branch record, hackathon rules and delegation instructions. The working checkout main matched origin/main at b5e0a06 when checked. No edits were made in the primary checkout or prior agents' worktrees.
 
-- Parallel work launched from the coordinator session: T01 (coordinator), T05a statistics, T08a preregistration manifest and T14a results renderer (Antigravity, model `gemini-3.8-flash-high`, `agy --dangerously-skip-permissions`, unsandboxed, no time limit), T09 batch runner (Claude subagent). Each ran in its own worktree and branch from `origin/main`.
-- Every delegated result was reviewed and corrected by the coordinator: tests, ruff and mypy run again, specification checked. Corrections: range checks and lint in statistics; LF line endings in the manifest writer (text mode wrote CRLF on Windows); escaped pipes, JSON literals and marker lines with spaces in the renderer; unused `noqa` comments in the batch runner.
-- Added the skill `antigravity` (`.claude/skills/antigravity/SKILL.md`), `scripts/agy_launch.sh`, a `.gitattributes` for LF in shell scripts, and the delegation section of `AGENTS.md` on `docs/agy-skill`.
-- The repository is public (GitHub reports `private: false`). The design keeps playbook texts private until judging. Decision pending: private repository, or playbooks outside git.
+The human authorized opening all pending PRs after review and green CI. Every PR targets main; the human reviews and merges. PRs #22 to #30 are open; every base is main. Swarm and prompts are combined in #30 instead of duplicate PRs. No merges were performed by this coordinator.
 
-## Repository state
+## Human decisions
 
-| Branch | Worktree | Content | State |
-|---|---|---|---|
-| `chore/skeleton` | `../apart-research-swarm-alignment-wt-skeleton` | T01: package, `schema.py`, CLI stub, Python CI job | pushed, 13 tests, no PR |
-| `feat/stats` | `..-wt-stats` | T05a statistics module | pushed, 14 tests, no PR |
-| `feat/batch-runner` | `..-wt-batch` | T09 batch runner | pushed, 17 tests, no PR |
-| `feat/prereg` | `..-wt-prereg` | T08a manifest generator | pushed, 9 tests, no PR |
-| `feat/render-results` | `..-wt-render` | T14a results renderer | pushed, 14 tests, no PR |
-| `docs/agy-skill` | `..-wt-agy-skill` | skill, launch script, delegation rules | pushed, no PR |
-| `docs/handoff-parallel` | `..-wt-handoff` | this update | no PR |
-| `exp/mock-split-attack` | `..-wt-mock-exp` | numpy simulations by another agent, untracked files | not mine, not pushed |
+- Spend caps: Muse USD 20, Vertex USD 20, Adaption 500 credits (explicitly approved after discovering that official prices are credit-denominated). Adaption USD conversion remains TODO(verify), so cost_usd stays null. Use Adaption for the primary workload. No real provider calls were made in this session.
+- Playbooks remain outside git while the repository is public.
+- All times use ART. Experiments freeze Monday 2026-11-09 at 05:00; submission deadline 08:59.
+- Separate offspring means count recruited children and breached children, each divided by all infected agents, including agents without children. A child can enter both numerators. They describe a finite observed episode and do not establish an immunity threshold.
 
-Notes:
+## Branches and worktrees
 
-- Worktrees `wt-stats`, `wt-batch`, `wt-prereg` and `wt-render` contain an untracked local `pyproject.toml` (copy from `chore/skeleton`) used to run ruff and mypy; `wt-batch` also has untracked copies of `schema.py` and `__init__.py`. Delete these untracked files before merging or rebasing onto `main` after T01 is merged.
-- The batch runner and the other branches are independent of each other; only `feat/batch-runner` needs `schema.py` from T01.
-- Merge order: `chore/skeleton` first, then the rest (each PR based on `main`).
-- Remove the worktrees after their PR is merged (not the ones of other agents).
+All paths below are siblings of the primary checkout, prefixed `apart-research-swarm-alignment-wt-`.
 
-## Next step
+| Branch | Suffix | State |
+|---|---|---|
+| feat/world | world | Existing branch, CI passed, PR #22 open |
+| feat/plots | plots | Existing branch, CI passed, PR #23 open |
+| docs/provider-check | providers | Existing branch, CI passed, PR #24 open |
+| chore/review-llm-core | review-llm | New coordinator-owned continuation of feat/llm-core, corrected and coordinator-validated, CI passed, PR #25 open |
+| chore/review-events-extract | review-extract | New agent-owned continuation of feat/events-extract, reviewed and coordinator-validated, PR #28 open |
+| chore/review-detector-lexical | review-lexical | New agent-owned continuation of feat/detector-lexical, reviewed and coordinator-validated, CI passed, PR #26 open |
+| chore/review-detector-guardrail | review-guardrail | New agent-owned continuation of feat/detector-guardrail, reviewed and coordinator-validated, CI passed, PR #27 open |
+| chore/review-swarm-runtime | review-runtime | New agent-owned combined continuation of world, swarm and prompts; coordinator-validated, CI passed, PR #30 open |
+| feat/provider-adapters | provider-adapters | New agent-owned implementation, coordinator-validated with mocks, CI passed, PR #29 open |
+| feat/billing-units | billing-units | Unit-aware caps and cost records complete; coordinator review pending |
+| feat/runtime-cli | runtime-cli | Run/batch/prereg CLI integration in progress |
+| feat/analysis-pipeline | analysis-pipeline | Event-log analysis and H2 integration in progress |
+| feat/training-pipeline | training-pipeline | TRAIN and offline scoring integration in progress |
+| docs/coordinator-state | coordinator-state | This handoff and design clarification branch |
 
-1. Human approves the PRs; merge `chore/skeleton` first.
-2. Open the remaining lane-A and lane-B tasks that depend on T01: T02 (LLM client, budget guard), T03 (world and ground truth), T06 (detectors), T05b (extraction); then T04 (swarm core), T04b (prompts and playbooks, after the playbook decision).
-3. Provider check for G1: logprob support, temperature 0, model ids and limits (the human supplies console data for `docs/MODELS.md`).
+Prior worktrees and branches remain untouched. Primary checkout has untracked add_docs_prompt.md and swarm-utils/. Prior swarm and prompts worktrees contain untracked world types. Do not delete, edit or commit those files. The mock experiment worktree is outside this task and supplies no reported results. No services were started by this coordinator.
 
-## Open questions for the human
+## Audit corrections
 
-- Approve opening the redesign PR (rules: ask first).
-- Close PR #13 (obsolete, Groq decision)?
-- Stop the Docker project `swarmexp` (leftover from the dropped MCP stack)?
-- Which provider and model for the swarm agents, and which low-cost model for the guardrail (G1)?
+- LLM: cost_of(result) uses each response's token counts, budget authorization rechecked before queued calls and retries, finite nonnegative caps/costs/prices, async test dependency declared. In-flight charges remain unknown until responses return; no cost reservation is implemented.
+- Extraction: short fragments require exact matching, long fragments allow one edit; exclude injected patient zero from H2; join report texts with newlines; line numbers for invalid UTF-8; initial_infection=False represents clean arms; separate offspring means.
+- Lexical: optional episode_ids enforces episode-disjoint model fitting and Platt calibration; production must pass it. Binary labels checked. Negative selection uses labels regardless of sender state. Unreachable raw thresholds use standard JSON null and restore infinity on load.
+- Guardrail: rubric output budget defaults to configurable 600; JSON parser handles braces inside strings; test literals satisfy repository language checks. Production explicitly uses rubric mode. The specified parse-failure policy retries once then permits a message using the declared fallback.
 
-## Notes
+## Integration blockers
 
-- Deadline: Monday, November 9, 2026, 08:59 ART. No new experiments after Monday 05:00 ART. The author is registered.
-- CI blocks the em dash character in tracked files and requires `CLAUDE.md` to be a symlink to `AGENTS.md`.
-- `PENDING.md` uses emojis for the traffic light on purpose (exception in `AGENTS.md`). Do not use emojis elsewhere.
-- Never put API keys in chat, logs or commits. Payload templates stay out of public docs.
+- Real provider adapters, CLI commands, TRAIN, offline scoring and analysis are not yet integrated.
+- Adaption model prices were verified in official documentation at the human request, in credits. See docs/PROVIDER_PRICING.md. RPM/TPM and USD conversion remain TODO(verify). Never place a credit amount in cost_usd.
+- Use initial_infection=False for A0, A3c and clean TRAIN; infection generation and prompts must also disable the injected objective.
+- Add standalone D3 detector adapter; enforce previous-round graph context; keep D5 cached scores and count actual guardrail calls separately from messages routed to it.
+- Unknown retry counts remain null; extraction emits known_retries and calls_with_unknown_retries, without treating unknown as zero.
+- H2 analysis uses exposed rows only (total_solicitations_received >= 1).
+- Save fitted thresholds before scoring any TEST episode, and keep held-out playbook style out of TRAIN.
+- Copy ignored playbooks only into the execution worktree. Never commit them or publish attacker text in report/PR bodies.
+
+## Next actions
+
+Open the coordinator handoff PR and remaining validated integration PRs. Human merges world first (#22), then LLM (#25) before adapters (#29); #30 includes both swarm and prompts. All reviewed branches have been pushed. Complete runtime integration with a mock end-to-end test before any pilot. Then pilot, human preregistration tag, TRAIN and reported runs. After 05:00 ART only analysis, writing and checks.
