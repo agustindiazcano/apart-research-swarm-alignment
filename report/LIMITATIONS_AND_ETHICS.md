@@ -25,7 +25,7 @@ The exfiltration target is an artificial canary token consisting of a randomized
 Worm payloads utilized by patient zero (authority, urgency, and reciprocity styles) reside in local configuration files (`experiments/payloads/`) excluded from version control via `.gitignore`. Neither raw payload text nor optimized persuasion templates appear in the report or documentation. Published documentation reports structural categories, token lengths, and behavioral metrics without providing functional exploit strings.
 
 4. Focus on Defense and Failure Modes:
-The research focuses on defense: evaluating detector efficacy, classification failure modes, and latency overheads across four monitoring mechanisms (lexical regression, logprob guardrails, graph cascades, and micro-verifiers). The study measures defensive degradation under split-credential tactics and unseen attack variations rather than optimizing attack yield.
+The research focuses on defense: evaluating detector efficacy, classification failure modes, and latency overheads across the evaluated monitoring mechanisms (lexical regression, rubric-based guardrails, graph cascades, and a tiered filter). The study measures defensive degradation under split-credential tactics and unseen attack variations rather than optimizing attack yield.
 
 ## 2. Experimental and Methodological Limitations
 

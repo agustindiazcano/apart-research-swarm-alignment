@@ -101,8 +101,8 @@ def test_compile_report_sources(tmp_path: Path) -> None:
     assert "## 1. Intro" in compiled
     assert "## References" in compiled
     assert "## Appendix A. Limitations and Dual-Use / Ethical Considerations" in compiled
-    assert "## Appendix B. Reproduction Guide" in compiled
-    assert "## Appendix C. Pre-existing Work vs Sprint Work Declaration" in compiled
+    assert "## Appendix C. Reproduction Guide" in compiled
+    assert "## Appendix B. Pre-existing Work vs Sprint Work Declaration" in compiled
 
 
 def test_pdf_creation_and_header(tmp_path: Path) -> None:

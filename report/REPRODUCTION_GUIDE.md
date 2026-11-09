@@ -11,8 +11,8 @@ This technical reproduction guide documents the procedure for an independent eva
 ### Dependency Installation
 Clone the repository and configure a dedicated virtual environment:
 ```bash
-git clone <repository-url>
-cd apart-research-swarm-alignment-wt-reproduction
+git clone https://github.com/agustindiazcano/apart-research-swarm-alignment.git
+cd apart-research-swarm-alignment
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -59,11 +59,11 @@ For local testing or offline verification without live provider API calls, the t
 
 ## 4. Playbook Placement Protocol
 Attacker prompts and worm injection payloads represent multi-turn injection strategies designed for infection chain experiments.
-Under the project security policy (Hard Invariant 8 and dual-use considerations):
+Under the project security policy (dual-use considerations):
 - Attacker playbook templates reside exclusively in the local directory `experiments/payloads/`:
-  * `experiments/payloads/playbook_0.txt`: Direct recruitment / authority appeal style.
-  * `experiments/payloads/playbook_1.txt`: Obfuscated payload style.
-  * `experiments/payloads/playbook_2.txt`: Context-adaptive injection style.
+  * `experiments/payloads/playbook_0.txt`: Style 0, authority (compliance audit pretext).
+  * `experiments/payloads/playbook_1.txt`: Style 1, operational urgency (pipeline synchronization pretext).
+  * `experiments/payloads/playbook_2.txt`: Style 2, reciprocal exchange (held-out; cooperative validation swap pretext).
 - The `experiments/payloads/` directory and all `playbook_*.txt` files are git-ignored via `.gitignore` and are never committed to version control, public repositories, documentation, or reports.
 - To execute preregistration or live infected runs, valid playbook files must be positioned locally in `experiments/payloads/`. For local reproduction checks without proprietary attack text, synthetic placeholder files containing non-empty text strings can be populated:
 ```bash
@@ -132,11 +132,6 @@ python scripts/render_results.py --check
 To prevent transcription errors and ensure scientific reproducibility, this project adheres to a zero-handwritten numbers policy:
 - No experimental number (rate, count, interval, R0, AUROC, cost, or table cell) is typed by hand.
 - All numeric values in `README.md`, `docs/`, and `report/` are generated directly from committed event logs and `gt.json` by `scripts/render_results.py`.
-- Generated content is enclosed within explicit comment boundaries:
-  ```markdown
-  <!-- RESULTS:BEGIN <name> -->
-  ... generated content ...
-  <!-- RESULTS:END <name> -->
-  ```
+- Generated content is enclosed within explicit begin and end markers named RESULTS:BEGIN and RESULTS:END followed by a block name; scripts rewrite only the text between them.
 - Each rendered table is accompanied by an attribution footer indicating the relative source path and its SHA-256 content digest (for example: `Source: results/summary.csv (SHA-256 <digest>)`).
 - Continuous integration validates that running `python scripts/render_results.py --check` produces an exit code of 0 and a clean git working tree, confirming complete concordance between reported figures and committed raw data.

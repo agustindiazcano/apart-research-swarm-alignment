@@ -70,27 +70,44 @@ MATH_INLINE_PATTERN = re.compile(r"\$([^$]+)\$")
 FRAC_PATTERN = re.compile(r"\\frac\{([^\}]+)\}\{([^\}]+)\}")
 
 
+SUB = str.maketrans("0123456789+-=()aehiklmnoprstuvx", "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₕᵢₖₗₘₙₒₚᵣₛₜᵤᵥₓ")
+DISPLAY_MATH_PATTERN = re.compile(r"\$\$([\s\S]+?)\$\$")
+
+
+def _subscript(m: re.Match[str]) -> str:
+    inner = m.group(1) if m.group(1) is not None else m.group(2)
+    if all(ch in "0123456789+-=()aehiklmnoprstuvx" for ch in inner):
+        return inner.translate(SUB)
+    return "_" + inner
+
+
+def _convert_math(s: str) -> str:
+    s = FRAC_PATTERN.sub(lambda m: f"({m.group(1)}) / ({m.group(2)})", s)
+    s = re.sub(r"\\tilde\{([^\}]+)\}", lambda m: m.group(1) + "\u0303", s)
+    s = re.sub(r"\\pmod\s*(\w+)", r"mod \1", s)
+    s = re.sub(r"\\(exp|max|log)\b", r"\1", s)
+    for pat, repl in LATEX_REPLACEMENTS:
+        s = re.sub(pat, repl, s)
+    s = re.sub(r"_\{([^\}]*)\}|_([0-9a-z])", _subscript, s)
+    s = re.sub(r"\^\{([^\}]*)\}", r"^\1", s)
+    s = s.replace(r"\ ", " ").replace("\\", "")
+    s = s.replace("{", "").replace("}", "")
+    return s
+
+
 def sanitize_markdown_text(text: str) -> str:
-    """Sanitize LaTeX math markup and HTML comments into plain typography."""
-    # Strip HTML comments
+    """Sanitize LaTeX math markup, HTML comments and inline Markdown into plain typography."""
     cleaned = HTML_COMMENT_PATTERN.sub("", text)
-
-    def _replace_frac(m: re.Match[str]) -> str:
-        return f"({m.group(1)}) / ({m.group(2)})"
-
-    def _process_math(match: re.Match[str]) -> str:
-        s = match.group(1)
-        s = FRAC_PATTERN.sub(_replace_frac, s)
-        for pat, repl in LATEX_REPLACEMENTS:
-            s = re.sub(pat, repl, s)
-        s = s.replace(r"\ ", " ")
-        s = s.replace("\\", "")
-        return s
-
-    cleaned = MATH_INLINE_PATTERN.sub(_process_math, cleaned)
-    # Normalize markdown bold markers inside plain text
-    cleaned = cleaned.replace("**", "")
+    cleaned = DISPLAY_MATH_PATTERN.sub(lambda m: _convert_math(m.group(1)), cleaned)
+    cleaned = MATH_INLINE_PATTERN.sub(lambda m: _convert_math(m.group(1)), cleaned)
+    cleaned = cleaned.replace("**", "").replace("`", "")
+    cleaned = re.sub(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])", r"\1", cleaned)
     return cleaned
+
+
+def _strip_marker(item: str) -> str:
+    """Drop a leading Markdown bullet or number; the renderer draws its own bullet."""
+    return re.sub(r"^\s*([*\-]|\d+\.)\s+", "", item)
 
 
 @dataclass
@@ -321,13 +338,13 @@ def parse_markdown_blocks(
 
         # Bullet List or Numbered List
         if re.match(r"^\s*([*\-]|\d+\.)\s+", raw_line):
-            list_items: list[str] = [sanitize_markdown_text(raw_line)]
+            list_items: list[str] = [_strip_marker(sanitize_markdown_text(raw_line))]
             i += 1
             while i < len(lines) and (
                 re.match(r"^\s*([*\-]|\d+\.)\s+", lines[i])
                 or (lines[i].startswith("  ") and lines[i].strip())
             ):
-                list_items.append(sanitize_markdown_text(lines[i]))
+                list_items.append(_strip_marker(sanitize_markdown_text(lines[i])))
                 i += 1
             blocks.append(
                 LayoutBlock(
@@ -392,7 +409,7 @@ def compile_report_sources(
         # Locate pre-existing work section
         for part in ("## Appendix" + app_remainder).split("## Appendix"):
             if "Pre-existing Work" in part:
-                appendix_title = "## Appendix C. Pre-existing Work vs Sprint Work Declaration"
+                appendix_title = "## Appendix B. Pre-existing Work vs Sprint Work Declaration"
                 preexisting_text = f"{appendix_title}\n\n{part.split(chr(10), 1)[1].strip()}"
                 break
     else:
@@ -409,15 +426,15 @@ def compile_report_sources(
             f"## Appendix A. Limitations and Dual-Use / Ethical Considerations\n\n{clean_ethics}"
         )
 
-    # Append Reproduction guide as Appendix B
+    # Append Pre-existing work as Appendix B
+    if preexisting_text:
+        compiled_parts.append(preexisting_text)
+
+    # Append Reproduction guide as Appendix C
     if reproduction_path and reproduction_path.exists():
         raw_repro = reproduction_path.read_text(encoding="utf-8")
         clean_repro = re.sub(r"^#\s+[^\n]*\n", "", raw_repro).strip()
-        compiled_parts.append(f"## Appendix B. Reproduction Guide\n\n{clean_repro}")
-
-    # Append Pre-existing work as Appendix C
-    if preexisting_text:
-        compiled_parts.append(preexisting_text)
+        compiled_parts.append(f"## Appendix C. Reproduction Guide\n\n{clean_repro}")
 
     return "\n\n---\n\n".join(compiled_parts)
 
@@ -468,7 +485,7 @@ class PDFReportBuilder:
                 current_items = []
                 current_y = self.y_top
 
-        for b in blocks:
+        for b_idx, b in enumerate(blocks):
             # Check for explicit section breaks
             if b.page_break_before and current_items:
                 _finish_page()
@@ -521,7 +538,12 @@ class PDFReportBuilder:
 
             elif b.kind == "h4":
                 h4_h = 0.20
-                if current_y - h4_h < self.y_bottom and current_items:
+                keep_h = h4_h
+                nxt = blocks[b_idx + 1] if b_idx + 1 < len(blocks) else None
+                if nxt is not None and nxt.kind == "table":
+                    # Keep a table caption on the same page as its table.
+                    keep_h += 0.30 + len(nxt.rows) * 0.18 + 0.08
+                if current_y - keep_h < self.y_bottom and current_items:
                     _finish_page()
                 current_items.append(
                     {"type": "h4", "text": b.text, "y": current_y, "height": h4_h}
@@ -855,7 +877,7 @@ class PDFReportBuilder:
                         total_len = sum(max_lens) if sum(max_lens) > 0 else 1
                         col_widths = [(ml / total_len) * self.usable_width for ml in max_lens]
                         # Ensure reasonable min width
-                        col_widths = [max(cw, 0.45) for cw in col_widths]
+                        col_widths = [max(cw, 0.6) for cw in col_widths]
                         scale = self.usable_width / sum(col_widths)
                         col_widths = [cw * scale for cw in col_widths]
 
@@ -876,7 +898,7 @@ class PDFReportBuilder:
                         for c_i, h_text in enumerate(headers):
                             cw = col_widths[c_i] if c_i < len(col_widths) else 0.5
                             wrap_w = max(int(cw / 0.065), 5)
-                            wrapped_h = textwrap.fill(h_text, width=wrap_w)
+                            wrapped_h = textwrap.fill(h_text.replace('_', ' '), width=wrap_w)
                             ax.text(
                                 cx + 0.03,
                                 tab_y - 0.04,
