@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,8 @@ import pytest
 from scipy.stats import binomtest
 
 from swarmlab.metrics.analysis import analyze, fit_h2
+from swarmlab.metrics.events import read_events
+from swarmlab.metrics.extract import message_rows
 from swarmlab.schema import EventRecord, GroundTruth, to_json_line
 
 
@@ -334,3 +337,212 @@ def test_manifest_cannot_override_log_derived_metrics(tmp_path: Path) -> None:
     path.write_text(json.dumps(manifest))
     report = analyze(root, tmp_path / "analysis", allow_mock=True)
     assert report["episodes"][0]["n_infected"] == 0
+
+
+@pytest.mark.parametrize("retries", [0, 1])
+def test_provider_audit_is_authoritative_without_double_counting(
+    tmp_path: Path, retries: int
+) -> None:
+    root = tmp_path / "runs"
+    directory = _episode(root, "audit")
+    manifest_path = directory / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["provider_audit_path"] = "provider_calls.jsonl"
+    manifest_path.write_text(json.dumps(manifest))
+    main_call = EventRecord(
+        ts="t",
+        episode_id="audit",
+        round=0,
+        agent_id=0,
+        kind="llm_call",
+        payload={
+            "tokens_in": 1000,
+            "tokens_out": 1000,
+            "cost_usd": None,
+            "cost_credits": 9.0,
+            "billing_unit": "credits",
+            "parse_ok": False,
+            "retries": None,
+        },
+    )
+    with (directory / "events.jsonl").open("ab") as stream:
+        stream.write((to_json_line(main_call) + "\n").encode())
+    audits = [
+        EventRecord(
+            ts="t",
+            episode_id="audit",
+            round=-1,
+            agent_id=None,
+            kind="llm_call",
+            payload={
+                "tokens_in": token_count,
+                "tokens_out": token_count,
+                "cost_usd": None,
+                "cost_credits": 0.1,
+                "billing_unit": "credits",
+                "purpose": purpose,
+                "retries": retries,
+                "attempts": retries + 1,
+                "timeouts": 0,
+                "provider": "mock",
+                "model": "fixture",
+                "response_id": purpose,
+            },
+        )
+        for purpose, token_count in [("swarm", 3), ("guardrail", 5)]
+    ]
+    (directory / "provider_calls.jsonl").write_bytes(
+        ("\n".join(to_json_line(event) for event in audits) + "\n").encode()
+    )
+    report = analyze(root, tmp_path / "analysis", allow_mock=True)
+    row = report["episodes"][0]
+    assert row["tokens_in"] == sum(event.payload["tokens_in"] for event in audits)
+    assert row["known_cost_credits"] == sum(event.payload["cost_credits"] for event in audits)
+    assert row["cost_credits"] == (row["known_cost_credits"] if retries == 0 else None)
+    assert row["parse_failures"] == 1
+    assert row["retries"] == sum(event.payload["retries"] for event in audits)
+    assert row["provider_returns_by_purpose"] == {"swarm": 1, "guardrail": 1}
+    assert row["provider_usage_unobserved"] is bool(retries)
+    assert any(source["path"].endswith("provider_calls.jsonl") for source in report["sources"])
+
+
+def test_panel_a_uses_frozen_scores_and_episode_bootstrap(tmp_path: Path) -> None:
+    root = tmp_path / "runs"
+    messages = []
+    sources = []
+    for seed, score in [(101, 0.8), (102, 0.2)]:
+        directory = _episode(root, str(seed), seed=seed)
+        gt = GroundTruth.from_json((directory / "gt.json").read_text())
+        leak = EventRecord(
+            ts="t",
+            episode_id=str(seed),
+            round=1,
+            agent_id=1,
+            kind="message",
+            payload={
+                "message_id": "leak",
+                "sender": 1,
+                "target": 0,
+                "intent": "share_code",
+                "text": gt.credential,
+                "delivered": True,
+            },
+        )
+        with (directory / "events.jsonl").open("ab") as stream:
+            stream.write((to_json_line(leak) + "\n").encode())
+        for row in message_rows(read_events(directory / "events.jsonl"), gt):
+            messages.append(
+                {
+                    **row,
+                    "episode_id": str(seed),
+                    "playbook_style": 2,
+                    **{key: score for key in ["d1", "d2", "d3", "d5"]},
+                }
+            )
+        for path in directory.iterdir():
+            sources.append(
+                {
+                    "path": path.relative_to(root).as_posix(),
+                    "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                }
+            )
+    artifact_dir = tmp_path / "artifacts"
+    artifact_dir.mkdir()
+    artifact_path = artifact_dir / "thresholds.json"
+    thresholds = dict.fromkeys(["d1", "d2", "d3", "d5"], 0.5)
+    artifact_path.write_text(json.dumps({"thresholds": thresholds, "mock": True}))
+    score_path = root / "scores.json"
+    score_path.write_text(
+        json.dumps(
+            {
+                "messages": messages,
+                "thresholds": thresholds,
+                "sources": sources,
+                "mock": True,
+                "artifact_path": os.path.relpath(artifact_path, root),
+                "artifact_sha256": hashlib.sha256(artifact_path.read_bytes()).hexdigest(),
+            }
+        )
+    )
+    report = analyze(root, tmp_path / "analysis", allow_mock=True)
+    panel = report["panels"]["A"]
+    assert panel["status"] == "available"
+    assert all(row["tpr"] == 0.5 for row in panel["rows"])
+    assert all(row["positive_episodes"] == 2 for row in panel["rows"])
+    assert all(row["playbook"] == "held_out" for row in panel["rows"])
+    assert (tmp_path / "analysis" / "panel_a.csv").exists()
+    assert any(source["path"] == "scores.json" for source in report["sources"])
+    corrupted = json.loads(score_path.read_text())
+    corrupted["messages"][0]["l1"] = True
+    score_path.write_text(json.dumps(corrupted))
+    with pytest.raises(ValueError, match="label"):
+        analyze(root, tmp_path / "corrupted-analysis", allow_mock=True)
+
+
+def test_campaign_billing_includes_previous_attempt_audits_once(tmp_path: Path) -> None:
+    root = tmp_path / "runs"
+    first = _episode(root, "first", status="failed")
+    final = _episode(first / "attempts", "attempt-002")
+    costs = [0.1, 0.2]
+    for directory, cost in zip([first, final], costs, strict=True):
+        path = directory / "manifest.json"
+        metadata = json.loads(path.read_text())
+        metadata["provider_audit_path"] = "provider_calls.jsonl"
+        path.write_text(json.dumps(metadata))
+        record = EventRecord(
+            ts="t",
+            episode_id=metadata["episode_id"],
+            round=-1,
+            agent_id=None,
+            kind="llm_call",
+            payload={
+                "tokens_in": 1,
+                "tokens_out": 1,
+                "provider": "mock",
+                "model": "fixture",
+                "response_id": directory.name,
+                "purpose": "swarm",
+                "cost_usd": None,
+                "cost_credits": cost,
+                "billing_unit": "credits",
+                "retries": 0,
+                "attempts": 1,
+                "timeouts": 0,
+            },
+        )
+        (directory / "provider_calls.jsonl").write_text(to_json_line(record) + "\n")
+    metadata = json.loads((final / "manifest.json").read_text())
+    selector = {
+        **metadata,
+        "log_path": "attempts/attempt-002/events.jsonl",
+        "attempts": 2,
+        "attempt_history": [
+            {
+                "attempt": 1,
+                "status": "failed",
+                "manifest_path": "manifest.json",
+                "log_path": "events.jsonl",
+            },
+            {
+                "attempt": 2,
+                "status": "complete",
+                "manifest_path": "attempts/attempt-002/manifest.json",
+                "log_path": "attempts/attempt-002/events.jsonl",
+            },
+        ],
+    }
+    (first / "result.json").write_text(json.dumps(selector))
+    report = analyze(root, tmp_path / "analysis", allow_mock=True)
+    assert len(report["episodes"]) == 1
+    assert report["episodes"][0]["known_cost_credits"] == costs[-1]
+    assert len(report["billing_attempts"]) == len(costs)
+    totals = report["billing_totals"][0]
+    assert totals["billing_unit"] == "credits"
+    assert totals["known_cost"] == sum(costs)
+    assert totals["cost"] is None
+    assert totals["attempts_with_unknown_usage"] == 1
+    assert totals["provider_returns"] == len(costs)
+    assert (tmp_path / "analysis" / "billing_attempts.csv").exists()
+    assert len(
+        [source for source in report["sources"] if source["path"].endswith("provider_calls.jsonl")]
+    ) == len(costs)

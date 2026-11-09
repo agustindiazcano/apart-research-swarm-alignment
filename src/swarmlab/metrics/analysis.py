@@ -5,6 +5,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import math
+import os
 from collections import Counter, defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -17,9 +19,16 @@ from scipy.special import expit
 from scipy.stats import t
 
 from swarmlab.metrics.events import read_events
-from swarmlab.metrics.extract import episode_summary, h2_rows, infection_state
-from swarmlab.metrics.plots import KINETICS_COLUMNS, PANEL_B_COLUMNS, plot_kinetics
+from swarmlab.metrics.extract import episode_summary, h2_rows, infection_state, message_rows
+from swarmlab.metrics.plots import (
+    KINETICS_COLUMNS,
+    PANEL_A_COLUMNS,
+    PANEL_B_COLUMNS,
+    plot_central_figure,
+    plot_kinetics,
+)
 from swarmlab.metrics.stats import (
+    auroc,
     bootstrap_ci,
     exact_mcnemar_p,
     holm_adjust,
@@ -48,6 +57,8 @@ class _Episode:
     events: list[EventRecord]
     gt: GroundTruth | None
     summary: dict[str, Any]
+    manifest_path: Path | None
+    selector_directory: Path | None
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -66,7 +77,7 @@ def _within(path: Path, directory: Path) -> Path:
 
 def _source(path: Path, root: Path) -> dict[str, str]:
     return {
-        "path": path.relative_to(root).as_posix(),
+        "path": Path(os.path.relpath(path, root)).as_posix(),
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
 
@@ -187,6 +198,64 @@ def _load(root: Path, allow_mock: bool) -> tuple[list[_Episode], list[dict[str, 
             if gt is not None
             else {}
         )
+        summary["billing_scope"] = "runner llm_call events; provider audit unavailable"
+        audit_name = metadata.get("provider_audit_path")
+        if manifest_path and audit_name:
+            audit_path = _within(manifest_path.parent / audit_name, manifest_path.parent)
+            if audit_path.exists():
+                sources[str(audit_path)] = _source(audit_path, root)
+                audit = read_events(audit_path)
+                if gt is None:
+                    raise ValueError("Provider audit requires ground truth for episode provenance")
+                for record in audit:
+                    if (
+                        record.kind != "llm_call"
+                        or record.round != -1
+                        or record.episode_id != metadata["episode_id"]
+                    ):
+                        raise ValueError("Invalid provider audit record")
+                    if not metadata["mock"] and (
+                        not record.payload.get("response_id")
+                        or record.payload.get("provider") in {None, "mock"}
+                    ):
+                        raise ValueError("Real provider audit requires response_id and provider")
+                accounting = episode_summary(audit, gt, initial_infection=False)
+                keys = (
+                    "tokens_in",
+                    "tokens_out",
+                    "retries",
+                    "known_retries",
+                    "calls_with_unknown_retries",
+                    "cost_usd",
+                    "known_cost_usd",
+                    "calls_with_unknown_cost_usd",
+                    "cost_credits",
+                    "known_cost_credits",
+                    "calls_with_unknown_cost_credits",
+                )
+                summary.update({key: accounting[key] for key in keys})
+                summary["provider_returns"] = len(audit)
+                summary["provider_returns_by_purpose"] = dict(
+                    Counter(str(record.payload.get("purpose", "unknown")) for record in audit)
+                )
+                observed_failed_attempts = sum(
+                    max(0, int(record.payload.get("attempts", 1)) - 1) for record in audit
+                )
+                unknown_usage = bool(
+                    observed_failed_attempts
+                    or metadata["status"] != "complete"
+                    or any(event.kind == "error" for event in events)
+                )
+                summary["provider_failed_attempts_observed"] = observed_failed_attempts
+                summary["provider_usage_unobserved"] = unknown_usage
+                summary["billing_scope"] = (
+                    "successful provider returns; failed-attempt usage unknown"
+                )
+                if unknown_usage:
+                    summary["cost_usd"] = None
+                    summary["cost_credits"] = None
+            elif metadata["status"] == "complete":
+                raise ValueError(f"Declared provider audit is missing: {audit_path}")
         observed = bool(summary.get("exfiltrated", False))
         # Protocol metadata cannot replace a quantity extracted from the event log.
         summary = {**metadata, **summary}
@@ -196,7 +265,7 @@ def _load(root: Path, allow_mock: bool) -> tuple[list[_Episode], list[dict[str, 
         if gt is None:
             summary["utility"] = None
             summary["n_infected"] = None
-        episodes.append(_Episode(metadata, events, gt, summary))
+        episodes.append(_Episode(metadata, events, gt, summary, manifest_path, result_directory))
     if not episodes:
         raise ValueError("No episode manifests or result selectors found")
     return episodes, sorted(sources.values(), key=lambda item: item["path"])
@@ -283,6 +352,152 @@ def fit_h2(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
 
 def _group_key(metadata: dict[str, Any]) -> tuple[Any, ...]:
     return tuple(metadata[key] for key in GROUP_KEYS)
+
+
+def _billing_attempts(
+    root: Path,
+    episodes: Sequence[_Episode],
+    sources: list[dict[str, str]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Account for every attempt separately from the selected-outcome denominator."""
+    rows: list[dict[str, Any]] = []
+    seen_audits: set[Path] = set()
+    seen_manifests: set[Path] = set()
+    for episode in episodes:
+        history = episode.metadata.get("attempt_history", [])
+        candidates = []
+        if history:
+            assert episode.selector_directory is not None
+            for attempt in history:
+                path = Path(attempt["manifest_path"])
+                if not path.is_absolute():
+                    path = episode.selector_directory / path
+                candidates.append((attempt["attempt"], _within(path, root)))
+        elif episode.manifest_path is not None:
+            candidates.append((1, episode.manifest_path))
+        for attempt_number, manifest_path in candidates:
+            if manifest_path in seen_manifests:
+                continue
+            seen_manifests.add(manifest_path)
+            manifest = _read_json(manifest_path)
+            sources.append(_source(manifest_path, root))
+            audit_name = manifest.get("provider_audit_path")
+            audit_path = _within(manifest_path.parent / audit_name, root) if audit_name else None
+            base = {
+                "episode_id": episode.metadata["episode_id"],
+                "attempt": attempt_number,
+                "status": manifest["status"],
+                "mock": manifest["mock"],
+            }
+            if audit_path is None or not audit_path.exists():
+                rows.append(
+                    {
+                        **base,
+                        "provider": manifest["provider"],
+                        "billing_unit": manifest["billing_unit"],
+                        "provider_returns": None,
+                        "known_cost": 0.0,
+                        "cost": None,
+                        "calls_with_unknown_cost": None,
+                        "unknown_usage": True,
+                        "reason": "provider audit unavailable; no inferred zero charge",
+                    }
+                )
+                continue
+            if audit_path in seen_audits:
+                continue
+            seen_audits.add(audit_path)
+            sources.append(_source(audit_path, root))
+            audit = read_events(audit_path)
+            groups: dict[tuple[str, str], list[EventRecord]] = defaultdict(list)
+            for event in audit:
+                if event.kind != "llm_call" or event.episode_id != manifest["episode_id"]:
+                    raise ValueError("Attempt provider audit contains unrelated records")
+                unit = str(event.payload["billing_unit"]).lower()
+                if unit not in {"usd", "credits"}:
+                    raise ValueError(f"Unknown provider billing unit: {unit}")
+                groups[str(event.payload["provider"]), unit].append(event)
+            if not groups:
+                groups[str(manifest["provider"]), str(manifest["billing_unit"]).lower()] = []
+            events_path = _within(
+                manifest_path.parent / manifest.get("events_path", "events.jsonl"), root
+            )
+            main_events = read_events(events_path) if events_path.exists() else []
+            if events_path.exists():
+                sources.append(_source(events_path, root))
+            for (provider, unit), calls in sorted(groups.items()):
+                if not manifest["mock"] and (
+                    provider == "mock"
+                    or any(not event.payload.get("response_id") for event in calls)
+                ):
+                    raise ValueError("Real billing audit lacks provider evidence")
+                key = "cost_usd" if unit == "usd" else "cost_credits"
+                amounts = [event.payload.get(key) for event in calls]
+                known = [float(amount) for amount in amounts if amount is not None]
+                if any(not math.isfinite(amount) or amount < 0 for amount in known):
+                    raise ValueError("Invalid provider audit cost")
+                attempts = [event.payload.get("attempts") for event in calls]
+                unknown_attempt_counts = any(value is None for value in attempts)
+                failed = sum(max(0, int(value) - 1) for value in attempts if value is not None)
+                unknown_cost_calls = sum(value is None for value in amounts)
+                unknown = bool(
+                    failed
+                    or unknown_attempt_counts
+                    or unknown_cost_calls
+                    or manifest["status"] != "complete"
+                    or any(event.kind == "error" for event in main_events)
+                )
+                subtotal = sum(known)
+                rows.append(
+                    {
+                        **base,
+                        "provider": provider,
+                        "billing_unit": unit,
+                        "provider_returns": len(calls),
+                        "known_cost": subtotal,
+                        "cost": None if unknown else subtotal,
+                        "calls_with_unknown_cost": unknown_cost_calls,
+                        "failed_provider_attempts_observed": failed,
+                        "unknown_usage": unknown,
+                        "audit_path": Path(os.path.relpath(audit_path, root)).as_posix(),
+                        "returns_by_purpose": dict(
+                            Counter(str(event.payload.get("purpose", "unknown")) for event in calls)
+                        ),
+                        "known_tokens_in": sum(int(event.payload["tokens_in"]) for event in calls),
+                        "known_tokens_out": sum(
+                            int(event.payload["tokens_out"]) for event in calls
+                        ),
+                    }
+                )
+    grouped: dict[tuple[str, str, bool], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[row["provider"], row["billing_unit"], row["mock"]].append(row)
+    totals = []
+    for (provider, unit, mock), group in sorted(grouped.items()):
+        unknown_attempts = sum(bool(row["unknown_usage"]) for row in group)
+        known = sum(row["known_cost"] for row in group)
+        counts = [row["calls_with_unknown_cost"] for row in group]
+        unknown_return_counts = sum(row["provider_returns"] is None for row in group)
+        known_returns = sum(row["provider_returns"] or 0 for row in group)
+        totals.append(
+            {
+                "provider": provider,
+                "billing_unit": unit,
+                "mock": mock,
+                "known_cost": known,
+                "cost": None if unknown_attempts else known,
+                "attempts": len(group),
+                "attempts_with_unknown_usage": unknown_attempts,
+                "provider_returns": None if unknown_return_counts else known_returns,
+                "known_provider_returns": known_returns,
+                "attempts_with_unknown_return_count": unknown_return_counts,
+                "calls_with_unknown_cost": None
+                if any(count is None for count in counts)
+                else sum(counts),
+                "scope": "all attempt provider audits, deduplicated by source path",
+            }
+        )
+    return rows, totals
 
 
 def _arm_summaries(episodes: Sequence[_Episode]) -> list[dict[str, Any]]:
@@ -412,6 +627,131 @@ def _comparisons(episodes: Sequence[_Episode]) -> list[dict[str, Any]]:
     return output
 
 
+def _ratio_episode_interval(counts: Sequence[tuple[int, int]]) -> tuple[float, float]:
+    """Resample episode clusters containing observations of the relevant label."""
+    values = np.asarray(counts, dtype=float)
+    rng = np.random.default_rng(0)
+    indices = rng.integers(0, len(values), size=(5000, len(values)))
+    totals = values[indices].sum(axis=1)
+    estimates = totals[:, 0] / totals[:, 1]
+    low, high = np.percentile(estimates, [2.5, 97.5])
+    return float(low), float(high)
+
+
+def _panel_a(
+    root: Path,
+    episodes: Sequence[_Episode],
+    sources: list[dict[str, str]],
+    allow_mock: bool,
+) -> dict[str, Any]:
+    score_path = root / "scores.json"
+    if not score_path.exists():
+        return {"status": "TODO(result)", "reason": "offline scored messages absent", "rows": []}
+    scored = _read_json(score_path)
+    if type(scored.get("mock")) is not bool or (scored["mock"] and not allow_mock):
+        raise ValueError("Scored mock flag is missing or requires --allow-mock")
+    artifact_path = (score_path.parent / scored["artifact_path"]).resolve()
+    if artifact_path.name != "thresholds.json":
+        raise ValueError("Scores must refer to frozen thresholds.json")
+    if hashlib.sha256(artifact_path.read_bytes()).hexdigest() != scored["artifact_sha256"]:
+        raise ValueError("Frozen threshold artifact hash differs from scores")
+    artifact = _read_json(artifact_path)
+    if artifact["mock"] != scored["mock"] or artifact["thresholds"] != scored["thresholds"]:
+        raise ValueError("Score thresholds or mock flag differ from frozen artifact")
+    for source in scored["sources"]:
+        source_path = _within(root / source["path"], root)
+        if hashlib.sha256(source_path.read_bytes()).hexdigest() != source["sha256"]:
+            raise ValueError("Scored source hash differs from event corpus")
+    expected: dict[tuple[str, str], dict[str, Any]] = {}
+    styles = {}
+    mock_flags = {}
+    for episode in episodes:
+        if episode.gt is None or episode.metadata["arm"] not in {"A0", "A1"}:
+            continue
+        if episode.metadata["status"] != "complete":
+            continue
+        identity = episode.metadata["episode_id"]
+        styles[identity] = episode.gt.playbook_style
+        mock_flags[identity] = episode.metadata["mock"]
+        for row in message_rows(
+            episode.events, episode.gt, initial_infection=episode.metadata["initial_infection"]
+        ):
+            key = identity, row["message_id"]
+            if key in expected:
+                raise ValueError("Duplicate message_id in source episode")
+            expected[key] = row
+    seen: set[tuple[str, str]] = set()
+    groups: dict[tuple[str, str], dict[str, list[tuple[bool, bool, float]]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    for row in scored["messages"]:
+        key = row["episode_id"], row["message_id"]
+        if key in seen or key not in expected:
+            raise ValueError("Unknown or duplicate scored message")
+        seen.add(key)
+        if mock_flags[key[0]] != scored["mock"]:
+            raise ValueError("Scored and source mock flags differ")
+        if row["playbook_style"] != styles[key[0]]:
+            raise ValueError("Scored playbook differs from ground truth")
+        for field in ("l1", "l2", "text", "round", "sender", "target"):
+            if row[field] != expected[key][field]:
+                raise ValueError(f"Scored label or message field differs from log: {field}")
+        positive = bool(expected[key]["l1"] or expected[key]["l2"])
+        playbook = "held_out" if styles[key[0]] == 2 else "seen"
+        for detector in ("d1", "d2", "d3", "d5"):
+            score = float(row[detector])
+            threshold = float(scored["thresholds"][detector])
+            if not math.isfinite(score) or not math.isfinite(threshold) or not 0 <= score <= 1:
+                raise ValueError("Non-finite or out-of-range scored value")
+            groups[detector, playbook][key[0]].append((positive, score >= threshold, score))
+    scored_ids = {identity for identity, _ in seen}
+    if any(key not in seen for key in expected if key[0] in scored_ids):
+        raise ValueError("Scored episodes omit source messages")
+    output = []
+    for (detector, playbook), clusters in sorted(groups.items()):
+        positives, negatives = [], []
+        positive_scores: list[float] = []
+        negative_scores: list[float] = []
+        for messages in clusters.values():
+            positives_here = [(hit, score) for positive, hit, score in messages if positive]
+            negatives_here = [(hit, score) for positive, hit, score in messages if not positive]
+            if positives_here:
+                positives.append((sum(hit for hit, _ in positives_here), len(positives_here)))
+                positive_scores.extend(score for _, score in positives_here)
+            if negatives_here:
+                negatives.append((sum(hit for hit, _ in negatives_here), len(negatives_here)))
+                negative_scores.extend(score for _, score in negatives_here)
+        if not positives:
+            continue
+        low, high = _ratio_episode_interval(positives)
+        row = {
+            "detector": detector.upper(),
+            "playbook": playbook,
+            "tpr": sum(hit for hit, _ in positives) / sum(n for _, n in positives),
+            "ci_lo": low,
+            "ci_hi": high,
+            "positive_episodes": len(positives),
+            "positive_messages": sum(n for _, n in positives),
+            "negative_messages": len(negative_scores),
+            "threshold": scored["thresholds"][detector],
+            "auroc": auroc(positive_scores, negative_scores) if negative_scores else None,
+            "fpr": sum(hit for hit, _ in negatives) / len(negative_scores)
+            if negative_scores
+            else None,
+        }
+        output.append(row)
+    sources.extend([_source(score_path, root), _source(artifact_path, root)])
+    return {
+        "status": "available" if output else "TODO(result)",
+        "rows": output,
+        "scored_episodes": len(scored_ids),
+        "eligible_episodes": len(styles),
+        "unscored_episodes": sorted(set(styles) - scored_ids),
+        "interval": "percentile bootstrap of episode clusters containing the label",
+        "d5_score": "threshold-relative margin, not a probability",
+    }
+
+
 def _panel_b(episodes: Sequence[_Episode], comparisons: Sequence[dict[str, Any]]) -> dict[str, Any]:
     rows = []
     missing = []
@@ -507,6 +847,14 @@ def analyze(root: Path, outdir: Path, allow_mock: bool = False) -> dict[str, Any
                 )
     comparisons = _comparisons(reported_episodes)
     panel_b = _panel_b(reported_episodes, comparisons)
+    panel_a = _panel_a(root, reported_episodes, sources, allow_mock)
+    billing_attempts, billing_totals = _billing_attempts(root, episodes, sources)
+    unique_sources: dict[str, dict[str, str]] = {}
+    for source in sources:
+        if source["path"] in unique_sources and source != unique_sources[source["path"]]:
+            raise ValueError("Analysis source changed while being read")
+        unique_sources[source["path"]] = source
+    sources = sorted(unique_sources.values(), key=lambda source: source["path"])
     result: dict[str, Any] = {
         "schema_version": 1,
         "mock": any(episode.metadata["mock"] for episode in episodes),
@@ -516,9 +864,11 @@ def analyze(root: Path, outdir: Path, allow_mock: bool = False) -> dict[str, Any
         "kinetics": kinetics,
         "comparisons": comparisons,
         "sources": sources,
+        "billing_attempts": billing_attempts,
+        "billing_totals": billing_totals,
         "h2": {**fit_h2(exposed_rows), "population": "exposed A1 rows from complete episodes"},
         "panels": {
-            "A": {"status": "TODO(result)", "reason": "offline scored messages absent"},
+            "A": panel_a,
             "B": panel_b,
         },
         "definitions": {
@@ -533,10 +883,15 @@ def analyze(root: Path, outdir: Path, allow_mock: bool = False) -> dict[str, Any
     _write_json(outdir / "h2.json", result["h2"])
     _write_csv(outdir / "episodes.csv", result["episodes"])
     _write_csv(outdir / "arm_summary.csv", result["arms"])
+    _write_csv(outdir / "billing_attempts.csv", billing_attempts)
+    _write_csv(outdir / "billing_totals.csv", billing_totals)
     _write_csv(outdir / "paired_comparisons.csv", comparisons)
     _write_csv(outdir / "h2_rows.csv", exposed_rows)
     _write_csv(outdir / "kinetics.csv", kinetics, KINETICS_COLUMNS)
     _write_csv(outdir / "panel_b.csv", panel_b["rows"], PANEL_B_COLUMNS)
+    _write_csv(outdir / "panel_a.csv", panel_a["rows"], PANEL_A_COLUMNS)
+    if panel_a["rows"] and panel_b["rows"]:
+        plot_central_figure(outdir / "panel_a.csv", outdir / "panel_b.csv", outdir / "central.png")
     free_flow = [row for row in kinetics if row["arm"] == "A1"]
     # Plot only a single provider/model/defense per topology/harm to avoid joining conditions.
     series_keys = {(row["provider"], row["model"], row["defense"]) for row in free_flow}
