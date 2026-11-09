@@ -144,7 +144,7 @@ def plot_central_figure(panel_a_csv: Path, panel_b_csv: Path, out_png: Path) -> 
             color = COLORBLIND_PALETTE[idx % len(COLORBLIND_PALETTE)]
             ax_b.scatter(x, y, s=size, color=color)
 
-            annotation_text = f"{defense} (R0={r0})"
+            annotation_text = f"{defense} (mean offspring={r0})"
             ax_b.annotate(
                 annotation_text,
                 (x, y),

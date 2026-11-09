@@ -5,8 +5,10 @@ import csv
 import struct
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import pytest
+from matplotlib.axes import Axes
 
 from swarmlab.metrics.plots import (
     KINETICS_COLUMNS,
@@ -160,6 +162,27 @@ def extract_png_dimensions(png_bytes: bytes) -> tuple[int, int]:
     assert png_bytes[12:16] == b"IHDR", "First PNG chunk is not IHDR"
     width, height = struct.unpack(">II", png_bytes[16:24])
     return width, height
+
+
+def test_central_figure_labels_finite_offspring_mean(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    annotations: list[str] = []
+    original = Axes.annotate
+
+    def capture(self: Any, text: str, *args: Any, **kwargs: Any) -> Any:
+        annotations.append(text)
+        return original(self, text, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "annotate", capture)
+    panel_a = tmp_path / "panel_a.csv"
+    panel_b = tmp_path / "panel_b.csv"
+    write_fixture_csv(panel_a, PANEL_A_COLUMNS, FIXTURE_PANEL_A)
+    write_fixture_csv(panel_b, PANEL_B_COLUMNS, FIXTURE_PANEL_B)
+    plot_central_figure(panel_a, panel_b, tmp_path / "figure.png")
+    assert annotations == [
+        f"{row['defense']} (mean offspring={row['r0']})" for row in FIXTURE_PANEL_B
+    ]
 
 
 def test_read_table_success(tmp_path: Path) -> None:
