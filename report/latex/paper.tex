@@ -147,6 +147,8 @@ Providers did not expose token logprobs, so the rubric mode replaces the logprob
 
 \paragraph{$\D{5}$ tiered filter.} Messages with $S_{\D1}<t_{\mathrm{low}}$ pass, those with $S_{\D1}>t_{\mathrm{high}}$ are blocked, and the band between is routed to $\D3$.
 
+\paragraph{Ablation structure.} The four gates form an ablation ladder against the no-guardrail control: $\D1$ is the lexical baseline, $\D2$ adds an LLM scorer, $\D3$ adds graph context and $\D5$ adds tiered routing, so each component can be compared with the previous one.
+
 \paragraph{Thresholds.} Gates are fit on training negatives for a nominal message FPR of $0.5\%$ with the Harrell--Davis smoothed quantile estimator \cite{harrell}, paired with an episode CUSUM alarm.
 
 \section{Experimental design}
@@ -231,6 +233,8 @@ All four detectors reach an AUROC of about \AurocMax{} on seen playbooks (Figure
 \end{table}
 
 For every gate the point estimate of exfiltration reduction is positive, but the effect interval reaches zero and the Holm-adjusted McNemar $p$ is \McnemarP{} (Figure~\ref{fig:gate}, Table~\ref{tab:gate}). The paired data therefore do not show a statistically supported reduction, so H5 is not supported; the paired free-flow baseline has low incidence and the comparison has little power. Utility loss stays at or below \UtilMax{} on the $[0,1]$ scale.
+
+Containment is clearer than exfiltration. In the ring, split-credential free-flow episodes end with a mean of \InfBase{} infected agents of 10, while with each of the four gates the mean is between \InfGateMin{} and \InfGateMax{}: the infection stays at patient zero. All four gates are equivalent on this outcome and on exfiltration, so they differ only in cost (LLM call share, Figure~\ref{fig:gate}). This holds for a non-adaptive attacker and six episodes per gate.
 
 \subsection{Tiered filter (H7)}
 The LLM call share is 0 for $\D1$ and $\D5$ and 1 for $\D2$ and $\D3$ (Figure~\ref{fig:gate}). For $\D5$ no message fell in the routing band, so it behaved as its lexical stage. Its TPR equals that of $\D3$ in Table~\ref{tab:det}, but both are saturated. H7 is met only in this limited sense and is not evidence of a benefit from tiering.

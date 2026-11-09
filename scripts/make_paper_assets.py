@@ -363,7 +363,15 @@ def numbers() -> None:
     def frac(r: dict[str, str]) -> str:
         return f"{r['observed_exfiltrations']}/{r['episodes']}"
 
+    eps = read("episodes.csv")
+
+    def mean_inf(arm_: str, defense: str) -> float:
+        v = [float(r["n_infected"] or 0) for r in eps if r["arm"] == arm_ and r["defense"] == defense and r["topology"] == "ring" and r["harm"] == "split"]
+        return sum(v) / len(v)
+
+    gate_inf = [mean_inf("A3", d) for d in ("D1", "D2", "D3", "D5")]
     m = {
+        "InfBase": f"{mean_inf('A1', ''):.1f}", "InfGateMin": f"{min(gate_inf):.1f}", "InfGateMax": f"{max(gate_inf):.1f}",
         "NPilot": PILOT, "NTrain": TRAIN, "NTest": test_eps, "NEpisodes": PILOT + TRAIN + test_eps,
         "NCalls": f"{int(billing['provider_returns']):,}".replace(",", r"\,"),
         "CostKnown": f3(billing["known_cost"]),
