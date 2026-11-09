@@ -273,20 +273,20 @@ def test_selected_retry_counted_once_and_nonstarted_failure_retained(tmp_path: P
     final_manifest = json.loads((retry / "manifest.json").read_text())
     selector = {
         **final_manifest,
-        "log_path": str(retry / "events.jsonl"),
+        "log_path": (retry / "events.jsonl").relative_to(first).as_posix(),
         "attempts": 2,
         "attempt_history": [
             {
                 "attempt": 1,
                 "status": "failed",
-                "manifest_path": str(first / "manifest.json"),
-                "log_path": str(first / "events.jsonl"),
+                "manifest_path": "manifest.json",
+                "log_path": "events.jsonl",
             },
             {
                 "attempt": 2,
                 "status": "complete",
-                "manifest_path": str(retry / "manifest.json"),
-                "log_path": str(retry / "events.jsonl"),
+                "manifest_path": (retry / "manifest.json").relative_to(first).as_posix(),
+                "log_path": (retry / "events.jsonl").relative_to(first).as_posix(),
             },
         ],
     }
@@ -311,6 +311,7 @@ def test_selected_retry_counted_once_and_nonstarted_failure_retained(tmp_path: P
     assert selected["attempts"] == 2
     assert selected["observed_exfiltration"] is True
     assert any(source["path"].endswith("result.json") for source in report["sources"])
+    assert any(source["path"] == "episode/events.jsonl" for source in report["sources"])
 
 
 def test_train_and_pilot_stay_out_of_reported_arm_tables(tmp_path: Path) -> None:

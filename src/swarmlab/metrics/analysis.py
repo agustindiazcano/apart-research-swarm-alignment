@@ -72,7 +72,7 @@ def _source(path: Path, root: Path) -> dict[str, str]:
 
 
 def _load(root: Path, allow_mock: bool) -> tuple[list[_Episode], list[dict[str, str]]]:
-    selected: list[tuple[Path | None, dict[str, Any] | None]] = []
+    selected: list[tuple[Path | None, dict[str, Any] | None, Path | None]] = []
     sources: dict[str, dict[str, str]] = {}
     result_directories: list[Path] = []
     manifest_path: Path | None
@@ -87,17 +87,17 @@ def _load(root: Path, allow_mock: bool) -> tuple[list[_Episode], list[dict[str, 
             if not candidate.is_absolute():
                 candidate = result_path.parent / candidate
             manifest_path = _within(candidate, root).parent / "manifest.json"
-            selected.append((manifest_path, result))
+            selected.append((manifest_path, result, result_path.parent))
         else:
-            selected.append((None, result))
+            selected.append((None, result, result_path.parent))
     for manifest_path in sorted(root.rglob("manifest.json")):
         if any(manifest_path.is_relative_to(directory) for directory in result_directories):
             continue
-        selected.append((manifest_path, None))
+        selected.append((manifest_path, None, None))
     episodes: list[_Episode] = []
     identities: set[tuple[Any, ...]] = set()
     episode_ids: set[str] = set()
-    for manifest_path, result in selected:
+    for manifest_path, result, result_directory in selected:
         metadata = _read_json(manifest_path) if manifest_path else dict(result or {})
         if result is not None:
             for field in ("episode_id", "status", "seed", *GROUP_KEYS):
@@ -111,7 +111,8 @@ def _load(root: Path, allow_mock: bool) -> tuple[list[_Episode], list[dict[str, 
                         continue
                     path = Path(attempt[path_key])
                     if not path.is_absolute():
-                        path = root / path
+                        assert result_directory is not None
+                        path = result_directory / path
                     path = _within(path, root)
                     if path.exists():
                         sources[str(path)] = _source(path, root)
