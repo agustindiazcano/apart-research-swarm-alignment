@@ -283,6 +283,7 @@ def _run_gated_batch_step(
     ):
         guardrail_cfg["max_retries"] = int(config["max_retries"])
     guardrail_factory = RuntimeFactory(guardrail_cfg, purpose="guardrail")
+    guardrail_factory.audit_path = artifact_dir / "online_guardrail_provider_calls.jsonl"
     scorer_id = scorer_identity(guardrail_cfg)
     guardrail_client = guardrail_factory.create_client()
     if not isinstance(guardrail_client, GuardedClient) and not allow_mock:
@@ -295,7 +296,7 @@ def _run_gated_batch_step(
             artifact_dir,
             guardrail_client if isinstance(guardrail_client, GuardedClient) else None,
             scorer_id=scorer_id,
-            audit_path=artifact_dir / "online_parser_calls.jsonl",
+            audit_path=artifact_dir / f"online_parser_{spec.episode_id}.jsonl",
             allow_mock=allow_mock,
         )
 
