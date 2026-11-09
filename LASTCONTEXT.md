@@ -4,9 +4,13 @@ Last updated: 2026-11-08. All operational times use Argentina time (ART).
 
 ## Session state
 
-The current coordinator continued the preceding session by reading AGENTS.md, the context files, design documents, provider branch record, hackathon rules and delegation instructions. The working checkout main matched origin/main at b5e0a06 when checked. No edits were made in the primary checkout or prior agents' worktrees.
+The coordinator updated main from origin/main to commit 370bfdd. PRs #22 through #32 are merged. The working tree on main is clean apart from untracked developer notes and utils which remain untouched.
 
-The human authorized opening all pending PRs after review and green CI. Every PR targets main; the human reviews and merges. PRs #22 to #30 are open; every base is main. Swarm and prompts are combined in #30 instead of duplicate PRs. No merges were performed by this coordinator.
+Work continued on the integration branch `chore/integration-check` in `apart-research-swarm-alignment-wt-integration-check`. The branch combined `feat/runtime-cli`, `feat/analysis-pipeline`, and `feat/training-pipeline` on top of current `main`.
+
+All 6 CLI commands (`run-episode`, `batch`, `prereg`, `analyze`, `train-detectors`, `score`) are registered in `cli.py` and callable via `swarmlab.cli` and `python -m swarmlab`. Full test suite passes: 400 passed, 1 skipped. Ruff and mypy pass with zero warnings across 45 source files.
+
+No paid real provider calls were performed. The integration is ready for PR against main pending human approval.
 
 ## Human decisions
 
@@ -21,41 +25,37 @@ All paths below are siblings of the primary checkout, prefixed `apart-research-s
 
 | Branch | Suffix | State |
 |---|---|---|
-| feat/world | world | Existing branch, CI passed, PR #22 open |
-| feat/plots | plots | Existing branch, CI passed, PR #23 open |
-| docs/provider-check | providers | Existing branch, CI passed, PR #24 open |
-| chore/review-llm-core | review-llm | New coordinator-owned continuation of feat/llm-core, corrected and coordinator-validated, CI passed, PR #25 open |
-| chore/review-events-extract | review-extract | New agent-owned continuation of feat/events-extract, reviewed and coordinator-validated, PR #28 open |
-| chore/review-detector-lexical | review-lexical | New agent-owned continuation of feat/detector-lexical, reviewed and coordinator-validated, CI passed, PR #26 open |
-| chore/review-detector-guardrail | review-guardrail | New agent-owned continuation of feat/detector-guardrail, reviewed and coordinator-validated, CI passed, PR #27 open |
-| chore/review-swarm-runtime | review-runtime | New agent-owned combined continuation of world, swarm and prompts; coordinator-validated, CI passed, PR #30 open |
-| feat/provider-adapters | provider-adapters | New agent-owned implementation, coordinator-validated with mocks, CI passed, PR #29 open |
-| feat/billing-units | billing-units | Unit-aware caps and cost records complete; coordinator review pending |
-| feat/runtime-cli | runtime-cli | Run/batch/prereg CLI integration in progress |
-| feat/analysis-pipeline | analysis-pipeline | Event-log analysis and H2 integration in progress |
-| feat/training-pipeline | training-pipeline | TRAIN and offline scoring integration in progress |
-| docs/coordinator-state | coordinator-state | This handoff and design clarification branch |
+| feat/world | world | Merged in PR #22 |
+| feat/plots | plots | Merged in PR #23 |
+| docs/provider-check | providers | Merged in PR #24 |
+| chore/review-llm-core | review-llm | Merged in PR #25 |
+| chore/review-detector-lexical | review-lexical | Merged in PR #26 |
+| chore/review-detector-guardrail | review-guardrail | Merged in PR #27 |
+| chore/review-events-extract | review-extract | Merged in PR #28 |
+| feat/provider-adapters | provider-adapters | Merged in PR #29 |
+| chore/review-swarm-runtime | review-runtime | Merged in PR #30 |
+| feat/billing-units | billing-units | Merged in PR #31 |
+| docs/coordinator-state | coordinator-state | Merged in PR #32 |
+| chore/integration-check | integration-check | Combined CLI runtime, training pipeline, analysis pipeline; 400 tests passing, ruff/mypy clean; ready for PR |
 
-Prior worktrees and branches remain untouched. Primary checkout has untracked add_docs_prompt.md and swarm-utils/. Prior swarm and prompts worktrees contain untracked world types. Do not delete, edit or commit those files. The mock experiment worktree is outside this task and supplies no reported results. No services were started by this coordinator.
+Prior worktrees and branches remain untouched. Primary checkout has untracked add_docs_prompt.md and swarm-utils/. Prior swarm and prompts worktrees contain untracked world types. Do not delete, edit or commit those files. The mock experiment worktree is outside this task and supplies no reported results. Docker Desktop was stopped and verified stopped.
 
-## Audit corrections
+## Current integration work
 
-- LLM: cost_of(result) uses each response's token counts, budget authorization rechecked before queued calls and retries, finite nonnegative caps/costs/prices, async test dependency declared. In-flight charges remain unknown until responses return; no cost reservation is implemented.
-- Extraction: short fragments require exact matching, long fragments allow one edit; exclude injected patient zero from H2; join report texts with newlines; line numbers for invalid UTF-8; initial_infection=False represents clean arms; separate offspring means.
-- Lexical: optional episode_ids enforces episode-disjoint model fitting and Platt calibration; production must pass it. Binary labels checked. Negative selection uses labels regardless of sender state. Unreachable raw thresholds use standard JSON null and restore infinity on load.
-- Guardrail: rubric output budget defaults to configurable 600; JSON parser handles braces inside strings; test literals satisfy repository language checks. Production explicitly uses rubric mode. The specified parse-failure policy retries once then permits a message using the declared fallback.
-
-## Integration blockers
-
-- Real provider adapters, CLI commands, TRAIN, offline scoring and analysis are not yet integrated.
-- Adaption model prices were verified in official documentation at the human request, in credits. See docs/PROVIDER_PRICING.md. RPM/TPM and USD conversion remain TODO(verify). Never place a credit amount in cost_usd.
-- Use initial_infection=False for A0, A3c and clean TRAIN; infection generation and prompts must also disable the injected objective.
-- Add standalone D3 detector adapter; enforce previous-round graph context; keep D5 cached scores and count actual guardrail calls separately from messages routed to it.
-- Unknown retry counts remain null; extraction emits known_retries and calls_with_unknown_retries, without treating unknown as zero.
-- H2 analysis uses exposed rows only (total_solicitations_received >= 1).
-- Save fitted thresholds before scoring any TEST episode, and keep held-out playbook style out of TRAIN.
-- Copy ignored playbooks only into the execution worktree. Never commit them or publish attacker text in report/PR bodies.
+- PersistentBudgetGuard in llm/ledger.py shares charges across CLI processes and factories. It locks and atomically updates a campaign ledger, preserves billing units, rejects cap increases and corrupt/missing initialized state, and keeps returned charges even when a cap aborts.
+- GuardedClient exposes on_result(result, call_stats, cost_record) before recording cost against the cap. Runtime integration writes provider_calls.jsonl per attempt; it is the authoritative billing source, separate from runner action/parse events. Analysis does not double count.
+- RuntimeFactory accepts an injected guard and limiter. The final integration supplies the persistent guard, with a campaign path shared by swarm, guardrail, pilot, TRAIN and TEST.
+- Training and scoring commands (train-detectors, score) are integrated into CLI with strict type-safety and support for rubric guardrails.
+- Analysis pipeline handles log loading, kinetics, McNemar test, bootstrap intervals, H2 regression on exposed agents, defense plots, and summary CSVs.
+- Draft matrices for pilot, TRAIN (clean/infected, ring/complete), controls (A0), A1 free flow, A3 gating, and A3c gate cost are prepared and verified.
 
 ## Next actions
 
-Open the coordinator handoff PR and remaining validated integration PRs. Human merges world first (#22), then LLM (#25) before adapters (#29); #30 includes both swarm and prompts. All reviewed branches have been pushed. Complete runtime integration with a mock end-to-end test before any pilot. Then pilot, human preregistration tag, TRAIN and reported runs. After 05:00 ART only analysis, writing and checks.
+1. Ask human approval to open PR for `chore/integration-check` against `main`.
+2. Upon approval, push branch and open PR using `gh pr create --base main`.
+3. Human reviews and merges the PR into `main`.
+4. Pull `main` in primary checkout.
+5. Copy the 3 playbooks (`playbook_0.txt`, `playbook_1.txt`, `playbook_2.txt`) into the working checkout `experiments/payloads/`.
+6. Run the pilot on candidate model (Adaption `gemma-4-31b-it` or `deepseek-v4`).
+7. Run `swarmlab prereg` to generate preregistration manifest SHA-256, and request the human to create the `prereg-v1` tag.
+8. Execute TRAIN, fit detectors, freeze thresholds, and execute reported experimental runs before Monday 05:00 ART.

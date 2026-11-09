@@ -1,0 +1,15 @@
+arm: A3c
+topologies:
+- ring
+harms:
+- split
+defenses:
+- D1
+- D2
+- D3
+- D5
+seeds:
+  start: 101
+  stop: 105
+extra:
+  initial_infection: false

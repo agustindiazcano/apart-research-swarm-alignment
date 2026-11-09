@@ -105,7 +105,6 @@ Per episode, from the event log only:
 
 Resources are reported by the author and verified in the provider consoles at gate G1 (`docs/MODELS.md`, `TODO(verify)`). Providers used: Vertex AI, Muse and Adaption (Apart Research credits). Modal is not used.
 
-
 - Swarm agents: one low-latency model on one provider, chosen at G1 from the pilot (it must follow the JSON format and must be compromisable enough for the attack to run; see PLAN.md fallback). Single-model swarm.
 - Guardrail models: small and low-cost, possibly a different provider from the swarm.
 - Hard spend caps per provider in the declared billing unit; a missing cap blocks calls. Adaption is recorded in credits, with USD cost left null until a conversion is verified (see PROVIDER_PRICING.md). The binding constraints are per-minute quotas and wall-clock time.

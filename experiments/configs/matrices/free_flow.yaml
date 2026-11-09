@@ -1,0 +1,14 @@
+arm: A1
+topologies:
+- ring
+- complete
+harms:
+- solo
+- split
+defenses:
+- null
+seeds:
+  start: 101
+  stop: 115
+extra:
+  initial_infection: true

@@ -1,0 +1,13 @@
+arm: TRAIN
+topologies:
+- ring
+harms:
+- split
+defenses:
+- null
+seeds:
+- 1
+- 3
+- 5
+extra:
+  initial_infection: false
