@@ -28,3 +28,8 @@ The coordinator completed all experimental waves (Pilot + `TRAIN` + Wave 1 + Wav
 - Fixes: `render_results.py` supports `columns`, `row_filter` and `precision` (display only, SHA-256 still of the source file); manifest selects compact columns; PDF sanitizer handles backticks, display math and list markers; captions stay with tables; prior work is Appendix B and reproduction guide Appendix C; Section 6 states the status of H1 to H7 (new 6.7); Section 5 states executed scope and that D4 is not evaluated; workshop talks and Platt, Wilson, Holm cited in text.
 - No number inside a RESULTS block was edited by hand. `pytest -q` 565 passed, `verify_submission_package.py` 6/6, PDF main body 6 pages.
 - Next: owner reviews the PDF, approves push and PR, uploads `report/SWARM_CONTAGION_REPORT.pdf` before 08:59 ART.
+
+## LaTeX paper (branch `docs/latex-paper`)
+
+- `report/latex/paper.tex` is now the source of `report/SWARM_CONTAGION_REPORT.pdf` (11 pages, main body through page 8). Figures, tables and number macros come from `scripts/make_paper_assets.py`. MiKTeX was installed for the current user with winget to build it.
+
