@@ -88,3 +88,5 @@ Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adapt
 Campaign accounting: coordinator integration branch `chore/integration-check` adds a shared persistent ledger and a successful-response audit hook before budget aborts. CLI, TRAIN and analysis integration remain in progress. Docker Desktop was stopped at the maintainer request; the Python runtime does not require it.
 
 | BUILD-PLAN-01 | Draft seed matrices, provider credit configurations and recursive preregistration hashes | Prepared and validated on chore/integration-check; pilot and tag not run |
+
+Preregistration preparation includes LF source/config attributes and a credits-specific environment cap variable. Actual preregistration generation and the human tag remain pending the pilot.

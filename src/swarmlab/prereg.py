@@ -23,9 +23,7 @@ DEFAULT_GROUPS: dict[str, list[str]] = {
         "src/swarmlab/metrics/*.py", "src/swarmlab/detectors/*.py",
         "src/swarmlab/training.py", "src/swarmlab/scoring.py",
     ],
-    "runtime_code": [
-        "src/swarmlab/execution.py", "src/swarmlab/swarm/*.py", "src/swarmlab/llm/**/*.py",
-    ],
+    "runtime_code": ["src/swarmlab/**/*.py"],
     "prompts": ["src/swarmlab/swarm/prompts.py"],
 }
 
