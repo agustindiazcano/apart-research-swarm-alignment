@@ -30,24 +30,14 @@ Submission deadline: Monday, November 9, 2026, 11:59 UTC (Sunday, November 8, 11
 
 ## Open tasks
 
-Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes the previous coordinator handoff. Times use Argentina time (ART).
+Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes previous handoffs. Times use Argentina time (ART).
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🔴 | T03 | World generator | PR #22 open against main; human review and merge |
-| 🔴 | T02 | LLM budget, limiter and mock | PR #25 open, CI passed; per-result cost and budget review complete |
-| 🔴 | T05 | Events and extraction | PR #28 open; fragment, clean-arm, offspring and unknown-retry corrections validated |
-| 🔴 | T06 | Lexical and guardrail detectors | PRs #26 and #27 open; CI passed |
-| 🔴 | T04 | Swarm and prompts | PR #30 open, CI passed; combines swarm and prompts with world dependency |
-| 🔴 | G1 | Provider record and execution configuration | PR #24 open; Adaption credit prices verified, unit conversion and quotas TODO(verify) |
-| 🔴 | BUILD-01 | Real provider adapters | PR #29 open, CI passed; coordinator reran mock tests, no real calls |
-| 🔴 | BUILD-02 | CLI integration and end-to-end mock episode | In progress on `feat/runtime-cli`; commands, budget aborts, logs and clean arms |
-| 🔴 | BUILD-03 | TRAIN and offline scoring pipeline | In progress on `feat/training-pipeline`; episode calibration, frozen thresholds, D3 and D5 |
-| 🔴 | BUILD-04 | Unit-aware provider billing | PR #31 open, CI passed; Adaption costs remain in credits |
-| 🟡 | T07 | Pilot and model choice | Draft pilot and main configs prepared on integration branch; primary load on Adaption, model choice still requires pilot |
-| 🟡 | T08 | Preregistration and human tag | Manifest generator merged; freeze after pilot |
+| 🔴 | BUILD-02 | CLI runtime, training and analysis integration | Integrated on `chore/integration-check`; 400 tests passed, ruff/mypy clean; ready for PR and merge |
+| 🟡 | T07 | Pilot and model choice | Configs prepared; run after integration merge, using Adaption candidate |
+| 🟡 | T08 | Preregistration and human tag | Manifest generator verified on recursive configs; freeze after pilot |
 | 🟡 | T10 | TRAIN and reported runs | After pilot and preregistration; no new experiments after Monday 05:00 ART |
-| 🟡 | T11 | Analysis and figures | Plots PR #23 open, CI passed; `feat/analysis-pipeline` in progress |
 | 🟢 | T14 | Reproduction instructions and report assets | Renderer merged; end-to-end reproduction instructions pending |
 | 🟢 | T15 | Report, rules and submission | Human-written report and appendix; deadline Monday 08:59 ART |
 | ⚪ | T12 | D4 micro-verifiers | Backlog |
@@ -76,7 +66,6 @@ Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adapt
 | SETUP-10 | Decision: Groq is not used. Superseded by the redesign: the MCP judge pipeline it applied to is not part of the new design | PR #13 |
 | SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
 | SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
-
 | T01 | Package skeleton, schema and Python CI | PR #15 merged |
 | T05a | Statistics module | PR #16 merged |
 | T09 | Batch runner | PR #17 merged |
@@ -84,11 +73,15 @@ Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adapt
 | T14a | Result renderer | PR #19 merged |
 | SETUP-17 | Delegation skill and launch helper | PR #20 merged |
 | BUILD-REVIEW-01 | Audit LLM, extraction, lexical and guardrail branches | Corrected on dedicated review branches; PR and integration state above |
-
-Campaign accounting: coordinator integration branch `chore/integration-check` adds a shared persistent ledger and a successful-response audit hook before budget aborts. CLI, TRAIN and analysis integration remain in progress. Docker Desktop was stopped at the maintainer request; the Python runtime does not require it.
-
-| BUILD-PLAN-01 | Draft seed matrices, provider credit configurations and recursive preregistration hashes | Prepared and validated on chore/integration-check; pilot and tag not run |
-
-Preregistration preparation includes LF source/config attributes and a credits-specific environment cap variable. Actual preregistration generation and the human tag remain pending the pilot.
-
-LF source normalization is part of preregistration preparation; schema fields and signatures are unchanged.
+| T03 | World generator | PR #22 merged |
+| T11a | Central figure plots | PR #23 merged |
+| G1 | Provider capability records | PR #24 merged |
+| T02 | Guarded LLM calls and budget accounting | PR #25 merged |
+| T06a | Calibrated lexical detection | PR #26 merged |
+| T06b | Rubric guardrail and layered gates | PR #27 merged |
+| T05 | Event extraction and clean controls | PR #28 merged |
+| BUILD-01 | Provider adapters for Muse, Vertex and Adaption | PR #29 merged |
+| T04 | Swarm prompts and round-safe runtime | PR #30 merged |
+| BUILD-04 | Unit-aware provider billing | PR #31 merged |
+| SETUP-18 | Update coordinator state and billing definitions | PR #32 merged |
+| BUILD-PLAN-01 | Seed matrices, provider credit configs and preregistration hashes | Validated on chore/integration-check |
