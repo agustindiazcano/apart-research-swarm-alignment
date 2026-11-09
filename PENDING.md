@@ -34,17 +34,25 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes prev
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🔴 | BUILD-02 | CLI runtime, training and analysis integration | Integrated on `chore/integration-check`; 400 tests passed, ruff/mypy clean; ready for PR and merge |
-| 🟡 | T07 | Pilot and model choice | Configs prepared; run after integration merge, using Adaption candidate |
-| 🟡 | T08 | Preregistration and human tag | Manifest generator verified on recursive configs; freeze after pilot |
-| 🟡 | T10 | TRAIN and reported runs | After pilot and preregistration; no new experiments after Monday 05:00 ART |
-| 🟢 | T14 | Reproduction instructions and report assets | Renderer merged; end-to-end reproduction instructions pending |
-| 🟢 | T15 | Report, rules and submission | Human-written report and appendix; deadline Monday 08:59 ART |
-| ⚪ | T12 | D4 micro-verifiers | Backlog |
-| ⚪ | T13 | Immunity | Backlog; finite offspring means do not establish an immunity threshold |
+| 🔴 | T07 | Pilot execution and Gate G2 | Calibrated prompt (priority + wording B) verified in isolated API calls; run 3 pilot seeds on Adaption gemma-4-31b-it; verify >= 30% breach |
+| 🔴 | T08 | Preregistration and human tag | Run swarmlab prereg to generate experiments/PREREGISTRATION.md with SHA-256 hashes; request human git tag prereg-v1 |
+| 🟡 | T10 | TRAIN and reported runs | TRAIN (15 seeds), A0 (controls), A1 (free flow ring & complete), A3 (online gating D1, D2, D3, D5), A3c (costs). Freeze at Monday 05:00 ART |
+| 🟡 | T11 | Analysis and figures | Run swarmlab analyze, export plots, execute render_results.py and export_latex_tables.py |
+| 🟢 | T15 | Report compilation and submission | Merge DRAFT_REPORT.md and LIMITATIONS_AND_ETHICS.md, populate measured numbers, export final PDF report |
 | ⚪ | SETUP-03 | Require context files in CI | Open |
 
-Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits (explicitly supersedes USD 500 for Adaption); use Adaption for primary load; playbooks remain outside git; coordinator opens pending PRs after review and green CI, human merges each. These are configuration decisions, not experimental measurements.
+Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens pending PRs after review and green CI, human merges each. These are configuration decisions, not experimental measurements.
+
+## PRs Open (Human Review and Merge)
+
+| PR | Branch | Contents | CI |
+|---|---|---|---|
+| #34 | feat/detector-verifiers | D4 micro-verifiers cascade and veto gate; 11 tests passed | green |
+| #35 | docs/ethical-appendix | Limitations and dual-use ethical considerations appendix | green |
+| #36 | feat/latex-tables | LaTeX table export utility for analysis CSVs; 7 tests passed | green |
+| #37 | docs/reproduction-guide | Technical reproduction guide and verification tests; 6 tests passed | green |
+| #38 | feat/detector-immunity | Swarm collective immunity tracker and kinetics; 12 tests passed | green |
+| #39 | docs/report-draft | Academic report draft sections 1 to 6 (651 lines) | green |
 
 ## Done
 
@@ -58,30 +66,4 @@ Human decisions recorded this session: Muse cap USD 20, Vertex cap USD 20, Adapt
 | T00 | Verify the external stack and write `docs/VERIFICATION.md` | branch `docs/verify-external-stack` |
 | REPORT-05 | Prior work named; `docs/hackathon/PRIOR_WORK_DIGEST.md` written, README pre-existing table filled, references restored | branch `docs/prior-work` |
 | SETUP-11 | Multi-agent rule in `AGENTS.md`: check branch and worktrees first, assume nothing, one worktree and branch per task | branch `docs/multi-agent-rule` |
-| SETUP-13 | Rule in `AGENTS.md`: every PR is based on `main`, no stacked PRs | branch `docs/pr-base-main-rule` |
-| SETUP-14 | Content of stacked PRs #6 to #10 brought to `main` | PR #11 |
-| SETUP-12 | Removed the Discord, help-desk and survey `TODO(link)` rows from the README links table (SETUP-04 dropped) | branch `docs/readme-remove-todo-links` |
-| SETUP-15 | Neutral language rule in `AGENTS.md`, CI check for forbidden words, evaluative wording removed from the project documents | branch `docs/redesign-infected-swarm` |
-| SETUP-16 | Data Integrity section at the top of `README.md` and `AGENTS.md`: results are generated and inserted by script, never typed by hand; marked result blocks in the README | branch `docs/redesign-infected-swarm` |
-| SETUP-10 | Decision: Groq is not used. Superseded by the redesign: the MCP judge pipeline it applied to is not part of the new design | PR #13 |
-| SETUP-09 | `PRIOR_WORK_DIGEST.md` references removed; `.env.example` reduced to Adaption, Vertex, Muse and Modal plus per-provider budget caps | branch `chore/env-prior-work` |
-| SETUP-08 | Project context section (hard invariants, claims policy) appended to `AGENTS.md` | PR #4 |
-| T01 | Package skeleton, schema and Python CI | PR #15 merged |
-| T05a | Statistics module | PR #16 merged |
-| T09 | Batch runner | PR #17 merged |
-| T08a | Preregistration manifest generator | PR #18 merged |
-| T14a | Result renderer | PR #19 merged |
-| SETUP-17 | Delegation skill and launch helper | PR #20 merged |
-| BUILD-REVIEW-01 | Audit LLM, extraction, lexical and guardrail branches | Corrected on dedicated review branches; PR and integration state above |
-| T03 | World generator | PR #22 merged |
-| T11a | Central figure plots | PR #23 merged |
-| G1 | Provider capability records | PR #24 merged |
-| T02 | Guarded LLM calls and budget accounting | PR #25 merged |
-| T06a | Calibrated lexical detection | PR #26 merged |
-| T06b | Rubric guardrail and layered gates | PR #27 merged |
-| T05 | Event extraction and clean controls | PR #28 merged |
-| BUILD-01 | Provider adapters for Muse, Vertex and Adaption | PR #29 merged |
-| T04 | Swarm prompts and round-safe runtime | PR #30 merged |
-| BUILD-04 | Unit-aware provider billing | PR #31 merged |
-| SETUP-18 | Update coordinator state and billing definitions | PR #32 merged |
-| BUILD-PLAN-01 | Seed matrices, provider credit configs and preregistration hashes | Validated on chore/integration-check |
+| BUILD-02 | CLI runtime, training and analysis integration | PR #33 |
