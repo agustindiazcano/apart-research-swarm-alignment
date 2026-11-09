@@ -6,6 +6,14 @@ An open testbed where an infected LLM agent recruits peers through conversation 
 
 Built during the Swarm Alignment Hackathon 2026 (Apart Research sprint). The submission report is [report/SWARM_CONTAGION_REPORT.pdf](report/SWARM_CONTAGION_REPORT.pdf); the status of each hypothesis is in its Section 6.7.
 
+| Resource | Link |
+|---|---|
+| Project page | https://agustindiazcano.github.io/apart-research-swarm-alignment/ |
+| Video (YouTube) | https://youtu.be/HHjFbyk4vnM |
+| Paper (PDF) | https://agustindiazcano.github.io/apart-research-swarm-alignment/paper.pdf |
+| Presentation | https://agustindiazcano.github.io/apart-research-swarm-alignment/presentation/ |
+
+
 ## Overview and Threat Model
 
 ### Problem Statement
