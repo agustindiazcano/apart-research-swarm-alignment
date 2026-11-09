@@ -56,8 +56,8 @@
      "say": "Ninety six real episodes: three pilot, fifteen training, seventy eight test, with Gemma four, thirty one B, as the agents, and Deep Seek V four Flash as guardrail model."
     },
     {
-     "sub": "7,944 model calls, under one credit. Preregistered, graded by code, with a 100% agreement audit.",
-     "say": "Seven thousand nine hundred forty four model calls, under one credit. Preregistered, graded by code, with a hundred percent agreement audit."
+     "sub": "7,944 model calls, under one credit. Preregistered, with a 100% agreement audit.",
+     "say": "Seven thousand nine hundred forty four model calls, under one credit. Preregistered, with a hundred percent agreement audit."
     }
    ]
   },
@@ -137,8 +137,8 @@
      "say": "Offline, A U ROC is near zero point nine nine eight, but the realized false positive rate was six point four percent, not half a percent."
     },
     {
-     "sub": "Full exfiltration: 0 of 6 gated versus 1 of 6 unprotected, not significant. Utility loss stayed under 0.02.",
-     "say": "Full exfiltration: zero of six gated versus one of six unprotected, not significant. Utility loss stayed under two hundredths."
+     "sub": "Full exfiltration: 0 of 6 gated versus 1 of 6 unprotected, not significant.",
+     "say": "Full exfiltration: zero of six gated versus one of six unprotected, not significant."
     },
     {
      "sub": "No hypothesis is clearly confirmed, and H2 was not identifiable. We report that.",
@@ -147,11 +147,24 @@
    ]
   },
   {
+   "id": "integrity",
+   "sentences": [
+    {
+     "sub": "Data integrity: no number is typed by hand, neither by a person nor by the AI agent. A script reads the committed logs and fills the README, and every table and figure of the paper.",
+     "say": "Data integrity: no number is typed by hand, neither by a person, nor by the A I agent. A script reads the committed logs, and fills the README, and every table and figure of the paper."
+    },
+    {
+     "sub": "This removes human error and AI hallucination, and each table carries a hash of its source file.",
+     "say": "This removes human error and A I hallucination, and each table carries a hash of its source file."
+    }
+   ]
+  },
+  {
    "id": "close",
    "sentences": [
     {
-     "sub": "Infection chains are measurable, and guardrails contained them in our tests, but at this sample size we claim no more.",
-     "say": "Infection chains are measurable, and guardrails contained them in our tests, but at this sample size we claim no more."
+     "sub": "Infection chains are measurable, and guardrails contained them in our tests.",
+     "say": "Infection chains are measurable, and guardrails contained them in our tests."
     },
     {
      "sub": "Playbooks stay out of the repository, the canary is synthetic. Next: more seeds, adaptive attackers, mixed-model swarms. Thank you.",
