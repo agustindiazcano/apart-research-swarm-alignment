@@ -39,9 +39,8 @@ class PersistentBudgetGuard(BudgetGuard):
         with os.fdopen(descriptor, "r+b") as lock:
             lock.seek(0)
             if os.name == "nt":
-                import msvcrt
-
-                msvcrt.locking(lock.fileno(), msvcrt.LK_LOCK, 1)
+                nt_lock: Any = importlib.import_module("msvcrt")
+                nt_lock.locking(lock.fileno(), nt_lock.LK_LOCK, 1)
             else:
                 unix_lock: Any = importlib.import_module("fcntl")
                 unix_lock.flock(lock.fileno(), unix_lock.LOCK_EX)
@@ -53,7 +52,7 @@ class PersistentBudgetGuard(BudgetGuard):
             finally:
                 lock.seek(0)
                 if os.name == "nt":
-                    msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+                    nt_lock.locking(lock.fileno(), nt_lock.LK_UNLCK, 1)
                 else:
                     unix_lock.flock(lock.fileno(), unix_lock.LOCK_UN)
 
