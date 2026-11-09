@@ -131,7 +131,7 @@ $D_4$ combines injection ($M_1$), policy entailment ($M_2$), and report groundin
 
 ### 4.3 Threshold Calibration
 
-Thresholds are fit on `TRAIN` negatives for nominal message FPR $\alpha = 0.005$ via parametric tail fitting over the upper 10% log-odds tail, paired with episode CUSUM alarms $\sum_{m} \max(0, \operatorname{logit}(S_m) - \tau_0) > \tau_{\text{episode}}$.
+Thresholds are fit on `TRAIN` negatives for nominal message FPR $\alpha = 0.005$ via the Harrell-Davis smoothed quantile estimator (Harrell and Davis, 1982), paired with episode CUSUM alarms $\sum_{m} \max(0, \operatorname{logit}(S_m) - \tau_0) > \tau_{\text{episode}}$.
 
 ---
 
@@ -282,6 +282,7 @@ Source: `results/campaign/analysis/billing_totals.csv` (SHA-256 `24c7d9dcfeb6c13
 5. Platt, J. (1999). Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. *Advances in Large Margin Classifiers*, 10(3), 61-74.
 6. Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association*, 22(158), 209-212.
 7. Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scandinavian Journal of Statistics*, 6(2), 65-70.
+8. Harrell, F. E., & Davis, C. E. (1982). A new distribution-free quantile estimator. *Biometrika*, 69(3), 635-640.
 
 ---
 

@@ -49,6 +49,9 @@ def build_manifest(
                 "file": "README.md",
                 "source": f"{clean_dir}/arm_summary.csv",
                 "kind": "table",
+                "columns": ["arm", "topology", "harm", "episodes", "observed_exfiltrations",
+                            "defense", "observed_rate_wilson_lo", "observed_rate_wilson_hi"],
+                "precision": 3,
             },
             {
                 "name": "table_1_kinetics",
