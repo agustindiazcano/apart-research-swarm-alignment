@@ -442,7 +442,15 @@ def episode_summary(
     unknown_retry_calls = sum(value is None for value in retry_counts)
     tokens_in = sum(int(e.payload.get("tokens_in", 0)) for e in events if e.kind == "llm_call")
     tokens_out = sum(int(e.payload.get("tokens_out", 0)) for e in events if e.kind == "llm_call")
-    cost_usd = sum(float(e.payload.get("cost_usd", 0.0)) for e in events if e.kind == "llm_call")
+    usd_values = [e.payload.get("cost_usd") for e in events if e.kind == "llm_call"]
+    known_cost_usd = sum(float(value) for value in usd_values if value is not None)
+    unknown_cost_usd = sum(value is None for value in usd_values)
+    credit_values = [
+        e.payload.get("cost_credits") for e in events if e.kind == "llm_call"
+        and (e.payload.get("billing_unit") == "credits" or "cost_credits" in e.payload)
+    ]
+    known_cost_credits = sum(float(value) for value in credit_values if value is not None)
+    unknown_cost_credits = sum(value is None for value in credit_values)
 
     summary: dict[str, Any] = {}
     summary.update(exfil)
@@ -460,5 +468,12 @@ def episode_summary(
     summary["calls_with_unknown_retries"] = unknown_retry_calls
     summary["tokens_in"] = tokens_in
     summary["tokens_out"] = tokens_out
-    summary["cost_usd"] = cost_usd
+    summary["cost_usd"] = None if unknown_cost_usd else known_cost_usd
+    summary["known_cost_usd"] = known_cost_usd
+    summary["calls_with_unknown_cost_usd"] = unknown_cost_usd
+    summary["cost_credits"] = (
+        None if not credit_values or unknown_cost_credits else known_cost_credits
+    )
+    summary["known_cost_credits"] = known_cost_credits
+    summary["calls_with_unknown_cost_credits"] = unknown_cost_credits
     return summary

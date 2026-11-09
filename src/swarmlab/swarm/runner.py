@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, Protocol, TypeVar
@@ -89,6 +89,7 @@ async def _decide(
     max_tokens: int,
     abort_on: tuple[type[Exception], ...],
     cost_fn: Callable[[LLMResult], float],
+    cost_record_fn: Callable[[LLMResult], Mapping[str, Any]] | None,
 ) -> _AgentTurn:
     agent_id = seed.agent_id
     inbox_items = [(m.sender, m.round, m.text) for m in board.inbox(agent_id)]
@@ -117,6 +118,10 @@ async def _decide(
         "finish_reason": result.finish_reason,
         "raw_text": result.text,
     }
+    if cost_record_fn is not None:
+        record = cost_record_fn(result)
+        for key in ("cost_usd", "cost_credits", "billing_unit"):
+            payload[key] = record[key]
     if action is None:
         error = {"type": "parse_error", "message": reason or "unparsed reply"}
         return _AgentTurn(payload, _NOOP, error, True)
@@ -136,6 +141,7 @@ async def run_episode(
     max_tokens: int = 300,
     abort_on: tuple[type[Exception], ...] = (),
     cost_fn: Callable[[LLMResult], float] = _zero_cost,
+    cost_record_fn: Callable[[LLMResult], Mapping[str, Any]] | None = None,
 ) -> EpisodeOutcome:
     truth = world.ground_truth
     episode_id = truth.episode_id
@@ -182,6 +188,7 @@ async def run_episode(
             max_tokens,
             abort_on,
             cost_fn,
+            cost_record_fn,
         )
         if turn.llm_payload is not None:
             emit("llm_call", rnd, seed.agent_id, turn.llm_payload)
