@@ -76,3 +76,5 @@ The integration branch contains pilot/free_flow execution YAML and separate matr
 Preregistration defaults now recurse into configuration subdirectories and include the training/scoring and runtime source files. Tests first reproduced the omission of nested matrices, then passed after the glob correction. The local spend ledger and lock are ignored by git; provider audit logs remain the source for reported costs.
 
 Execution environment templates now name ADAPTION_BUDGET_CREDITS. Git attributes fix source/config/document line endings to LF so preregistration hashes survive fresh checkouts. Runtime hashes cover the entire Python package. Existing tracked preregistration inputs in this coordinator-owned worktree were normalized to LF before any manifest was generated. No ignored payload or secret file was touched.
+
+The LF attribute change also required normalizing existing sprint Python blobs in the integration branch. This changes line endings only; git diff --ignore-space-at-eol verifies no Python content change. It does not change the frozen schema fields or signatures.

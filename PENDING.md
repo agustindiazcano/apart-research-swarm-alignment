@@ -90,3 +90,5 @@ Campaign accounting: coordinator integration branch `chore/integration-check` ad
 | BUILD-PLAN-01 | Draft seed matrices, provider credit configurations and recursive preregistration hashes | Prepared and validated on chore/integration-check; pilot and tag not run |
 
 Preregistration preparation includes LF source/config attributes and a credits-specific environment cap variable. Actual preregistration generation and the human tag remain pending the pilot.
+
+LF source normalization is part of preregistration preparation; schema fields and signatures are unchanged.
