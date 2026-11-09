@@ -8,8 +8,9 @@ import math
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import TypedDict
 
-from swarmlab.llm.budget import BudgetGuard
+from swarmlab.llm.budget import BillingUnit, BudgetCapMissing, BudgetGuard
 from swarmlab.llm.limiter import (
     CallFailed,
     CallPolicy,
@@ -24,17 +25,28 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class PriceTable:
-    """Pricing configuration in USD per one million tokens."""
+    """Prices in the declared unit per one million tokens, without currency conversion."""
 
     input_per_m: float
     output_per_m: float
+    unit: BillingUnit = "usd"
 
     def __post_init__(self) -> None:
+        if self.unit not in ("usd", "credits"):
+            raise ValueError("Price billing unit must be usd or credits")
         if any(
             not math.isfinite(price) or price < 0.0
             for price in (self.input_per_m, self.output_per_m)
         ):
             raise ValueError("Token prices must be finite and nonnegative")
+
+
+class CostRecord(TypedDict):
+    """Per-result cost with one populated amount and its billing unit."""
+
+    cost_usd: float | None
+    cost_credits: float | None
+    billing_unit: BillingUnit
 
 
 class GuardedClient:
@@ -51,6 +63,17 @@ class GuardedClient:
         provider: str,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
     ) -> None:
+        try:
+            guard_unit = guard.unit(provider)
+        except BudgetCapMissing:
+            # Preserve the deferred missing-cap check in complete, before any call.
+            pass
+        else:
+            if guard_unit != prices.unit:
+                raise ValueError(
+                    f"Billing unit mismatch for {provider}: "
+                    f"budget={guard_unit}, prices={prices.unit}"
+                )
         self._inner = inner
         self._guard = guard
         self._limiter = limiter
@@ -59,14 +82,29 @@ class GuardedClient:
         self._provider = provider
         self._sleep = sleep
         self.stats = CallStats()
-        self.last_cost_usd: float = 0.0
+        self.last_cost_usd: float | None = 0.0 if prices.unit == "usd" else None
+        self.last_cost_credits: float | None = 0.0 if prices.unit == "credits" else None
+
+    @property
+    def billing_unit(self) -> BillingUnit:
+        """Unit shared by token prices and this provider's budget."""
+        return self._prices.unit
 
     def cost_of(self, result: LLMResult) -> float:
-        """Return the configured token cost for this result, independent of other calls."""
+        """Return cost in billing_unit, independently of other calls or conversion rates."""
         return (
             result.tokens_in * self._prices.input_per_m
             + result.tokens_out * self._prices.output_per_m
         ) / 1_000_000.0
+
+    def cost_record(self, result: LLMResult) -> CostRecord:
+        """Return unit-tagged per-result amounts without labeling credits as USD."""
+        amount = self.cost_of(result)
+        return {
+            "cost_usd": amount if self.billing_unit == "usd" else None,
+            "cost_credits": amount if self.billing_unit == "credits" else None,
+            "billing_unit": self.billing_unit,
+        }
 
     async def complete(
         self,
@@ -110,16 +148,18 @@ class GuardedClient:
             self.stats.timeouts += call_stats.timeouts
 
         cost = self.cost_of(result)
-        self.last_cost_usd = cost
+        self.last_cost_usd = cost if self.billing_unit == "usd" else None
+        self.last_cost_credits = cost if self.billing_unit == "credits" else None
         self._guard.record(self._provider, cost)
 
         if not result.timestamp_utc:
             result.timestamp_utc = datetime.now(UTC).isoformat()
 
         logger.debug(
-            "Call finished for provider %s: cost=%.6f USD, tokens_in=%d, tokens_out=%d",
+            "Call finished for provider %s: cost=%.6f %s, tokens_in=%d, tokens_out=%d",
             self._provider,
             cost,
+            self.billing_unit,
             result.tokens_in,
             result.tokens_out,
         )
