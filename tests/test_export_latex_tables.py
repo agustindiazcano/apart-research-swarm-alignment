@@ -1,16 +1,10 @@
 """Unit tests for exporting analysis CSV files to LaTeX tables."""
 
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
-
 from scripts.export_latex_tables import (
     dataframe_to_latex_table,
     export_analysis_tables,
