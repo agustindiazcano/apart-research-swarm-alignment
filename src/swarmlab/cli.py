@@ -5,7 +5,7 @@ import argparse
 from collections.abc import Sequence
 
 from swarmlab import __version__
-from swarmlab.commands import batch, prereg, run_episode
+from swarmlab.commands import analyze, batch, prereg, run_episode, score, train_detectors
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -15,7 +15,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"swarmlab {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True, metavar="<command>")
-    for register in (run_episode.register_parser, batch.register_parser, prereg.register_parser):
+    for register in (
+        run_episode.register_parser,
+        batch.register_parser,
+        prereg.register_parser,
+        analyze.register_parser,
+        train_detectors.register_parser,
+        score.register_parser,
+    ):
         register(subparsers)
     return parser
 
