@@ -255,3 +255,22 @@ async def test_queued_calls_recheck_budget_before_provider_request() -> None:
     assert isinstance(outcomes[0], LLMResult)
     assert isinstance(outcomes[1], BudgetExceeded)
     assert calls == 1
+
+
+@pytest.mark.asyncio
+async def test_result_observer_retains_usage_before_budget_abort() -> None:
+    observed: list[tuple[LLMResult, object, object]] = []
+    guard = BudgetGuard({"test": 1.0})
+    client = GuardedClient(
+        MockClient(["reply"]), guard, ProviderLimiter(), CallPolicy(),
+        PriceTable(input_per_m=2 * 10**6, output_per_m=0), provider="test",
+        on_result=lambda result, stats, cost: observed.append((result, stats, cost)),
+    )
+    with pytest.raises(BudgetExceeded):
+        await client.complete([{"role": "user", "content": "query"}])
+    assert len(observed) == 1
+    result, stats, cost = observed[0]
+    assert result.response_id is not None
+    assert stats.attempts == 1
+    assert cost == client.cost_record(result)
+    assert guard.spent("test") == client.cost_of(result)
