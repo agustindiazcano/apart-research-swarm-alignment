@@ -206,6 +206,28 @@ svg text{font-family:inherit}
    </div>
   </section>
 
+  <!-- 8b DATA INTEGRITY -->
+  <section class="slide" data-slide="integrity">
+   <div class="kicker">Data integrity</div>
+   <h2 style="font-size:54px">No number is typed by hand</h2>
+   <div style="display:grid;grid-template-columns:1fr 70px 1fr 70px 1.2fr;align-items:center;gap:10px;margin-top:26px">
+    <div class="card" data-s="0"><div style="color:var(--teal);font-size:24px;font-weight:700;margin-bottom:10px">Committed data</div>
+     <div style="font-size:30px;line-height:1.4">event logs<br>ground truth<br>analysis CSVs</div></div>
+    <div data-s="0" style="font-size:56px;color:var(--teal);text-align:center">&rarr;</div>
+    <div class="card" data-s="0"><div style="color:var(--amber);font-size:24px;font-weight:700;margin-bottom:10px">Scripts</div>
+     <div style="font-size:30px;line-height:1.4">render_results.py<br>make_paper_assets.py</div></div>
+    <div data-s="0" style="font-size:56px;color:var(--teal);text-align:center">&rarr;</div>
+    <div class="card" data-s="0"><div style="color:var(--violet);font-size:24px;font-weight:700;margin-bottom:10px">Generated outputs</div>
+     <div style="font-size:30px;line-height:1.4">README results<br>paper tables and figures<br>numbers in the text</div></div>
+   </div>
+   <div style="display:flex;gap:26px;margin-top:40px;flex-wrap:wrap">
+    <div class="chip hot" data-s="1" style="font-size:30px">Not typed by a person</div>
+    <div class="chip hot" data-s="1" style="font-size:30px">Not written by the AI agent</div>
+    <div class="chip" data-s="1" style="font-size:30px;border-color:var(--green);color:#c9f5dc">SHA-256 of the source beside each table</div>
+    <div class="chip" data-s="1" style="font-size:30px;border-color:var(--green);color:#c9f5dc">Re-check: render_results.py --check</div>
+   </div>
+  </section>
+
   <!-- 9 CLOSE -->
   <section class="slide" data-slide="close">
    <div class="kicker">Takeaways</div>
