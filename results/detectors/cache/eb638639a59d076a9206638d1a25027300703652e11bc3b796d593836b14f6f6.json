@@ -1,0 +1,56 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-ring-solo-none-s105-r0-a9": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r1-a8": 0.03685052847032574,
+    "A1-ring-solo-none-s105-r1-a9": 0.04929852312294726,
+    "A1-ring-solo-none-s105-r2-a8": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r2-a9": 0.7158265344867223,
+    "A1-ring-solo-none-s105-r3-a7": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r3-a8": 0.7158265344867223,
+    "A1-ring-solo-none-s105-r3-a9": 0.04929852312294726,
+    "A1-ring-solo-none-s105-r4-a6": 0.015294061901750875,
+    "A1-ring-solo-none-s105-r4-a9": 0.04929852312294726,
+    "A1-ring-solo-none-s105-r5-a6": 0.1603470528342255,
+    "A1-ring-solo-none-s105-r5-a9": 0.7159651897896139,
+    "A1-ring-solo-none-s105-r6-a5": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r6-a6": 0.015294061901750875,
+    "A1-ring-solo-none-s105-r6-a9": 0.04929852312294726,
+    "A1-ring-solo-none-s105-r7-a4": 0.1603470528342255,
+    "A1-ring-solo-none-s105-r7-a5": 0.4936803861675588,
+    "A1-ring-solo-none-s105-r7-a6": 0.1603470528342255,
+    "A1-ring-solo-none-s105-r7-a8": 0.015294061901750875,
+    "A1-ring-solo-none-s105-r7-a9": 0.04920366988661634,
+    "A1-ring-solo-none-s105-r8-a3": 0.049363589200731306,
+    "A1-ring-solo-none-s105-r8-a4": 0.1603470528342255,
+    "A1-ring-solo-none-s105-r8-a5": 0.1603470528342255,
+    "A1-ring-solo-none-s105-r8-a6": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r8-a8": 0.015294061901750875,
+    "A1-ring-solo-none-s105-r9-a3": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r9-a4": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r9-a5": 0.04923594172311439,
+    "A1-ring-solo-none-s105-r9-a6": 0.04923594172311439
+  },
+  "sources": [
+    {
+      "path": "A1-ring-solo-none-s105/manifest.json",
+      "sha256": "c884163a32b30dd4168c90c6024bd3b71d961f32edfed9a9a70b5e12d7946731"
+    },
+    {
+      "path": "A1-ring-solo-none-s105/result.json",
+      "sha256": "702425077c040ee322299bf430f74b86a6c3198b97e4949ff4394302e33cd234"
+    },
+    {
+      "path": "A1-ring-solo-none-s105/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-ring-solo-none-s105/events.jsonl",
+      "sha256": "d9207e1fa2979f293c666bca6701cfa42fcf867af73d16c79049cbb11a9868d0"
+    },
+    {
+      "path": "A1-ring-solo-none-s105/gt.json",
+      "sha256": "8322677c03d7ab37e8879a49d4bb6d70f45fadac8f61f5344b0248cde84beca0"
+    }
+  ]
+}

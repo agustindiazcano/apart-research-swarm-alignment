@@ -1,0 +1,49 @@
+{
+  "scorer_id": "b77290a2633a05e1864c078669a98d23304acf29cc3ca14b40e595ac375b09b3:c0ed6ba3800a99757481c22ebe194abdba221675bfdef8f9c97d4dae0cc7f41e",
+  "scores": {
+    "A1-complete-split-none-s105-r0-a9": 0.04929852312294726,
+    "A1-complete-split-none-s105-r1-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r1-a9": 0.04922703606054647,
+    "A1-complete-split-none-s105-r2-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r2-a9": 0.04922703606054647,
+    "A1-complete-split-none-s105-r3-a0": 0.04922703606054647,
+    "A1-complete-split-none-s105-r3-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r3-a9": 0.16025559570725126,
+    "A1-complete-split-none-s105-r4-a0": 0.04914448459614015,
+    "A1-complete-split-none-s105-r4-a1": 0.04922703606054647,
+    "A1-complete-split-none-s105-r4-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r4-a9": 0.04930086924682734,
+    "A1-complete-split-none-s105-r5-a0": 0.04922703606054647,
+    "A1-complete-split-none-s105-r5-a1": 0.015294061901750875,
+    "A1-complete-split-none-s105-r5-a2": 0.048735320916574704,
+    "A1-complete-split-none-s105-r6-a2": 0.048735320916574704,
+    "A1-complete-split-none-s105-r7-a2": 0.048735320916574704,
+    "A1-complete-split-none-s105-r7-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r8-a0": 0.015294061901750875,
+    "A1-complete-split-none-s105-r8-a2": 0.048735320916574704,
+    "A1-complete-split-none-s105-r8-a8": 0.015294061901750875,
+    "A1-complete-split-none-s105-r9-a2": 0.048735320916574704
+  },
+  "sources": [
+    {
+      "path": "A1-complete-split-none-s105/manifest.json",
+      "sha256": "dae7dc359d4ca1a3d785a703aa5f790944fdaa548b29c6eee3e79de5ac22db99"
+    },
+    {
+      "path": "A1-complete-split-none-s105/result.json",
+      "sha256": "85210afb8b01fefd2d761e2db84501f7df049e6252ef899ba378f1e5e54aa5f8"
+    },
+    {
+      "path": "A1-complete-split-none-s105/config.yaml",
+      "sha256": "7ce450867e2d0687e11d6c1be7025dbe674063f25ca0e5a9808965b1e9c7f062"
+    },
+    {
+      "path": "A1-complete-split-none-s105/events.jsonl",
+      "sha256": "5f0d5598bbb2045948158148ff540b987dec089c857e349b1aef9b6bc997d78a"
+    },
+    {
+      "path": "A1-complete-split-none-s105/gt.json",
+      "sha256": "aa31931f2c025572baade76957ff42d2608d15e04a96caddc48c78055a01dcb3"
+    }
+  ]
+}
