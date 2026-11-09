@@ -30,3 +30,7 @@ outputs/
 # Playbook texts stay out of the public repository (AGENTS.md invariant 8)
 experiments/payloads/*
 !experiments/payloads/README.md
+
+# Mutable campaign accounting, persisted locally across every CLI invocation
+/artifacts/provider_spend.json
+/artifacts/provider_spend.json.lock

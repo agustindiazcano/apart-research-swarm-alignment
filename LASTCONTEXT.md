@@ -68,3 +68,9 @@ Open the coordinator handoff PR and remaining validated integration PRs. Human m
 - RuntimeFactory accepts an injected guard and limiter. The final integration must supply the persistent guard, with a campaign path shared by swarm, guardrail, pilot, TRAIN and TEST.
 - Docker Desktop was stopped on explicit maintainer request. Its processes were no longer running when checked. No containers, images or volumes were deleted.
 - Branches opened for review retain main as their base. No merges or paid model calls were performed by the coordinator.
+
+## Draft execution plan prepared
+
+The integration branch contains pilot/free_flow execution YAML and separate matrices for pilot, clean/infected TRAIN, A0 topologies, A1, A3 and A3c. TRAIN seeds partition once across clean and infected conditions; TEST gates pair to A1 ring/split seeds. The primary model is the pilot candidate, not a completed model-selection result. Guardrail and primary configs share the campaign ledger and use verified Adaption credit rates. No pilot was run.
+
+Preregistration defaults now recurse into configuration subdirectories and include the training/scoring and runtime source files. Tests first reproduced the omission of nested matrices, then passed after the glob correction. The local spend ledger and lock are ignored by git; provider audit logs remain the source for reported costs.

@@ -1,0 +1,15 @@
+arm: TRAIN
+topologies:
+- complete
+harms:
+- split
+defenses:
+- null
+seeds:
+- 7
+- 9
+- 11
+- 13
+- 15
+extra:
+  initial_infection: true

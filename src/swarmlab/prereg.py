@@ -18,8 +18,14 @@ class FileEntry:
 DEFAULT_GROUPS: dict[str, list[str]] = {
     "design": ["docs/EXPERIMENT_DESIGN.md"],
     "playbooks": ["experiments/payloads/*"],
-    "configs": ["experiments/configs/*.yaml"],
-    "analysis_code": ["src/swarmlab/metrics/*.py", "src/swarmlab/detectors/*.py"],
+    "configs": ["experiments/configs/**/*.yaml"],
+    "analysis_code": [
+        "src/swarmlab/metrics/*.py", "src/swarmlab/detectors/*.py",
+        "src/swarmlab/training.py", "src/swarmlab/scoring.py",
+    ],
+    "runtime_code": [
+        "src/swarmlab/execution.py", "src/swarmlab/swarm/*.py", "src/swarmlab/llm/**/*.py",
+    ],
     "prompts": ["src/swarmlab/swarm/prompts.py"],
 }
 

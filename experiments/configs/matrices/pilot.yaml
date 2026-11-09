@@ -1,0 +1,12 @@
+arm: Pilot
+topologies:
+- ring
+harms:
+- split
+defenses:
+- null
+seeds:
+  start: 901
+  stop: 903
+extra:
+  initial_infection: true
