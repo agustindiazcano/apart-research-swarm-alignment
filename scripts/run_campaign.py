@@ -232,6 +232,113 @@ def _default_runner(cmd: list[str]) -> int:
     return int(res.returncode)
 
 
+def _clear_stale_run_manifest(step: str, outdir: Path) -> None:
+    """Remove batch run_manifest.json before executing a matrix step into a shared folder."""
+    if step in (
+        "train_clean_ring",
+        "train_clean_complete",
+        "train_infected_ring",
+        "train_infected_complete",
+    ):
+        manifest = outdir / "train" / "run_manifest.json"
+    elif step in ("a0_ring", "a0_complete", "a1_free_flow", "a3_gating", "a3c_gate_cost"):
+        manifest = outdir / "campaign" / "run_manifest.json"
+    else:
+        return
+    if manifest.is_file():
+        manifest.unlink()
+
+
+def _run_gated_batch_step(
+    *,
+    config_path: Path,
+    matrix_path: Path,
+    batch_outdir: Path,
+    artifact_dir: Path,
+    max_concurrency: int,
+    allow_mock: bool = False,
+) -> int:
+    """Run an online-gating batch (A3 or A3c) with a fitted detector gate_factory."""
+    import asyncio
+    from dataclasses import asdict
+
+    from swarmlab.batch import load_matrix, run_batch
+    from swarmlab.commands.batch import _history
+    from swarmlab.config import load_config
+    from swarmlab.execution import (
+        RuntimeFactory,
+        execute_episode,
+        initial_infection,
+        write_json,
+    )
+    from swarmlab.llm.guarded import GuardedClient
+    from swarmlab.schema import EpisodeResult, EpisodeSpec
+    from swarmlab.training import make_gate, scorer_identity
+
+    config = load_config(config_path)
+    specs = load_matrix(matrix_path)
+    guardrail_cfg = dict(config.get("guardrail", config))
+    if "max_retries" in config and int(guardrail_cfg.get("max_retries", 0)) < int(
+        config["max_retries"]
+    ):
+        guardrail_cfg["max_retries"] = int(config["max_retries"])
+    guardrail_factory = RuntimeFactory(guardrail_cfg, purpose="guardrail")
+    scorer_id = scorer_identity(guardrail_cfg)
+    guardrail_client = guardrail_factory.create_client()
+    if not isinstance(guardrail_client, GuardedClient) and not allow_mock:
+        raise TypeError("Online gating requires GuardedClient for guardrail")
+
+    def gate_factory(spec: EpisodeSpec) -> Any:
+        assert spec.defense is not None
+        return make_gate(
+            spec.defense,
+            artifact_dir,
+            guardrail_client if isinstance(guardrail_client, GuardedClient) else None,
+            scorer_id=scorer_id,
+            audit_path=artifact_dir / "online_parser_calls.jsonl",
+            allow_mock=allow_mock,
+        )
+
+    factory = RuntimeFactory(config, gate_factory=gate_factory)
+
+    async def execute(spec: EpisodeSpec) -> EpisodeResult:
+        return await execute_episode(spec, config, batch_outdir, factory=factory)
+
+    async def run() -> list[EpisodeResult]:
+        try:
+            return await run_batch(
+                specs,
+                execute,
+                out_dir=batch_outdir,
+                max_concurrency=max_concurrency,
+                max_retries=2,
+            )
+        finally:
+            await factory.aclose()
+            await guardrail_factory.aclose()
+
+    results = asyncio.run(run())
+    for spec, result in zip(specs, results, strict=True):
+        history = _history(batch_outdir / spec.episode_id)
+        payload = {
+            **asdict(result),
+            "attempts": len(history),
+            "attempt_history": history,
+            "arm": spec.arm,
+            "seed": spec.seed,
+            "topology": spec.topology,
+            "harm": spec.harm,
+            "defense": spec.defense,
+            "initial_infection": initial_infection(spec, config),
+            "provider": factory.provider,
+            "model": factory.model,
+            "mock": factory.mock,
+            "billing_unit": factory.billing_unit,
+        }
+        write_json(batch_outdir / spec.episode_id / "result.json", payload)
+    return 0 if all(result.status == "complete" for result in results) else 1
+
+
 def run_campaign(
     *,
     config: Path = Path("experiments/configs/free_flow.yaml"),
@@ -290,7 +397,18 @@ def run_campaign(
             continue
 
         print(f"Running campaign step '{step}'...")
-        returncode = cmd_runner(cmd)
+        _clear_stale_run_manifest(step, outdir)
+        if runner is None and step in ("a3_gating", "a3c_gate_cost"):
+            returncode = _run_gated_batch_step(
+                config_path=config,
+                matrix_path=Path(STEP_MATRICES[step]),
+                batch_outdir=outdir / "campaign",
+                artifact_dir=outdir / "detectors",
+                max_concurrency=max_concurrency,
+                allow_mock=allow_mock,
+            )
+        else:
+            returncode = cmd_runner(cmd)
         if returncode != 0:
             print(f"Step '{step}' failed with exit code {returncode}.")
             return returncode
