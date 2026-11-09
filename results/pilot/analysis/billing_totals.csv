@@ -1,0 +1,2 @@
+attempts,attempts_with_unknown_return_count,attempts_with_unknown_usage,billing_unit,calls_with_unknown_cost,cost,known_cost,known_provider_returns,mock,provider,provider_returns,scope
+3,0,3,credits,0,,0.0251304,297,False,adaption,297,"all attempt provider audits, deduplicated by source path"

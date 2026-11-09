@@ -10,14 +10,14 @@ billing:
   cap: 500.0
   ledger_path: artifacts/provider_spend.json
   input_accounting: uncached_rate
-provider_concurrency: 10
+provider_concurrency: 1
 timeout_s: 30
-max_retries: 2
+max_retries: 6
 n_agents: 10
 rounds: 10
 k_inbox: 10
 max_tokens: 600
-wording: A
+wording: B
 harm: split
 initial_infection: true
 playbook_dir: experiments/payloads
@@ -39,6 +39,6 @@ guardrail:
     cap: 500.0
     ledger_path: artifacts/provider_spend.json
     input_accounting: uncached_rate
-  provider_concurrency: 10
+  provider_concurrency: 1
   timeout_s: 30
-  max_retries: 2
+  max_retries: 3
