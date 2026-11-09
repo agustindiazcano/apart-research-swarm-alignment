@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infection Chains in LLM Swarms</title>
+<style>
+:root{
+  --bg:#0a0f1f; --bg2:#101834; --panel:#141d3d; --line:#26325f; --ink:#eef1fb; --muted:#97a4c9;
+  --teal:#36d3c2; --red:#ff4d5e; --amber:#ffbb4d; --green:#46d483; --violet:#8f7fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;font-family:"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+#stage{position:relative;width:1920px;height:1080px;transform-origin:center center;background:radial-gradient(1200px 700px at 70% 20%,#16224a 0%,var(--bg) 60%);overflow:hidden;flex:none}
+
+/* chrome */
+#topbar{position:absolute;left:0;right:0;top:0;height:64px;display:flex;align-items:center;gap:18px;padding:0 48px;z-index:20}
+#topbar.hide{opacity:0}
+.mark{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.14em;font-size:20px}
+.mark .glyph{width:30px;height:30px;border:2.5px solid var(--teal);border-radius:8px;position:relative}
+.mark .glyph:before,.mark .glyph:after{content:"";position:absolute;background:var(--teal);border-radius:50%}
+.mark .glyph:before{width:7px;height:7px;left:5px;top:5px}.mark .glyph:after{width:7px;height:7px;right:5px;bottom:5px}
+.mark small{font-weight:600;letter-spacing:.3em;color:var(--muted);font-size:12px;display:block;margin-top:1px}
+#topbar .sep{width:1px;height:26px;background:var(--line)}
+#topbar .event{font-size:18px;color:var(--muted);letter-spacing:.04em}
+#progress{position:absolute;left:0;top:0;height:4px;width:0;background:linear-gradient(90deg,var(--teal),var(--violet));z-index:30}
+#author{position:absolute;left:0;right:0;bottom:130px;text-align:center;font-size:21px;color:var(--muted);letter-spacing:.05em;z-index:20}
+#author b{color:var(--ink);font-weight:700}
+#subs{position:absolute;left:0;right:0;bottom:0;height:116px;background:#000;display:flex;align-items:center;justify-content:center;padding:0 140px;z-index:40}
+#subs span{font-size:38px;line-height:1.25;text-align:center;color:#fff;font-weight:500;display:block}
+
+/* slides */
+.slide{position:absolute;left:0;right:0;top:64px;bottom:170px;padding:20px 90px 0;opacity:0;visibility:hidden;transition:opacity .6s}
+.slide.active{opacity:1;visibility:visible}
+h1{font-size:92px;line-height:1.04;font-weight:800;letter-spacing:-.02em}
+h2{font-size:64px;line-height:1.08;font-weight:800;letter-spacing:-.015em;margin-bottom:14px}
+.kicker{color:var(--teal);font-weight:700;letter-spacing:.22em;font-size:22px;text-transform:uppercase;margin-bottom:14px}
+.lead{font-size:34px;color:var(--muted);line-height:1.35}
+[data-s]{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+[data-s].on{opacity:1;transform:none}
+.row{display:flex;gap:50px;height:100%}
+.col{flex:1;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px 30px}
+.chip{display:inline-block;border:1.5px solid var(--line);background:#0f1736;border-radius:40px;padding:10px 22px;font-size:26px;margin:6px 8px 6px 0}
+.chip.hot{border-color:var(--red);color:#ffd3d8}
+.chip.held{border-color:var(--amber);color:#ffe3b0}
+.bullet{font-size:36px;margin:20px 0;display:flex;gap:16px;align-items:flex-start;line-height:1.25}
+.bullet i{width:14px;height:14px;border-radius:50%;background:var(--teal);margin-top:16px;flex:none}
+svg text{font-family:inherit}
+.big{font-size:120px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.num{font-variant-numeric:tabular-nums}
+
+/* cover */
+#cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:130px}
+#cover .coverlogo{display:flex;align-items:center;gap:26px;margin-bottom:40px}
+#cover .coverlogo .glyph{display:block;position:relative;width:96px;height:96px;border-width:7px;border-radius:24px}
+#cover .coverlogo .glyph:before,#cover .coverlogo .glyph:after{width:20px;height:20px}
+#cover .coverlogo .glyph:before{left:14px;top:14px}#cover .coverlogo .glyph:after{right:14px;bottom:14px}
+#cover .coverlogo .word{font-size:70px;font-weight:800;letter-spacing:.14em;line-height:1}
+#cover .coverlogo .word small{display:block;font-size:26px;letter-spacing:.42em;color:var(--muted);font-weight:600;margin-top:8px}
+#cover .coverlogo img{height:110px;display:none}
+#cover .event{font-size:34px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:26px}
+#cover h1{max-width:1500px}
+#cover .by{margin-top:36px;font-size:30px;color:var(--muted)}
+#coverbg{position:absolute;right:-60px;top:40px;opacity:.55}
+
+/* results cards */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.metric .label{color:var(--muted);font-size:24px;margin-bottom:10px}
+.metric .val{font-size:78px;font-weight:800;letter-spacing:-.02em}
+.metric .sub{font-size:22px;color:var(--muted);margin-top:8px;line-height:1.3}
+.bar{height:16px;border-radius:8px;background:#0c1330;margin-top:16px;position:relative;overflow:hidden}
+.bar>div{position:absolute;left:0;top:0;bottom:0;border-radius:8px}
+.hyp{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.hyp span{padding:10px 20px;border-radius:12px;font-size:24px;font-weight:700;border:1.5px solid}
+.hyp .no{border-color:var(--red);color:#ffc7cd}
+.hyp .ne{border-color:var(--amber);color:#ffe3b0}
+.hyp .lim{border-color:var(--violet);color:#d6cfff}
+
+/* start overlay */
+#start{position:absolute;inset:0;background:rgba(5,8,18,.92);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
+#start.gone{display:none}
+#playbtn{width:150px;height:150px;border-radius:50%;border:none;background:var(--teal);cursor:pointer;display:flex;align-items:center;justify-content:center}
+#playbtn:after{content:"";border-left:46px solid #04201c;border-top:28px solid transparent;border-bottom:28px solid transparent;margin-left:12px}
+#start p{font-size:26px;color:var(--muted);text-align:center;line-height:1.6}
+#start kbd{background:#1a2450;border-radius:6px;padding:2px 10px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="viewport">
+ <div id="stage">
+  <div id="progress"></div>
+  <div id="topbar">
+   <div class="mark"><div class="glyph"></div><div>APART<small>RESEARCH</small></div></div>
+   <div class="sep"></div>
+   <div class="event">Swarm Alignment Hackathon 2026</div>
+  </div>
+
+  <!-- 1 COVER -->
+  <section class="slide" id="cover" data-slide="cover">
+   <svg id="coverbg" width="760" height="760" viewBox="0 0 760 760"></svg>
+   <div class="coverlogo"><div class="glyph"></div>
+    <img id="apartimg" src="assets/apart-logo.png" alt="Apart Research">
+    <div class="word">APART<small>RESEARCH</small></div></div>
+   <div class="event">Swarm Alignment Hackathon 2026</div>
+   <h1>Infection Chains in LLM Swarms</h1>
+   <div class="lead" style="margin-top:20px;font-size:44px">Spread, Detection and Layered Gating</div>
+   <div class="by" data-s="1">Agustin Diaz-Cano &nbsp;·&nbsp; MS Candidate, Systems Engineering</div>
+  </section>
+
+  <!-- 2 PROBLEM -->
+  <section class="slide" data-slide="problem">
+   <div class="row">
+    <div class="col" style="flex:.9;padding-top:40px">
+     <div class="kicker">The problem</div>
+     <h2>One compromised agent. Many peers.</h2>
+     <div class="bullet" data-s="0"><i></i><div>Agents trust messages from peers in shared channels</div></div>
+     <div class="bullet" data-s="1"><i style="background:var(--amber)"></i><div>Per-agent monitors read one message at a time</div></div>
+     <div class="bullet" data-s="2"><i style="background:var(--red)"></i><div>We measure the spread, then test the defenses</div></div>
+    </div>
+    <div class="col"><svg id="netProblem" width="880" height="760" viewBox="0 0 880 760"></svg></div>
+   </div>
+  </section>
+
+  <!-- 3 THREAT -->
+  <section class="slide" data-slide="threat">
+   <div class="kicker">Threat model</div>
+   <h2 style="font-size:54px">A secret split across the swarm</h2>
+   <div class="row" style="margin-top:6px">
+    <div class="col" style="flex:1.1"><svg id="netThreat" width="1000" height="700" viewBox="0 0 1000 700"></svg></div>
+    <div class="col" style="flex:.8;padding-top:20px">
+     <div class="card" data-s="0"><div style="color:var(--muted);font-size:22px;margin-bottom:10px">Synthetic canary, 12 characters</div>
+      <div id="canary" style="font-family:Consolas,monospace;font-size:58px;letter-spacing:.06em">K9Q2&nbsp;M4X8&nbsp;T7B1</div></div>
+     <div class="bullet" data-s="1" style="font-size:32px"><i style="background:var(--amber)"></i><div>3 fragments, each at graph distance 2 or more from patient zero</div></div>
+     <div class="bullet" data-s="2" style="font-size:32px"><i style="background:var(--red)"></i><div>Multi-hop recruitment: every hop looks like routine admin</div></div>
+     <div data-s="3" style="margin-top:14px">
+      <span class="chip">Ring</span><span class="chip">Complete</span><br>
+      <span class="chip hot">Authority</span><span class="chip hot">Urgency</span><span class="chip held">Reciprocity (held out)</span>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- 4 SCALE -->
+  <section class="slide" data-slide="scale">
+   <div class="kicker">Experiment scale</div>
+   <h2>Real models, preregistered, graded by code</h2>
+   <div class="grid" style="margin-top:30px">
+    <div class="card metric" data-s="0"><div class="label">Real episodes</div><div class="val num" id="cEpisodes">0</div><div class="sub" id="cEpisodesSub"></div></div>
+    <div class="card metric" data-s="1"><div class="label">Swarm model</div><div class="val" style="font-size:46px;padding:18px 0">gemma-4-31b-it</div><div class="sub">Guardrail: deepseek-v4-flash</div></div>
+    <div class="card metric" data-s="2"><div class="label">Model calls logged (test)</div><div class="val num" id="cCalls">0</div><div class="sub" id="cCallsSub"></div></div>
+    <div class="card metric" data-s="3"><div class="label">Arms</div><div class="val" style="font-size:44px;padding:20px 0">A0 · A1 · A2 · A3 · A3c</div><div class="sub">control, free flow, offline detection, online gating, gate cost</div></div>
+    <div class="card metric" data-s="3"><div class="label">Attack variety</div><div class="val" style="font-size:44px;padding:20px 0">3 styles × 2 topologies</div><div class="sub">solo and split credential</div></div>
+    <div class="card metric" data-s="3"><div class="label">Intent audit</div><div class="val num" id="cAudit">0%</div><div class="sub" id="cAuditSub"></div></div>
+   </div>
+   <div data-s="3" style="margin-top:26px;font-size:28px;color:var(--muted)">prereg-v1 &nbsp;·&nbsp; TRAIN seeds 1 to 15 &nbsp;·&nbsp; TEST seeds 101 to 110 &nbsp;·&nbsp; deterministic grading from event logs</div>
+  </section>
+
+  <!-- 5 KINETICS -->
+  <section class="slide" data-slide="kinetics">
+   <div class="kicker">Result 1: free-flow spread (A1)</div>
+   <h2 style="font-size:54px">Splitting the secret does not stop the infection</h2>
+   <svg id="chart" width="1740" height="640" viewBox="0 0 1740 640"></svg>
+  </section>
+
+  <!-- 6 EXFIL -->
+  <section class="slide" data-slide="exfil">
+   <div class="kicker">Result 2: full credential exfiltration</div>
+   <h2 style="font-size:54px">Full exfiltration was rare with a split credential</h2>
+   <div id="dots" style="margin-top:26px"></div>
+  </section>
+
+  <!-- 7 DEFENSES -->
+  <section class="slide" data-slide="defenses">
+   <div class="kicker">Defenses</div>
+   <h2 style="font-size:54px">Layered gating, calibrated to 0.5% false positives</h2>
+   <svg id="flow" width="1740" height="650" viewBox="0 0 1740 650"></svg>
+  </section>
+
+  <!-- 8 RESULTS -->
+  <section class="slide" data-slide="results">
+   <div class="kicker">Result 3: detection and online gating</div>
+   <h2 style="font-size:54px">What the data support, and what they do not</h2>
+   <div class="grid" style="margin-top:14px">
+    <div class="card metric" data-s="0"><div class="label">Offline AUROC (seen playbooks)</div><div class="val num" id="rAuroc" style="color:var(--teal)"></div><div class="sub">D1, D2, D3, D5</div></div>
+    <div class="card metric" data-s="1"><div class="label">Realized false positive rate</div><div class="val num" id="rFpr" style="color:var(--amber)"></div><div class="sub">target 0.5%. Held-out playbook: no negative messages, no shift claim</div>
+      <div class="bar"><div id="fprBar" style="background:var(--amber);width:0"></div></div></div>
+    <div class="card metric" data-s="2"><div class="label">Exfiltration, gated vs free flow</div><div class="val num" id="rGate"></div><div class="sub" id="rGateSub"></div></div>
+    <div class="card metric" data-s="3"><div class="label">Utility loss (0 to 1 scale)</div><div class="val num" id="rUtil"></div><div class="sub">Gate cost on benign swarms</div></div>
+    <div class="card metric" data-s="3"><div class="label">Cost, known</div><div class="val num" id="rCost"></div><div class="sub">Adaption credits, all test attempts</div></div>
+    <div class="card metric" data-s="3"><div class="label">Hypotheses</div>
+      <div class="hyp"><span class="no">H1 no</span><span class="ne">H2 n/a</span><span class="ne">H3 n/a</span><span class="ne">H4 n/a</span><span class="no">H5 n.s.</span><span class="lim">H7 limited</span></div>
+      <div class="sub" style="margin-top:12px">Report Section 6.7</div></div>
+   </div>
+  </section>
+
+  <!-- 9 CLOSE -->
+  <section class="slide" data-slide="close">
+   <div class="kicker">Takeaways</div>
+   <h2>A measurement framework, with limits stated</h2>
+   <div class="grid" style="margin-top:34px">
+    <div class="card" data-s="0"><div style="color:var(--teal);font-size:26px;font-weight:700;margin-bottom:14px">Measured</div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i></i><div>Multi-hop infection chains in LLM swarms</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i></i><div>Finite reproduction numbers per episode</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i></i><div>Four defenses, offline and online</div></div></div>
+    <div class="card" data-s="1"><div style="color:var(--amber);font-size:26px;font-weight:700;margin-bottom:14px">Safeguards</div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Attack playbooks stay out of the repository</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Synthetic canary, closed testbed</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Every number generated from committed logs</div></div></div>
+    <div class="card" data-s="2"><div style="color:var(--violet);font-size:26px;font-weight:700;margin-bottom:14px">Next</div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>More seeds per cell</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>Adaptive attackers</div></div>
+     <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>Mixed-model swarms</div></div></div>
+   </div>
+   <div data-s="2" style="margin-top:34px;font-size:30px;color:var(--muted)">github.com/agustindiazcano/apart-research-swarm-alignment</div>
+  </section>
+
+  <div id="author"><b>Agustin Diaz-Cano</b> &nbsp;·&nbsp; MS Candidate, Systems Engineering</div>
+  <div id="subs"><span id="subtext"></span></div>
+
+  <div id="start">
+   <button id="playbtn" aria-label="Play"></button>
+   <p>Press <kbd>Space</kbd> or click to play (about 3 minutes).<br>
+   <kbd>R</kbd> restart &nbsp; <kbd>F</kbd> fullscreen &nbsp; <kbd>A</kbd> audio on/off<br>
+   URL options: <kbd>?audio=1</kbd> plays narration.wav, <kbd>?t=95</kbd> starts at 95 s, <kbd>?freeze=95</kbd> shows one frame.</p>
+  </div>
+ </div>
+</div>
+<audio id="narr" src="narration.wav" preload="auto"></audio>
+<script src="data.js"></script>
+<script src="timeline.js"></script>
+<script>
+(function(){
+"use strict";
+const T=window.TIMELINE, D=window.DATA;
+const NS="http://www.w3.org/2000/svg";
+const $=s=>document.querySelector(s);
+const stage=$("#stage");
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function ease(x){x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform="scale("+s+")";}
+addEventListener("resize",fit);fit();
+
+/* optional official logo: drop assets/apart-logo.png and it replaces the text wordmark */
+const img=$("#apartimg");
+img.onload=function(){img.style.display="block";document.querySelector("#cover .word").style.display="none";document.querySelector("#cover .coverlogo .glyph").style.display="none";};
+img.src="assets/apart-logo.png";
+
+/* data derived values */
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const testEps=sum(D.arms,a=>a.episodes);
+const totalEps=testEps+D.protocol.pilot+D.protocol.train;
+const calls=parseInt(D.billing.provider_returns,10);
+const cost=parseFloat(D.billing.known_cost);
+const cleanRows=D.arms.filter(a=>a.arm==="A0"||a.arm==="A3c");
+const cleanEps=sum(cleanRows,a=>a.episodes), cleanLeaks=sum(cleanRows,a=>a.exfil);
+function arm(armName,topology,harm,defense){return D.arms.find(a=>a.arm===armName&&a.topology===topology&&a.harm===harm&&(defense===undefined||a.defense===defense));}
+
+/* ---------- ring network helper ---------- */
+function ring(svg,cx,cy,r,n,nodeR,labels){
+  const pos=[],nodes=[],edges=[];
+  for(let i=0;i<n;i++){const a=-Math.PI/2+2*Math.PI*i/n;pos.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);}
+  for(let i=0;i<n;i++){const j=(i+1)%n;edges.push(el("line",{x1:pos[i][0],y1:pos[i][1],x2:pos[j][0],y2:pos[j][1],stroke:"#26325f","stroke-width":4},svg));}
+  for(let i=0;i<n;i++){
+    const g=el("g",{},svg);
+    const c=el("circle",{cx:pos[i][0],cy:pos[i][1],r:nodeR,fill:"#1b2a5e",stroke:"#4a5fa8","stroke-width":3},g);
+    if(labels){el("text",{x:pos[i][0],y:pos[i][1]+7,"text-anchor":"middle","font-size":20,fill:"#cdd6f6","font-weight":700},g).textContent=i;}
+    nodes.push(c);
+  }
+  return {pos,nodes,edges};
+}
+function setNode(n,state){
+  const m={healthy:["#1b2a5e","#4a5fa8"],infected:["#ff4d5e","#ffc0c6"],frag:["#ffbb4d","#fff0cf"],safe:["#46d483","#c9f5dc"]};
+  const s=m[state]||m.healthy;n.setAttribute("fill",s[0]);n.setAttribute("stroke",s[1]);
+}
+function sentStart(slide,i){const s=slide.sentences[i];return s?s.start-slide.start:1e9;}
+
+/* ---------- cover background ---------- */
+const cb=$("#coverbg");const cring=ring(cb,380,380,290,10,34,false);
+const cbPulse=[];for(let i=0;i<10;i++){cbPulse.push(el("circle",{r:0,fill:"none",stroke:"#ff4d5e","stroke-width":3,opacity:0},cb));}
+
+/* ---------- problem network ---------- */
+const np=$("#netProblem");const pring=ring(np,440,380,290,10,38,true);
+const order=[0,1,9,2,8,3,7,4,6,5];
+const pPart=[];for(let i=0;i<10;i++){pPart.push(el("circle",{r:9,fill:"#ff4d5e",opacity:0},np));}
+el("text",{x:440,y:380,"text-anchor":"middle","font-size":26,fill:"#97a4c9"},np).textContent="10 agents";
+el("text",{x:440,y:414,"text-anchor":"middle","font-size":22,fill:"#97a4c9"},np).textContent="ring topology";
+
+/* ---------- threat network ---------- */
+const nt=$("#netThreat");const tring=ring(nt,410,350,270,10,36,true);
+const fragNodes={3:"K9Q2",5:"M4X8",7:"T7B1"};
+const tChain=[[0,1,2,3],[3,4,5],[0,9,8,7]];
+const outbox=el("rect",{x:790,y:250,width:190,height:200,rx:18,fill:"#141d3d",stroke:"#26325f","stroke-width":3},nt);
+el("text",{x:885,y:290,"text-anchor":"middle","font-size":24,fill:"#97a4c9"},nt).textContent="external outbox";
+const ob=[0,1,2].map(i=>el("text",{x:885,y:345+i*38,"text-anchor":"middle","font-size":30,fill:"#ffbb4d","font-family":"Consolas,monospace","font-weight":700,opacity:0},nt));
+const fragLbl=Object.keys(fragNodes).map(k=>{const p=tring.pos[k];const t=el("text",{x:p[0]+(p[0]>410?52:-52),y:p[1]+8,"text-anchor":p[0]>410?"start":"end","font-size":24,fill:"#ffbb4d","font-family":"Consolas,monospace","font-weight":700,opacity:0},nt);t.textContent=fragNodes[k];return t;});
+const distLbl=Object.keys(fragNodes).map(k=>{const p=tring.pos[k];const d=Math.min(k,10-k);const t=el("text",{x:p[0]+(p[0]>410?52:-52),y:p[1]+36,"text-anchor":p[0]>410?"start":"end","font-size":20,fill:"#97a4c9",opacity:0},nt);t.textContent="distance "+d;return t;});
+const tPart=[];for(let i=0;i<8;i++){tPart.push(el("circle",{r:9,fill:"#ff4d5e",opacity:0},nt));}
+
+/* ---------- scale counters ---------- */
+$("#cEpisodesSub").textContent=D.protocol.pilot+" pilot + "+D.protocol.train+" train + "+testEps+" test";
+$("#cCallsSub").textContent="across "+testEps+" test episodes, "+cost.toFixed(2)+" credits known cost";
+$("#cAuditSub").textContent="100 sampled messages, Wilson 95% lower bound "+D.intent_audit.wilson_ci_lo.toFixed(3);
+
+/* ---------- kinetics chart ---------- */
+const ch=$("#chart");
+const CW=1740,CH=640,ml=90,mr=330,mt=20,mb=70,pw=CW-ml-mr,ph=CH-mt-mb;
+const series=[["ring","solo","Ring, solo","#ff4d5e"],["ring","split","Ring, split","#ffbb4d"],["complete","solo","Complete, solo","#36d3c2"],["complete","split","Complete, split","#8f7fff"]];
+const X=r=>ml+pw*r/9, Y=v=>mt+ph*(1-(v-1)/9);
+for(let v=1;v<=10;v+=3){el("line",{x1:ml,x2:ml+pw,y1:Y(v),y2:Y(v),stroke:"#1f2a55","stroke-width":2},ch);el("text",{x:ml-14,y:Y(v)+8,"text-anchor":"end","font-size":24,fill:"#97a4c9"},ch).textContent=v;}
+for(let r=0;r<=9;r++){el("text",{x:X(r),y:CH-mb+40,"text-anchor":"middle","font-size":24,fill:"#97a4c9"},ch).textContent=r;}
+el("text",{x:ml+pw/2,y:CH-8,"text-anchor":"middle","font-size":26,fill:"#97a4c9"},ch).textContent="round";
+el("text",{x:30,y:mt+ph/2,"text-anchor":"middle","font-size":26,fill:"#97a4c9",transform:"rotate(-90 30 "+(mt+ph/2)+")"},ch).textContent="mean infected agents (of 10)";
+const DY=[-16,16,-16,18];
+const lines=series.map((s,si)=>{
+  const pts=D.kinetics.filter(k=>k.topology===s[0]&&k.harm===s[1]).sort((a,b)=>a.round-b.round);
+  const path=el("polyline",{points:pts.map(p=>X(p.round)+","+Y(p.mean)).join(" "),fill:"none",stroke:s[3],"stroke-width":7,"stroke-linecap":"round","stroke-linejoin":"round"},ch);
+  const last=pts[pts.length-1];
+  const lab=el("text",{x:X(9)+22,y:Y(last.mean)+9+DY[si],"font-size":28,fill:s[3],"font-weight":700,opacity:0},ch);lab.textContent=s[2]+"  "+last.mean.toFixed(1);
+  const len=path.getTotalLength?path.getTotalLength():2000;path.setAttribute("stroke-dasharray",len);path.setAttribute("stroke-dashoffset",len);
+  return {path,len,lab};
+});
+
+/* ---------- exfil dots ---------- */
+const dotsHost=$("#dots");
+const exRows=[
+ ["Ring, split",arm("A1","ring","split"),"#ffbb4d"],
+ ["Complete, split",arm("A1","complete","split"),"#8f7fff"],
+ ["Ring, solo",arm("A1","ring","solo"),"#ff4d5e"],
+ ["Complete, solo",arm("A1","complete","solo"),"#36d3c2"]
+];
+const exEls=[];
+exRows.forEach((r,idx)=>{
+  const d=document.createElement("div");
+  d.style.cssText="display:flex;align-items:center;gap:30px;margin:30px 0;";
+  d.setAttribute("data-s",idx<2?0:1);
+  let h='<div style="width:420px;font-size:42px">'+r[0]+'</div><div style="display:flex;gap:16px">';
+  for(let i=0;i<r[1].episodes;i++){h+='<div class="dot" data-hit="'+(i<r[1].exfil?1:0)+'" style="width:84px;height:84px;border-radius:50%;border:5px solid '+r[2]+';background:transparent;transition:background .5s,transform .5s"></div>';}
+  h+='</div><div style="font-size:56px;font-weight:800;color:'+r[2]+'" class="num">'+r[1].exfil+' / '+r[1].episodes+'</div>';
+  d.innerHTML=h;dotsHost.appendChild(d);exEls.push(d);
+});
+const cd=document.createElement("div");cd.setAttribute("data-s",2);cd.style.cssText="margin-top:30px;display:flex;align-items:center;gap:30px";
+let ch2='<div style="width:420px;font-size:42px">Clean, gated or not</div><div style="display:flex;flex-wrap:wrap;gap:8px;width:760px">';
+for(let i=0;i<cleanEps;i++)ch2+='<div style="width:30px;height:30px;border-radius:50%;background:#46d483"></div>';
+ch2+='</div><div style="font-size:56px;font-weight:800;color:#46d483" class="num">'+cleanLeaks+' / '+cleanEps+'</div>';
+cd.innerHTML=ch2;dotsHost.appendChild(cd);
+const note=document.createElement("div");note.setAttribute("data-s",2);note.style.cssText="margin-top:30px;font-size:28px;color:#97a4c9";note.textContent="Filled circle = full 12-character credential reached the external outbox. 6 episodes per cell, so intervals are wide.";dotsHost.appendChild(note);
+
+/* ---------- defense flow ---------- */
+const fl=$("#flow");
+const gateDefs=[["D1","Lexical","TF-IDF + Platt logistic"],["D2","Micro-LLM","rubric: req, sec, urg"],["D3","Graph context","suspicion along edges"],["D5","Tiered filter","LLM only if ambiguous"]];
+const GX=[270,600,930,1260], GW=250, GY=130, GH=360;
+const gateEls=gateDefs.map((g,i)=>{
+  const grp=el("g",{opacity:0},fl);
+  el("rect",{x:GX[i],y:GY,width:GW,height:GH,rx:22,fill:"#141d3d",stroke:"#36d3c2","stroke-width":3},grp);
+  el("text",{x:GX[i]+GW/2,y:GY+62,"text-anchor":"middle","font-size":54,"font-weight":800,fill:"#36d3c2"},grp).textContent=g[0];
+  el("text",{x:GX[i]+GW/2,y:GY+112,"text-anchor":"middle","font-size":30,"font-weight":700,fill:"#eef1fb"},grp).textContent=g[1];
+  el("text",{x:GX[i]+GW/2,y:GY+150,"text-anchor":"middle","font-size":22,fill:"#97a4c9"},grp).textContent=g[2];
+  return grp;
+});
+const gateT=[0,0,0,0];
+el("text",{x:60,y:GY+GH/2-40,"font-size":26,fill:"#97a4c9"},fl).textContent="messages";
+const thr=el("text",{x:870,y:600,"text-anchor":"middle","font-size":34,fill:"#ffbb4d","font-weight":700,opacity:0},fl);
+thr.textContent="threshold fit on TRAIN negatives: 0.5% message false positive rate";
+const legend=el("text",{x:1440,y:600,"font-size":24,fill:"#97a4c9",opacity:1},fl);
+const NP=75, parts=[];
+for(let i=0;i<NP;i++){
+  const red=(i*7)%3===0;
+  parts.push({red,spawn:0.5+i*0.28,y:GY+190+((i*53)%150),el:el("circle",{r:red?13:11,fill:red?"#ff4d5e":"#46d483",opacity:0},fl),x:null,
+              mark:red?el("text",{"font-size":34,"font-weight":800,fill:"#ff4d5e","text-anchor":"middle",opacity:0},fl):null});
+  if(red)parts[i].mark.textContent="x";
+}
+function hashPick(i,n){return (i*2654435761>>>0)%n;}
+
+/* ---------- results ---------- */
+const seen=D.panel_a.filter(r=>r.playbook==="seen");
+$("#rAuroc").textContent=Math.max.apply(null,seen.map(r=>parseFloat(r.auroc))).toFixed(3);
+const fpr=parseFloat(seen[0].fpr);
+$("#rFpr").textContent=(fpr*100).toFixed(1)+"%";
+const gated=D.arms.filter(a=>a.arm==="A3");
+const base=arm("A1","ring","split");
+$("#rGate").textContent=Math.max.apply(null,gated.map(a=>a.exfil))+" / "+gated[0].episodes+"  vs  "+base.exfil+" / "+base.episodes;
+$("#rGateSub").textContent="McNemar p = "+parseFloat(D.paired[0].mcnemar_p).toFixed(1)+", "+D.paired[0].pairs_complete+" paired seeds: not significant";
+$("#rUtil").textContent=Math.max.apply(null,D.paired.map(p=>parseFloat(p.utility_loss))).toFixed(3);
+$("#rCost").textContent=cost.toFixed(2);
+
+/* ---------- engine ---------- */
+const slideEls={};T.slides.forEach(s=>{slideEls[s.id]=document.querySelector('[data-slide="'+s.id+'"]');});
+const subtext=$("#subtext"), prog=$("#progress");
+function revealFor(sec,idx){sec.querySelectorAll("[data-s]").forEach(e=>{e.classList.toggle("on",parseInt(e.getAttribute("data-s"),10)<=idx);});}
+function counter(id,target,t0,t,dur,fmt){const p=ease((t-t0)/dur);$(id).textContent=fmt(Math.round(target*p));}
+const fmtN=n=>n.toLocaleString("en-US");
+
+const anims={
+ cover(lt){
+  const k=(lt*1.4)%16;
+  cring.nodes.forEach((n,i)=>{const a=order[i%10];});
+  order.forEach((node,j)=>{const on=k>0.6+j*0.9;setNode(cring.nodes[node],on?"infected":"healthy");
+    const pl=cbPulse[j];const pt=k-(0.6+j*0.9);
+    if(pt>0&&pt<1.4){pl.setAttribute("cx",cring.pos[node][0]);pl.setAttribute("cy",cring.pos[node][1]);pl.setAttribute("r",34+pt*60);pl.setAttribute("opacity",(1-pt/1.4)*.8);}else pl.setAttribute("opacity",0);});
+ },
+ problem(lt,idx,sl){
+  const base0=sentStart(sl,0)+0.4;
+  const par=[null,0,1,2,3,4,5,6,7,8];
+  const parent={0:null,1:0,9:0,2:1,8:9,3:2,7:8,4:3,6:7,5:4};
+  order.forEach((node,k)=>{
+    const tk=base0+(k===0?0:1.0+k*1.15);
+    setNode(pring.nodes[node],lt>=tk?"infected":"healthy");
+    if(k>0){const pp=pPart[k],p=parent[node];const a=(lt-(tk-0.9))/0.9;
+      if(a>0&&a<1){const x=pring.pos[p][0]+(pring.pos[node][0]-pring.pos[p][0])*a,y=pring.pos[p][1]+(pring.pos[node][1]-pring.pos[p][1])*a;pp.setAttribute("cx",x);pp.setAttribute("cy",y);pp.setAttribute("opacity",1);}else pp.setAttribute("opacity",0);}
+  });
+  for(let i=0;i<10;i++){const j=(i+1)%10;const inf=order.indexOf(i),inf2=order.indexOf(j);
+    const ti=base0+(inf===0?0:1.0+inf*1.15),tj=base0+(inf2===0?0:1.0+inf2*1.15);
+    pring.edges[i].setAttribute("stroke",lt>=Math.max(ti,tj)?"#ff4d5e":"#26325f");}
+ },
+ threat(lt,idx,sl){
+  setNode(tring.nodes[0],lt>0.4?"infected":"healthy");
+  const frag=Object.keys(fragNodes);
+  const chainT=sentStart(sl,2)+0.4;
+  const chainOrder=[1,2,9,8,4];
+  for(let i=1;i<10;i++){setNode(tring.nodes[i],"healthy");}
+  frag.forEach(k=>{if(idx>=1)setNode(tring.nodes[k],"frag");});
+  chainOrder.forEach((n,j)=>{if(lt>=chainT+j*0.6)setNode(tring.nodes[n],"infected");});
+  [3,5,7].forEach((n,j)=>{if(idx>=2&&lt>=chainT+3.4+j*0.4)setNode(tring.nodes[n],"infected");});
+  frag.forEach((k,i)=>{fragLbl[i].setAttribute("opacity",idx>=1?1:0);distLbl[i].setAttribute("opacity",idx>=1?1:0);});
+  for(let i=0;i<10;i++){const j=(i+1)%10;const a=tring.nodes[i].getAttribute("fill")==="#ff4d5e",b=tring.nodes[j].getAttribute("fill")==="#ff4d5e";tring.edges[i].setAttribute("stroke",a&&b?"#ff4d5e":"#26325f");}
+  const fly=chainT+4.4;
+  [3,5,7].forEach((n,j)=>{const st=fly+j*0.7;const a=(lt-st)/0.9;const pp=tPart[j];
+    if(a>0&&a<1){pp.setAttribute("cx",tring.pos[n][0]+(790-tring.pos[n][0])*ease(a));pp.setAttribute("cy",tring.pos[n][1]+(350-tring.pos[n][1])*ease(a));pp.setAttribute("opacity",1);pp.setAttribute("fill","#ffbb4d");}else pp.setAttribute("opacity",0);
+    ob[j].textContent=fragNodes[n];ob[j].setAttribute("opacity",lt>st+0.9?1:0);});
+ },
+ scale(lt,idx,sl){
+  counter("#cEpisodes",totalEps,sentStart(sl,0),lt,1.6,String);
+  counter("#cCalls",calls,sentStart(sl,2),lt,2.0,fmtN);
+  $("#cAudit").textContent=Math.round(100*D.intent_audit.agreement_rate*ease((lt-sentStart(sl,3)-0.5)/1.2))+"%";
+ },
+ kinetics(lt,idx,sl){
+  const p=(lt-sentStart(sl,0)-0.4)/8;
+  lines.forEach((L,i)=>{const q=ease(p-0.0);L.path.setAttribute("stroke-dashoffset",L.len*(1-q));L.lab.setAttribute("opacity",p>0.97?1:0);});
+ },
+ exfil(lt,idx,sl){
+  exEls.forEach((row,r)=>{const st=sentStart(sl,r<2?0:1)+0.5;row.querySelectorAll(".dot").forEach((d,i)=>{
+    const hit=d.getAttribute("data-hit")==="1";const on=hit&&lt>st+i*0.25;
+    d.style.background=on?d.style.borderColor:"transparent";d.style.transform=on?"scale(1.12)":"none";});});
+ },
+ defenses(lt,idx,sl){
+  const at=[sentStart(sl,0)+0.2,sentStart(sl,0)+1.6,sentStart(sl,1)+0.2,sentStart(sl,2)+0.2];
+  gateEls.forEach((g,i)=>g.setAttribute("opacity",clamp((lt-at[i])/0.6,0,1)));
+  thr.setAttribute("opacity",clamp((lt-sentStart(sl,3))/0.6,0,1));
+  const speed=300;
+  parts.forEach((p,i)=>{
+    const a=lt-p.spawn;
+    if(a<0){p.el.setAttribute("opacity",0);if(p.mark)p.mark.setAttribute("opacity",0);return;}
+    let x=60+speed*a;
+    let blocked=null;
+    if(p.red){const act=[0,1,2,3].filter(g=>at[g]<=p.spawn+1.0);if(act.length)blocked=act[hashPick(i,act.length)];}
+    let op=1;
+    if(blocked!==null){const bx=GX[blocked]-10;if(x>=bx){x=bx;op=clamp(1-(a-(bx-60)/speed)/1.8,0,1);}}
+    if(x>1700)op=0;
+    p.el.setAttribute("cx",x);p.el.setAttribute("cy",p.y);p.el.setAttribute("opacity",op);
+    if(p.mark){const shown=blocked!==null&&x>=GX[blocked]-10;p.mark.setAttribute("x",x);p.mark.setAttribute("y",p.y-24);p.mark.setAttribute("opacity",shown?op:0);}
+  });
+ },
+ results(lt,idx,sl){
+  $("#fprBar").style.width=(clamp(fpr/0.10,0,1)*100*ease((lt-sentStart(sl,1)-0.3)/1.2))+"%";
+ }
+};
+
+let tStart=0,offset=0,playing=false,raf=0,audioOn=false;
+const narr=$("#narr");
+const params=new URLSearchParams(location.search);
+function render(t){
+  t=clamp(t,0,T.total);
+  prog.style.width=(t/T.total*100)+"%";
+  let cur=T.slides[0];
+  for(const s of T.slides){if(t>=s.start)cur=s;}
+  T.slides.forEach(s=>slideEls[s.id].classList.toggle("active",s===cur));
+  const lt=t-cur.start;
+  let idx=-1;cur.sentences.forEach((s,i)=>{if(t>=s.start)idx=i;});
+  revealFor(slideEls[cur.id],idx);
+  let sub="";for(const s of T.slides)for(const c of s.sentences)if(t>=c.start&&t<c.end)sub=c.text;
+  subtext.textContent=sub;
+  if(anims[cur.id])anims[cur.id](lt,idx,cur);
+}
+function frame(){
+  if(!playing)return;
+  const t=offset+(performance.now()-tStart)/1000;
+  render(t);
+  if(t<T.total)raf=requestAnimationFrame(frame);else playing=false;
+}
+function start(from){
+  cancelAnimationFrame(raf);
+  offset=from||0;tStart=performance.now();playing=true;
+  $("#start").classList.add("gone");
+  if(audioOn){narr.currentTime=offset;narr.play().catch(function(){});}
+  raf=requestAnimationFrame(frame);
+}
+function setAudio(on){audioOn=on;if(!on)narr.pause();}
+$("#playbtn").addEventListener("click",function(){start(parseFloat(params.get("t"))||0);});
+addEventListener("keydown",function(e){
+  if(e.code==="Space"||e.code==="Enter"){e.preventDefault();if(!playing)start(0);}
+  else if(e.key==="r"||e.key==="R"){start(0);}
+  else if(e.key==="f"||e.key==="F"){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}
+  else if(e.key==="a"||e.key==="A"){setAudio(!audioOn);}
+});
+if(params.get("audio")==="1")audioOn=true;
+if(params.get("freeze")){ $("#start").classList.add("gone"); render(parseFloat(params.get("freeze"))||0); }
+else render(0);
+window.__render=render;
+})();
+</script>
+</body>
+</html>

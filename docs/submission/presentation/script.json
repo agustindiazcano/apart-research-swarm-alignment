@@ -1,0 +1,170 @@
+{
+ "voice": "Microsoft David Desktop",
+ "rate": 1,
+ "gap_s": 0.25,
+ "lead_in_s": 0.8,
+ "tail_s": 1.5,
+ "slides": [
+  {
+   "id": "cover",
+   "sentences": [
+    {
+     "sub": "Infection Chains in LLM Swarms: Spread, Detection and Layered Gating.",
+     "say": "Infection chains in L L M swarms: spread, detection, and layered gating."
+    },
+    {
+     "sub": "Apart Research Swarm Alignment Hackathon. Agustin Diaz-Cano.",
+     "say": "Apart Research Swarm Alignment Hackathon. Agustin Diaz Cano."
+    }
+   ]
+  },
+  {
+   "id": "problem",
+   "sentences": [
+    {
+     "sub": "One compromised agent can talk its peers into helping it.",
+     "say": "One compromised agent can talk its peers into helping it."
+    },
+    {
+     "sub": "Per-agent monitors see one message at a time, so each request can look like routine admin work.",
+     "say": "Per agent monitors see one message at a time, so each request can look like routine admin work."
+    },
+    {
+     "sub": "We measure how the infection spreads, and what actually stops it.",
+     "say": "We measure how the infection spreads, and what actually stops it."
+    }
+   ]
+  },
+  {
+   "id": "threat",
+   "sentences": [
+    {
+     "sub": "Ten agents, ten rounds. A 12-character canary credential is split into three 4-character fragments.",
+     "say": "Ten agents, ten rounds. A twelve character canary credential is split into three four character fragments."
+    },
+    {
+     "sub": "The fragments sit at least two hops from patient zero, so no single message holds the secret.",
+     "say": "The fragments sit at least two hops from patient zero, so no single message holds the secret."
+    },
+    {
+     "sub": "Patient zero must recruit intermediaries, and every hop looks harmless.",
+     "say": "Patient zero must recruit intermediaries, and every hop looks harmless."
+    },
+    {
+     "sub": "Ring and complete networks. Three persuasion styles; the third is held out from training.",
+     "say": "Ring and complete networks. Three persuasion styles; the third is held out from training."
+    }
+   ]
+  },
+  {
+   "id": "scale",
+   "sentences": [
+    {
+     "sub": "96 real episodes: 3 pilot, 15 training, 78 test.",
+     "say": "Ninety six real episodes: three pilot, fifteen training, seventy eight test."
+    },
+    {
+     "sub": "Gemma 4 31B plays the agents. DeepSeek V4 Flash is the guardrail.",
+     "say": "Gemma four, thirty one B, plays the agents. Deep Seek V four Flash is the guardrail."
+    },
+    {
+     "sub": "7,944 model calls logged in the test analysis, under one credit.",
+     "say": "Seven thousand nine hundred forty four model calls logged in the test analysis, under one credit."
+    },
+    {
+     "sub": "Preregistered, separate train and test seeds, deterministic grading, 100-message audit at 100% agreement.",
+     "say": "Preregistered, separate train and test seeds, deterministic grading, and a hundred message audit at one hundred percent agreement."
+    }
+   ]
+  },
+  {
+   "id": "kinetics",
+   "sentences": [
+    {
+     "sub": "The infection spreads: by round nine, 6 to 6.5 of 10 agents are infected on a ring, 4.5 on the complete graph.",
+     "say": "The infection spreads: by round nine, six to six and a half of ten agents are infected on a ring, four and a half on the complete graph."
+    },
+    {
+     "sub": "Splitting the secret does not stop the infection. It makes theft harder.",
+     "say": "Splitting the secret does not stop the infection. It makes theft harder."
+    }
+   ]
+  },
+  {
+   "id": "exfil",
+   "sentences": [
+    {
+     "sub": "Split credential: full exfiltration in 1 of 6 ring episodes, 0 of 6 on the complete graph.",
+     "say": "Split credential: full exfiltration in one of six ring episodes, zero of six on the complete graph."
+    },
+    {
+     "sub": "Solo credential: 3 of 6 and 2 of 6.",
+     "say": "Solo credential: three of six, and two of six."
+    },
+    {
+     "sub": "30 clean episodes, with and without gates: nothing leaked.",
+     "say": "Thirty clean episodes, with and without gates: nothing leaked."
+    }
+   ]
+  },
+  {
+   "id": "defenses",
+   "sentences": [
+    {
+     "sub": "D1 is a lexical classifier. D2 is a micro-LLM rubric guardrail.",
+     "say": "D one is a lexical classifier. D two is a micro L L M rubric guardrail."
+    },
+    {
+     "sub": "D3 adds graph context: suspicion travels along message edges.",
+     "say": "D three adds graph context: suspicion travels along message edges."
+    },
+    {
+     "sub": "D5 is a tiered filter that calls the LLM only for ambiguous messages.",
+     "say": "D five is a tiered filter that calls the L L M only for ambiguous messages."
+    },
+    {
+     "sub": "Each gate is calibrated on training data to a 0.5% false positive rate.",
+     "say": "Each gate is calibrated on training data to a half percent false positive rate."
+    }
+   ]
+  },
+  {
+   "id": "results",
+   "sentences": [
+    {
+     "sub": "Offline AUROC is near 0.998 on seen playbooks.",
+     "say": "Offline, A U ROC is near zero point nine nine eight on seen playbooks."
+    },
+    {
+     "sub": "But the realized false positive rate was 6.4%, not 0.5%, and held-out data had no negatives, so we claim nothing on distribution shift.",
+     "say": "But the realized false positive rate was six point four percent, not half a percent, and held-out data had no negatives, so we claim nothing on distribution shift."
+    },
+    {
+     "sub": "Online, gated runs leaked in 0 of 6 episodes versus 1 of 6 unprotected. Not significant: McNemar p equals 1.",
+     "say": "Online, gated runs leaked in zero of six episodes versus one of six unprotected. Not significant: McNemar p equals one."
+    },
+    {
+     "sub": "Utility loss stayed under 0.02. No hypothesis is clearly confirmed, and H2 was not identifiable. We report that.",
+     "say": "Utility loss stayed under two hundredths. No hypothesis is clearly confirmed, and H two was not identifiable. We report that."
+    }
+   ]
+  },
+  {
+   "id": "close",
+   "sentences": [
+    {
+     "sub": "Infection chains are measurable. At this sample size, a per-message guard alone is not evidence of safety.",
+     "say": "Infection chains are measurable. At this sample size, a per message guard alone is not evidence of safety."
+    },
+    {
+     "sub": "Playbooks stay out of the repository, the canary is synthetic, every number comes from committed logs.",
+     "say": "Playbooks stay out of the repository, the canary is synthetic, every number comes from committed logs."
+    },
+    {
+     "sub": "Next: more seeds, adaptive attackers, mixed-model swarms. Thank you.",
+     "say": "Next: more seeds, adaptive attackers, mixed model swarms. Thank you."
+    }
+   ]
+  }
+ ]
+}

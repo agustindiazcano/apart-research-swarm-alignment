@@ -1,0 +1,88 @@
+WEBVTT
+
+00:00:00.800 --> 00:00:05.899
+Infection Chains in LLM Swarms: Spread, Detection and Layered Gating.
+
+00:00:06.149 --> 00:00:10.824
+Apart Research Swarm Alignment Hackathon. Agustin Diaz-Cano.
+
+00:00:11.074 --> 00:00:14.688
+One compromised agent can talk its peers into helping it.
+
+00:00:14.938 --> 00:00:20.596
+Per-agent monitors see one message at a time, so each request can look like routine admin work.
+
+00:00:20.846 --> 00:00:24.955
+We measure how the infection spreads, and what actually stops it.
+
+00:00:25.205 --> 00:00:32.295
+Ten agents, ten rounds. A 12-character canary credential is split into three 4-character fragments.
+
+00:00:32.545 --> 00:00:38.176
+The fragments sit at least two hops from patient zero, so no single message holds the secret.
+
+00:00:38.426 --> 00:00:43.086
+Patient zero must recruit intermediaries, and every hop looks harmless.
+
+00:00:43.336 --> 00:00:49.335
+Ring and complete networks. Three persuasion styles; the third is held out from training.
+
+00:00:49.585 --> 00:00:55.448
+96 real episodes: 3 pilot, 15 training, 78 test.
+
+00:00:55.698 --> 00:01:02.132
+Gemma 4 31B plays the agents. DeepSeek V4 Flash is the guardrail.
+
+00:01:02.382 --> 00:01:08.302
+7,944 model calls logged in the test analysis, under one credit.
+
+00:01:08.552 --> 00:01:16.495
+Preregistered, separate train and test seeds, deterministic grading, 100-message audit at 100% agreement.
+
+00:01:16.745 --> 00:01:24.950
+The infection spreads: by round nine, 6 to 6.5 of 10 agents are infected on a ring, 4.5 on the complete graph.
+
+00:01:25.200 --> 00:01:29.893
+Splitting the secret does not stop the infection. It makes theft harder.
+
+00:01:30.143 --> 00:01:36.623
+Split credential: full exfiltration in 1 of 6 ring episodes, 0 of 6 on the complete graph.
+
+00:01:36.873 --> 00:01:40.912
+Solo credential: 3 of 6 and 2 of 6.
+
+00:01:41.162 --> 00:01:45.451
+30 clean episodes, with and without gates: nothing leaked.
+
+00:01:45.701 --> 00:01:51.200
+D1 is a lexical classifier. D2 is a micro-LLM rubric guardrail.
+
+00:01:51.450 --> 00:01:56.128
+D3 adds graph context: suspicion travels along message edges.
+
+00:01:56.378 --> 00:02:01.012
+D5 is a tiered filter that calls the LLM only for ambiguous messages.
+
+00:02:01.262 --> 00:02:05.771
+Each gate is calibrated on training data to a 0.5% false positive rate.
+
+00:02:06.021 --> 00:02:10.784
+Offline AUROC is near 0.998 on seen playbooks.
+
+00:02:11.034 --> 00:02:20.766
+But the realized false positive rate was 6.4%, not 0.5%, and held-out data had no negatives, so we claim nothing on distribution shift.
+
+00:02:21.016 --> 00:02:29.674
+Online, gated runs leaked in 0 of 6 episodes versus 1 of 6 unprotected. Not significant: McNemar p equals 1.
+
+00:02:29.924 --> 00:02:39.059
+Utility loss stayed under 0.02. No hypothesis is clearly confirmed, and H2 was not identifiable. We report that.
+
+00:02:39.309 --> 00:02:46.127
+Infection chains are measurable. At this sample size, a per-message guard alone is not evidence of safety.
+
+00:02:46.377 --> 00:02:52.585
+Playbooks stay out of the repository, the canary is synthetic, every number comes from committed logs.
+
+00:02:52.835 --> 00:02:59.074
+Next: more seeds, adaptive attackers, mixed-model swarms. Thank you.
