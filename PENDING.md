@@ -2,7 +2,7 @@
 
 Prioritized list of open tasks. Read this at the start of every session, together with `LASTCONTEXT.md`. Update it after every finished task (see `AGENTS.md`, "Session protocol").
 
-Last updated: 2026-11-08
+Last updated: 2026-11-09
 
 ## Traffic light
 
@@ -34,12 +34,10 @@ Task IDs T01 to T15 are defined in `docs/TASKS.md`. Status below supersedes prev
 
 | Light | ID | Task | Current state |
 |---|---|---|---|
-| 🔴 | T07 | Pilot execution and Gate G2 | Calibrated prompt (priority + wording B) verified in isolated API calls; run 3 pilot seeds on Adaption gemma-4-31b-it; verify >= 30% breach |
-| 🔴 | T08 | Preregistration and human tag | Run swarmlab prereg to generate experiments/PREREGISTRATION.md with SHA-256 hashes; request human git tag prereg-v1 |
-| 🟡 | T10 | TRAIN and reported runs | TRAIN (15 seeds), A0 (controls), A1 (free flow ring & complete), A3 (online gating D1, D2, D3, D5), A3c (costs). Freeze at Monday 05:00 ART |
-| 🟡 | T11 | Analysis and figures | Run swarmlab analyze, export plots, execute render_results.py and export_latex_tables.py |
-| 🟢 | T15 | Report compilation and submission | Merge DRAFT_REPORT.md and LIMITATIONS_AND_ETHICS.md, populate measured numbers, export final PDF report |
-| ⚪ | SETUP-03 | Require context files in CI | Open |
+| 🔴 | T08 | Preregistration and human tag | Tooling ready in PR #48; once PRs #41 to #49 are merged, run `python scripts/verify_preregistration.py --generate` and have human create git tag `prereg-v1` |
+| 🔴 | T10 | TRAIN and reported runs | Orchestrator ready in PR #43; after `prereg-v1`, run `python scripts/run_campaign.py --config experiments/configs/free_flow.yaml --outdir results --max-concurrency 1 --resume` before Monday 05:00 ART |
+| 🟡 | T11 | Analysis and figures | Run `swarmlab analyze`, `scripts/audit_intent_agreement.py`, `scripts/render_results.py`, and `scripts/export_latex_tables.py` on completed campaign logs |
+| 🟢 | T15 | Report compilation and submission | Compilers ready in PR #47 and PR #49; run `scripts/compile_report.py` and `scripts/build_submission_pdf.py` on final rendered results |
 
 Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operational cap 500 credits; use Adaption for primary load; playbooks remain outside git; coordinator opens pending PRs after review and green CI, human merges each. These are configuration decisions, not experimental measurements.
 
@@ -47,12 +45,15 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 
 | PR | Branch | Contents | CI |
 |---|---|---|---|
-| #34 | feat/detector-verifiers | D4 micro-verifiers cascade and veto gate; 11 tests passed | green |
-| #35 | docs/ethical-appendix | Limitations and dual-use ethical considerations appendix | green |
-| #36 | feat/latex-tables | LaTeX table export utility for analysis CSVs; 7 tests passed | green |
-| #37 | docs/reproduction-guide | Technical reproduction guide and verification tests; 6 tests passed | green |
-| #38 | feat/detector-immunity | Swarm collective immunity tracker and kinetics; 12 tests passed | green |
-| #39 | docs/report-draft | Academic report draft sections 1 to 6 (651 lines) | green |
+| #41 | feat/pilot-calibration | Calibrate swarm prompts for multi-hop contagion and commit pilot Gate G2 logs (seeds 901, 902, 903) | green |
+| #42 | docs/readme-overhaul | Complete project documentation and architecture overview in README.md; 9 tests passed | green |
+| #43 | feat/campaign-orchestrator | End-to-end experimental campaign orchestrator (`scripts/run_campaign.py`); 17 tests passed | green |
+| #44 | feat/render-manifest | Results render manifest (`results/render_manifest.json`) and validator (`scripts/build_render_manifest.py`); 7 tests passed | green |
+| #45 | chore/ci-checks | Automated repository hygiene validator (`scripts/check_repo_hygiene.py`) and CI workflow expansion; 17 tests passed | green |
+| #46 | feat/intent-audit | Deterministic intent-content agreement auditor (`scripts/audit_intent_agreement.py`) for Hard Invariant 2; 11 tests passed | green |
+| #47 | feat/report-compiler | Academic report compiler and page budget auditor (`scripts/compile_report.py`); 14 tests passed | green |
+| #48 | feat/prereg-validator | Preregistration manifest generator and SHA-256 hash verifier (`scripts/verify_preregistration.py`); 9 tests passed | green |
+| #49 | feat/pdf-exporter | Standalone submission PDF exporter and 4 to 8 page cap audit (`scripts/build_submission_pdf.py`); 9 tests passed | green |
 
 ## Done
 
@@ -67,3 +68,6 @@ Human decisions recorded: Muse cap USD 20, Vertex cap USD 20, Adaption operation
 | REPORT-05 | Prior work named; `docs/hackathon/PRIOR_WORK_DIGEST.md` written, README pre-existing table filled, references restored | branch `docs/prior-work` |
 | SETUP-11 | Multi-agent rule in `AGENTS.md`: check branch and worktrees first, assume nothing, one worktree and branch per task | branch `docs/multi-agent-rule` |
 | BUILD-02 | CLI runtime, training and analysis integration | PR #33 |
+| T07 | Pilot execution and Gate G2 validation on seeds 901, 902, 903 | PR #41 |
+| SETUP-03 | Automated repository hygiene and context checks in CI | PR #45 |
+| T14 | Results render manifest and table rendering pipeline | PR #44 |
