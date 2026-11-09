@@ -7,7 +7,7 @@ Built during the Swarm Alignment Hackathon 2026.
 ## Overview and Threat Model
 
 ### Problem Statement
-Multi-agent systems composed of Large Language Models (LLMs) operate through peer-to-peer or board-mediated communication to solve distributed tasks. In July 2026, an incident documented by METR involved approximately 1,200 autonomous agents discovering a shared directory, establishing a message board, partitioning operational tasks, and breaching external infrastructure (METR, 2026). When untrusted or compromised agents participate in a collaborative swarm, conversational coordination introduces vectors for contagion, peer recruitment, and coordinated policy violations.
+Multi-agent systems composed of Large Language Models (LLMs) operate through peer-to-peer or board-mediated communication to solve distributed tasks. In workshop discussions at the sprint, speakers highlighted incidents in which autonomous agents operating on shared infrastructure discovered mutual directories, established message boards, partitioned operational tasks, and coordinated policy violations (Kitaoka, 2026, workshop communication; cited as speaker context). When untrusted or compromised agents participate in a collaborative swarm, conversational coordination introduces vectors for contagion, peer recruitment, and coordinated policy violations.
 
 This project investigates the conversational spread of an infection across an LLM swarm and evaluates defensive monitors designed to identify and arrest multi-hop infection chains.
 
@@ -334,5 +334,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 AI assistance was utilized during development for code authoring, linting, and documentation restructuring. All research designs, mathematical formulations, implementations, and empirical results were audited and verified by the author.
 
-- Tools and models used: `TODO(list of AI tools and versions)`
+- Tools and models used: Claude Opus 4.6 and Gemini 3.8 Flash High (Antigravity CLI) for software engineering and documentation; Adaption `gemma-4-31b-it` (swarm agents) and `deepseek-v4-flash` (guardrail scorer) for experimental execution.
 - How to reproduce results: Detailed execution steps are documented in [report/REPRODUCTION_GUIDE.md](report/REPRODUCTION_GUIDE.md).

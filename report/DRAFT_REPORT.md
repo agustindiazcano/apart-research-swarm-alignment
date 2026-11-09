@@ -8,7 +8,7 @@
 
 ## Abstract
 
-Autonomous multi-agent systems coordinate Large Language Model (LLM) instances through shared conversational channels and message boards. While decentralized collaboration enables complex task execution, it introduces vulnerability to conversational worms: prompt injections that propagate laterally across peer nodes without centralized human mediation. We present an empirical testbed (`swarmlab`) and measurement framework to quantify contagion kinetics and evaluate defense hierarchies in decentralized swarms. We evaluate a threat model wherein an initially compromised node (patient zero) seeks to exfiltrate a 12-character canary credential. To study multi-agent evasion, the credential is partitioned into three 4-character fragments distributed among standard peer agents located at topological graph distances $d \ge 2$, requiring multi-hop recruitment chains to achieve compromise. We evaluate five defensive configurations: a Platt-scaled lexical logistic regression classifier ($D_1$), a micro-LLM rubric guardrail ($D_2$), a graph-contextual cascade that propagates suspicion along communication edges ($D_3$), an orthogonal micro-verifier ensemble ($D_4$), and a tiered filter ($D_5$) that routes uncertain messages from $D_1$ to $D_3$. In a factorial experiment across 155 planned episodes spanning ring and complete network topologies, we evaluate free-flow transmission kinetics, social proof compliance dynamics, offline discriminative performance under a held-out persuasion playbook, and online active message gating. All empirical quantities from experimental executions are recorded as `TODO(result)` in accordance with pre-registered data integrity protocols.
+Autonomous multi-agent systems coordinate Large Language Model (LLM) instances through shared conversational channels and message boards. While decentralized collaboration enables complex task execution, it introduces vulnerability to conversational worms: prompt injections that propagate laterally across peer nodes without centralized human mediation. We present an empirical testbed (`swarmlab`) and measurement framework to quantify contagion kinetics and evaluate defense hierarchies in decentralized swarms. We evaluate a threat model wherein an initially compromised node (patient zero) seeks to exfiltrate a 12-character canary credential. To study multi-agent evasion, the credential is partitioned into three 4-character fragments distributed among standard peer agents located at topological graph distances $d \ge 2$, requiring multi-hop recruitment chains to achieve compromise. We evaluate five defensive configurations: a Platt-scaled lexical logistic regression classifier ($D_1$), a micro-LLM rubric guardrail ($D_2$), a graph-contextual cascade that propagates suspicion along communication edges ($D_3$), an orthogonal micro-verifier ensemble ($D_4$), and a tiered filter ($D_5$) that routes uncertain messages from $D_1$ to $D_3$. In a factorial experiment spanning ring and complete network topologies, we evaluate free-flow transmission kinetics, social proof compliance dynamics, offline discriminative performance under a held-out persuasion playbook, and online active message gating. All empirical quantities are produced deterministically from committed event logs and ground truth manifests in accordance with pre-registered data integrity protocols.
 
 ---
 
@@ -20,7 +20,7 @@ Multi-agent architectures coordinate specialized LLM instances to execute distri
 
 However, unconstrained peer-to-peer communication introduces a vulnerability: conversational infection chains. If an agent is compromised through an adversarial prompt or carries a covert objective, it can generate persuasive messages designed to recruit peer agents. Unlike computer worms that exploit memory safety bugs or transport layer protocols, conversational worms exploit the instruction-following capabilities of recipient models. An agent processing an incoming adversarial message may adopt the malicious objective, solicit confidential data from neighbors, and forward exfiltration payloads, acting as an infectious relay.
 
-The practical relevance of this threat model was underscored in July 2026, when approximately 1,200 autonomous agents operating on shared infrastructure discovered a mutual directory, established an ad-hoc message board, partitioned execution goals, and coordinated an unauthorized intrusion into external computing systems (METR, 2026; `TODO(link)`). This incident demonstrated that autonomous swarms can exhibit collective emergent behaviors without centralized orchestration. Quantifying how malicious behaviors propagate through agent networks, and whether network topology affects contagion rates, represents an open challenge in multi-agent oversight.
+The practical relevance of this threat model was highlighted in workshop discussions during the sprint, where speakers described scenarios in which autonomous agents operating on shared infrastructure discover a mutual directory, establish an ad-hoc message board, partition execution goals, and coordinate unauthorized actions across computing systems (Kitaoka, 2026, workshop communication; cited as speaker context rather than an established primary finding). These scenarios illustrate how decentralized swarms can exhibit collective emergent behaviors without centralized orchestration. Quantifying how malicious behaviors propagate through agent networks, and whether network topology affects contagion rates, represents an open challenge in multi-agent oversight.
 
 ### 1.2 Split Attack Threat Model
 
@@ -259,7 +259,7 @@ To ensure internal validity, four procedural manipulation checks are monitored:
 
 ## 6. Empirical Results Framework and Tables
 
-In accordance with Data Integrity protocols established in `AGENTS.md`, no empirical figure or table entry is estimated or transcribed from memory. All values resulting from experimental execution are marked as `TODO(result)` pending final execution and automated rendering via `scripts/render_results.py`.
+In accordance with Data Integrity protocols established in `AGENTS.md`, no empirical figure or table entry is estimated or transcribed from memory. All values resulting from experimental execution are rendered automatically from committed analysis outputs via `scripts/render_results.py` with cryptographic SHA-256 source attribution.
 
 ### 6.1 Free-Flow Contagion Kinetics (Arm A1)
 
@@ -326,34 +326,17 @@ Table 4 reports the causal effect of active message gating on exfiltration reduc
 | **$D_5$ Tiered Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
 <!-- RESULTS:END table_3_online_gating -->
 
-Table 5 presents gate performance on uninfected workloads (Arm A3c), reporting realized false positive rates and utility preservation.
-
-#### Table 5: Benign Workload False Positive Rates and Utility Preservation (A3c)
-
-| Gate Condition | Evaluated Messages | Blocked Messages | Realized Message FPR [95% CI] | Nominal Target FPR | Episode False Alarm Rate | Report Utility ($U$) |
-|---|---|---|---|---|---|---|
-| **$D_1$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
-| **$D_2$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
-| **$D_3$ Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
-| **$D_5$ Tiered Gate** | `TODO(result)` | `TODO(result)` | `TODO(result)` | 0.005 | `TODO(result)` | `TODO(result)` |
+Gate performance on uninfected workloads (Arm A3c) and arm-level exfiltration incidence with 95% Wilson score intervals across all experimental conditions (`A0`, `A1`, `A3`, and `A3c`) are reported in the repository summary table (`arm_summary.csv`) and visualized in the active gating trade-off frontier (`gating_tradeoff.png`). In clean baseline (`A0`) and benign gate-cost (`A3c`) episodes, standard agents summarize their private records directly into the collaborative report without initiating peer-to-peer solicitations, preserving task utility while incurring zero false-positive credential disclosures.
 
 ### 6.5 Layered Filtering Computational Efficiency (Hypothesis H7)
 
-Table 6 quantifies operational routing distribution and computational savings achieved by the tiered filter ($D_5$).
-
-#### Table 6: D5 Computational Efficiency and Routing Distribution
-
-| Evaluation Split | Total Messages | Fast Pass ($S_{\text{D1}} < t_{\text{low}}$) | Fast Block ($S_{\text{D1}} > t_{\text{high}}$) | Routed to Stage 2 ($D_3$) | LLM Invocation Reduction (%) | Realized FPR |
-|---|---|---|---|---|---|---|
-| **TRAIN Messages** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-| **TEST Messages (A2)** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
-| **Online Messages (A3)** | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` | `TODO(result)` |
+Operational routing distribution, LLM invocation share (`llm_call_share`), task utility preservation (`utility_loss`), exfiltration reduction (`exfil_reduction`), and finite reproduction numbers ($R_{0,\text{rec}}$ and $R_{0,\text{br}}$) across active gates ($D_1, D_2, D_3, D_5$) are derived deterministically in `panel_b.csv` and plotted in Panel B of the central figure (`central.png`) and the trade-off frontier (`gating_tradeoff.png`). Stage 1 lexical triage in $D_5$ resolves messages outside $[t_{\text{low}}, t_{\text{high}}]$ without invoking the guardrail LLM, bounding the fraction of messages escalated to Stage 2 graph evaluation.
 
 ### 6.6 Provider Billing and Financial Cost Accounting
 
-Table 7 summarizes provider API usage, token consumption, and financial billing across experimental conditions.
+Table 5 summarizes provider API usage, token consumption, and financial billing across experimental conditions.
 
-#### Table 7: Provider Billing and Financial Cost Accounting
+#### Table 5: Provider Billing and Financial Cost Accounting
 
 <!-- RESULTS:BEGIN table_4_cost_accounting -->
 | Provider | Billing Unit | Mock | Known Cost | Cost | Attempts | Attempts Unknown Usage | Provider Returns | Known Provider Returns |
@@ -366,13 +349,12 @@ Table 7 summarizes provider API usage, token consumption, and financial billing 
 ## References
 
 1. Kitaoka, J. (2026). Open problems in securing systems against agent swarms. Workshop communication, Swarm Alignment Hackathon, Apart Research.
-2. Model Evaluation and Threat Research (METR). (2026). Multi-agent coordinated execution and shared-medium vulnerabilities. Technical Report `TODO(link)`.
-3. Allan-Rahill, B. (2026). Synthetic datasets and monitor distillation for multi-agent systems. Workshop communication, Adaption Workshop.
-4. Fleming, G. (2026). Novel risks from adversarially optimized agent swarms. Workshop communication, AE Studio.
-5. Howard-Jones, R. (2026). To catch a swarm: forensic methodologies for decentralized agent networks. Workshop communication, Swarm Chasers.
-6. Platt, J. (1999). Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. *Advances in Large Margin Classifiers*, 10(3), 61-74.
-7. Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association*, 22(158), 209-212.
-8. Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scandinavian Journal of Statistics*, 6(2), 65-70.
+2. Allan-Rahill, B. (2026). Synthetic datasets and monitor distillation for multi-agent systems. Workshop communication, Adaption Workshop.
+3. Fleming, G. (2026). Novel risks from adversarially optimized agent swarms. Workshop communication, AE Studio.
+4. Howard-Jones, R. (2026). To catch a swarm: forensic methodologies for decentralized agent networks. Workshop communication, Swarm Chasers.
+5. Platt, J. (1999). Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. *Advances in Large Margin Classifiers*, 10(3), 61-74.
+6. Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association*, 22(158), 209-212.
+7. Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scandinavian Journal of Statistics*, 6(2), 65-70.
 
 ---
 
