@@ -15,7 +15,8 @@ jobs:
           missing=0
           for f in README.md LICENSE AGENTS.md CLAUDE.md .gitignore .env.example \
                    docs/hackathon/OVERVIEW.md docs/hackathon/RESOURCES.md docs/README.md \
-                   .github/workflows/ci.yml .github/pull_request_template.md; do
+                   .github/workflows/ci.yml .github/pull_request_template.md \
+                   PENDING.md LASTCONTEXT.md; do
             if [ ! -e "$f" ] && [ ! -L "$f" ]; then
               echo "Missing required file: $f"
               missing=1
@@ -72,8 +73,11 @@ jobs:
       - name: Install package with dev tools
         run: pip install -e ".[dev]"
 
+      - name: Repository hygiene check
+        run: python scripts/check_repo_hygiene.py
+
       - name: Lint
-        run: ruff check src tests
+        run: ruff check src tests scripts
 
       - name: Type check
         run: mypy src
