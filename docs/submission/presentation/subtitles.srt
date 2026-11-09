@@ -1,0 +1,103 @@
+1
+00:00:00,800 --> 00:00:06,608
+Infection Chains in LLM Swarms: Spread, Detection and Layered Gating.
+
+2
+00:00:06,808 --> 00:00:11,056
+Apart Research Swarm Alignment Hackathon. Agustin Diaz-Cano.
+
+3
+00:00:11,256 --> 00:00:14,400
+One compromised agent can talk its peers into helping it.
+
+4
+00:00:14,600 --> 00:00:20,024
+Monitors that read one message at a time miss it, so we measure the spread and test the defenses.
+
+5
+00:00:20,224 --> 00:00:26,224
+Ten agents, ten rounds. A 12-character canary is split into three 4-character fragments.
+
+6
+00:00:26,424 --> 00:00:34,320
+Each fragment is at least two hops from patient zero, so no single message holds the secret, and patient zero must recruit intermediaries.
+
+7
+00:00:34,520 --> 00:00:39,296
+Ring and complete networks, three persuasion styles, one held out from training.
+
+8
+00:00:39,496 --> 00:00:50,632
+96 real episodes: 3 pilot, 15 training, 78 test, with Gemma 4 31B as the agents and DeepSeek V4 Flash as guardrail model.
+
+9
+00:00:50,832 --> 00:00:59,184
+7,944 model calls, under one credit. Preregistered, graded by code, with a 100% agreement audit.
+
+10
+00:00:59,384 --> 00:01:07,136
+The infection spreads: by round nine, 6 to 6.5 of 10 agents are infected on a ring, 4.5 on the complete graph.
+
+11
+00:01:07,336 --> 00:01:09,832
+Splitting the secret does not stop the spread.
+
+12
+00:01:10,032 --> 00:01:19,824
+Split credential: full exfiltration in 1 of 6 ring episodes and 0 of 6 on the complete graph. Solo credential: 3 of 6 and 2 of 6.
+
+13
+00:01:20,024 --> 00:01:22,496
+In 30 clean episodes, nothing leaked.
+
+14
+00:01:22,696 --> 00:01:30,640
+Now the defenses. A guardrail is a filter that reads every message between agents, and blocks it before delivery if it looks like an attack.
+
+15
+00:01:30,840 --> 00:01:38,832
+D1 is the simplest: a word-pattern classifier with no LLM. D2 asks a small LLM to rate each message.
+
+16
+00:01:39,032 --> 00:01:47,864
+D3 adds memory: it raises suspicion when the sender was recently flagged. D5 calls the LLM only on unclear messages.
+
+17
+00:01:48,064 --> 00:01:57,856
+This ladder is an ablation: each step adds one component, so we can see what the LLM, the context, or the tiering contributes. The control is no guardrail.
+
+18
+00:01:58,056 --> 00:02:04,728
+Result, guardrail by guardrail. With no guardrail, a ring swarm ends with about 6 infected agents of 10.
+
+19
+00:02:04,928 --> 00:02:10,544
+With any of the four guardrails, the infection never leaves patient zero: one infected agent.
+
+20
+00:02:10,744 --> 00:02:19,120
+The four tie on safety. They differ in cost: D2 and D3 call the LLM on every message, D1 and D5 on none.
+
+21
+00:02:19,320 --> 00:02:23,328
+Caveat: six episodes per gate, and a non-adaptive attacker.
+
+22
+00:02:23,528 --> 00:02:31,568
+Offline, AUROC is near 0.998, but the realized false positive rate was 6.4%, not 0.5%.
+
+23
+00:02:31,768 --> 00:02:40,048
+Full exfiltration: 0 of 6 gated versus 1 of 6 unprotected, not significant. Utility loss stayed under 0.02.
+
+24
+00:02:40,248 --> 00:02:45,744
+No hypothesis is clearly confirmed, and H2 was not identifiable. We report that.
+
+25
+00:02:45,944 --> 00:02:52,304
+Infection chains are measurable, and guardrails contained them in our tests, but at this sample size we claim no more.
+
+26
+00:02:52,504 --> 00:03:01,240
+Playbooks stay out of the repository, the canary is synthetic. Next: more seeds, adaptive attackers, mixed-model swarms. Thank you.
