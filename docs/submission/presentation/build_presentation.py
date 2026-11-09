@@ -188,6 +188,22 @@ def main() -> int:
         "intent_audit": json.loads((ANALYSIS / "intent_agreement.json").read_text(encoding="utf-8")),
         "protocol": {"pilot": 3, "train": 15},
     }
+
+    episodes = read_csv("episodes.csv")
+    def mean_inf(arm_, defense):
+        v = [float(r["n_infected"] or 0) for r in episodes
+             if r["arm"] == arm_ and r["defense"] == defense and r["topology"] == "ring" and r["harm"] == "split"]
+        return sum(v) / len(v), len(v)
+    share = {r["defense"]: float(r["llm_call_share"]) for r in read_csv("panel_b.csv")}
+    util = {r["defense"]: float(r["utility_loss"]) for r in read_csv("paired_comparisons.csv")}
+    ex = {(r["arm"], r["defense"]): (int(r["observed_exfiltrations"]), int(r["episodes"]))
+          for r in read_csv("arm_summary.csv") if r["topology"] == "ring" and r["harm"] == "split"}
+    gates = {}
+    for key, arm_, d in [("baseline", "A1", "")] + [(g, "A3", g) for g in ("D1", "D2", "D3", "D5")]:
+        inf, n = mean_inf(arm_, d)
+        gates[key] = {"infected": inf, "episodes": n, "exfil": ex[(arm_, d)][0],
+                      "llm_share": share.get(key), "utility_loss": util.get(key)}
+    data["gates"] = gates
     (HERE / "data.js").write_text("window.DATA = " + json.dumps(data, indent=1) + ";\n", encoding="utf-8")
     print(f"total {total:.1f} s, {len(sentences)} sentences")
     return 0

@@ -474,5 +474,42 @@ window.DATA = {
  "protocol": {
   "pilot": 3,
   "train": 15
+ },
+ "gates": {
+  "baseline": {
+   "infected": 6.166666666666667,
+   "episodes": 6,
+   "exfil": 1,
+   "llm_share": null,
+   "utility_loss": null
+  },
+  "D1": {
+   "infected": 1.0,
+   "episodes": 6,
+   "exfil": 0,
+   "llm_share": 0.0,
+   "utility_loss": 0.016666666666666663
+  },
+  "D2": {
+   "infected": 1.0,
+   "episodes": 6,
+   "exfil": 0,
+   "llm_share": 1.0,
+   "utility_loss": 0.016666666666666663
+  },
+  "D3": {
+   "infected": 1.0,
+   "episodes": 6,
+   "exfil": 0,
+   "llm_share": 1.0,
+   "utility_loss": 0.011111111111111108
+  },
+  "D5": {
+   "infected": 1.0,
+   "episodes": 6,
+   "exfil": 0,
+   "llm_share": 0.0,
+   "utility_loss": 0.011111111111111108
+  }
  }
 };

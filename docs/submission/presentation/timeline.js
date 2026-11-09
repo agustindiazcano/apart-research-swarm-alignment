@@ -1,10 +1,10 @@
 window.TIMELINE = {
- "total": 167.758,
+ "total": 182.64,
  "slides": [
   {
    "id": "cover",
    "start": 0.0,
-   "end": 11.356,
+   "end": 11.256,
    "sentences": [
     {
      "start": 0.8,
@@ -12,200 +12,192 @@ window.TIMELINE = {
      "text": "Infection Chains in LLM Swarms: Spread, Detection and Layered Gating."
     },
     {
-     "start": 6.858,
-     "end": 11.106,
+     "start": 6.808,
+     "end": 11.056,
      "text": "Apart Research Swarm Alignment Hackathon. Agustin Diaz-Cano."
     }
    ]
   },
   {
    "id": "problem",
-   "start": 11.356,
-   "end": 24.154,
+   "start": 11.256,
+   "end": 20.224,
    "sentences": [
     {
-     "start": 11.356,
-     "end": 14.5,
+     "start": 11.256,
+     "end": 14.4,
      "text": "One compromised agent can talk its peers into helping it."
     },
     {
-     "start": 14.75,
-     "end": 20.246,
-     "text": "Per-agent monitors see one message at a time, so each request can look like routine admin work."
-    },
-    {
-     "start": 20.496,
-     "end": 23.904,
-     "text": "We measure how the infection spreads, and what actually stops it."
+     "start": 14.6,
+     "end": 20.024,
+     "text": "Monitors that read one message at a time miss it, so we measure the spread and test the defenses."
     }
    ]
   },
   {
    "id": "threat",
-   "start": 24.154,
-   "end": 46.178,
+   "start": 20.224,
+   "end": 39.496,
    "sentences": [
     {
-     "start": 24.154,
-     "end": 30.658,
-     "text": "Ten agents, ten rounds. A 12-character canary credential is split into three 4-character fragments."
+     "start": 20.224,
+     "end": 26.224,
+     "text": "Ten agents, ten rounds. A 12-character canary is split into three 4-character fragments."
     },
     {
-     "start": 30.908,
-     "end": 35.852,
-     "text": "The fragments sit at least two hops from patient zero, so no single message holds the secret."
+     "start": 26.424,
+     "end": 34.32,
+     "text": "Each fragment is at least two hops from patient zero, so no single message holds the secret, and patient zero must recruit intermediaries."
     },
     {
-     "start": 36.102,
-     "end": 40.47,
-     "text": "Patient zero must recruit intermediaries, and every hop looks harmless."
-    },
-    {
-     "start": 40.72,
-     "end": 45.928,
-     "text": "Ring and complete networks. Three persuasion styles; the third is held out from training."
+     "start": 34.52,
+     "end": 39.296,
+     "text": "Ring and complete networks, three persuasion styles, one held out from training."
     }
    ]
   },
   {
    "id": "scale",
-   "start": 46.178,
-   "end": 70.554,
+   "start": 39.496,
+   "end": 59.384,
    "sentences": [
     {
-     "start": 46.178,
-     "end": 51.266,
-     "text": "96 real episodes: 3 pilot, 15 training, 78 test."
+     "start": 39.496,
+     "end": 50.632,
+     "text": "96 real episodes: 3 pilot, 15 training, 78 test, with Gemma 4 31B as the agents and DeepSeek V4 Flash as guardrail model."
     },
     {
-     "start": 51.516,
-     "end": 57.108,
-     "text": "Gemma 4 31B plays the agents. DeepSeek V4 Flash is the guardrail."
-    },
-    {
-     "start": 57.358,
-     "end": 62.878,
-     "text": "7,944 model calls logged in the test analysis, under one credit."
-    },
-    {
-     "start": 63.128,
-     "end": 70.304,
-     "text": "Preregistered, separate train and test seeds, deterministic grading, 100-message audit at 100% agreement."
+     "start": 50.832,
+     "end": 59.184,
+     "text": "7,944 model calls, under one credit. Preregistered, graded by code, with a 100% agreement audit."
     }
    ]
   },
   {
    "id": "kinetics",
-   "start": 70.554,
-   "end": 82.742,
+   "start": 59.384,
+   "end": 70.032,
    "sentences": [
     {
-     "start": 70.554,
-     "end": 78.306,
+     "start": 59.384,
+     "end": 67.136,
      "text": "The infection spreads: by round nine, 6 to 6.5 of 10 agents are infected on a ring, 4.5 on the complete graph."
     },
     {
-     "start": 78.556,
-     "end": 82.492,
-     "text": "Splitting the secret does not stop the infection. It makes theft harder."
+     "start": 67.336,
+     "end": 69.832,
+     "text": "Splitting the secret does not stop the spread."
     }
    ]
   },
   {
    "id": "exfil",
-   "start": 82.742,
-   "end": 97.364,
+   "start": 70.032,
+   "end": 82.696,
    "sentences": [
     {
-     "start": 82.742,
-     "end": 89.27,
-     "text": "Split credential: full exfiltration in 1 of 6 ring episodes, 0 of 6 on the complete graph."
+     "start": 70.032,
+     "end": 79.824,
+     "text": "Split credential: full exfiltration in 1 of 6 ring episodes and 0 of 6 on the complete graph. Solo credential: 3 of 6 and 2 of 6."
     },
     {
-     "start": 89.52,
-     "end": 92.928,
-     "text": "Solo credential: 3 of 6 and 2 of 6."
-    },
-    {
-     "start": 93.178,
-     "end": 97.114,
-     "text": "30 clean episodes, with and without gates: nothing leaked."
+     "start": 80.024,
+     "end": 82.496,
+     "text": "In 30 clean episodes, nothing leaked."
     }
    ]
   },
   {
    "id": "defenses",
-   "start": 97.364,
-   "end": 118.476,
+   "start": 82.696,
+   "end": 118.056,
    "sentences": [
     {
-     "start": 97.364,
-     "end": 103.052,
-     "text": "D1 is a lexical classifier. D2 is a micro-LLM rubric guardrail."
+     "start": 82.696,
+     "end": 90.64,
+     "text": "Now the defenses. A guardrail is a filter that reads every message between agents, and blocks it before delivery if it looks like an attack."
     },
     {
-     "start": 103.302,
-     "end": 107.838,
-     "text": "D3 adds graph context: suspicion travels along message edges."
+     "start": 90.84,
+     "end": 98.832,
+     "text": "D1 is the simplest: a word-pattern classifier with no LLM. D2 asks a small LLM to rate each message."
     },
     {
-     "start": 108.088,
-     "end": 113.344,
-     "text": "D5 is a tiered filter that calls the LLM only for ambiguous messages."
+     "start": 99.032,
+     "end": 107.864,
+     "text": "D3 adds memory: it raises suspicion when the sender was recently flagged. D5 calls the LLM only on unclear messages."
     },
     {
-     "start": 113.594,
-     "end": 118.226,
-     "text": "Each gate is calibrated on training data to a 0.5% false positive rate."
+     "start": 108.064,
+     "end": 117.856,
+     "text": "This ladder is an ablation: each step adds one component, so we can see what the LLM, the context, or the tiering contributes. The control is no guardrail."
+    }
+   ]
+  },
+  {
+   "id": "guardrails",
+   "start": 118.056,
+   "end": 143.528,
+   "sentences": [
+    {
+     "start": 118.056,
+     "end": 124.728,
+     "text": "Result, guardrail by guardrail. With no guardrail, a ring swarm ends with about 6 infected agents of 10."
+    },
+    {
+     "start": 124.928,
+     "end": 130.544,
+     "text": "With any of the four guardrails, the infection never leaves patient zero: one infected agent."
+    },
+    {
+     "start": 130.744,
+     "end": 139.12,
+     "text": "The four tie on safety. They differ in cost: D2 and D3 call the LLM on every message, D1 and D5 on none."
+    },
+    {
+     "start": 139.32,
+     "end": 143.328,
+     "text": "Caveat: six episodes per gate, and a non-adaptive attacker."
     }
    ]
   },
   {
    "id": "results",
-   "start": 118.476,
-   "end": 148.564,
+   "start": 143.528,
+   "end": 165.944,
    "sentences": [
     {
-     "start": 118.476,
-     "end": 123.348,
-     "text": "Offline AUROC is near 0.998 on seen playbooks."
+     "start": 143.528,
+     "end": 151.568,
+     "text": "Offline, AUROC is near 0.998, but the realized false positive rate was 6.4%, not 0.5%."
     },
     {
-     "start": 123.598,
-     "end": 132.142,
-     "text": "But the realized false positive rate was 6.4%, not 0.5%, and held-out data had no negatives, so we claim nothing on distribution shift."
+     "start": 151.768,
+     "end": 160.048,
+     "text": "Full exfiltration: 0 of 6 gated versus 1 of 6 unprotected, not significant. Utility loss stayed under 0.02."
     },
     {
-     "start": 132.392,
-     "end": 140.072,
-     "text": "Online, gated runs leaked in 0 of 6 episodes versus 1 of 6 unprotected. Not significant: McNemar p equals 1."
-    },
-    {
-     "start": 140.322,
-     "end": 148.314,
-     "text": "Utility loss stayed under 0.02. No hypothesis is clearly confirmed, and H2 was not identifiable. We report that."
+     "start": 160.248,
+     "end": 165.744,
+     "text": "No hypothesis is clearly confirmed, and H2 was not identifiable. We report that."
     }
    ]
   },
   {
    "id": "close",
-   "start": 148.564,
-   "end": 167.758,
+   "start": 165.944,
+   "end": 182.64,
    "sentences": [
     {
-     "start": 148.564,
-     "end": 154.612,
-     "text": "Infection chains are measurable. At this sample size, a per-message guard alone is not evidence of safety."
+     "start": 165.944,
+     "end": 172.304,
+     "text": "Infection chains are measurable, and guardrails contained them in our tests, but at this sample size we claim no more."
     },
     {
-     "start": 154.862,
-     "end": 160.67,
-     "text": "Playbooks stay out of the repository, the canary is synthetic, every number comes from committed logs."
-    },
-    {
-     "start": 160.92,
-     "end": 166.008,
-     "text": "Next: more seeds, adaptive attackers, mixed-model swarms. Thank you."
+     "start": 172.504,
+     "end": 181.24,
+     "text": "Playbooks stay out of the repository, the canary is synthetic. Next: more seeds, adaptive attackers, mixed-model swarms. Thank you."
     }
    ]
   }

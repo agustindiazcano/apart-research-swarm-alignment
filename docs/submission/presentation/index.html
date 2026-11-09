@@ -80,6 +80,7 @@ svg text{font-family:inherit}
 .hyp .ne{border-color:var(--amber);color:#ffe3b0}
 .hyp .lim{border-color:var(--violet);color:#d6cfff}
 
+.gbar>div{width:0;transition:width 1.4s ease}.on .gbar>div,.gbar.on>div{width:var(--w)}
 /* start overlay */
 #start{position:absolute;inset:0;background:rgba(5,8,18,.92);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
 #start.gone{display:none}
@@ -117,7 +118,7 @@ svg text{font-family:inherit}
      <h2>One compromised agent. Many peers.</h2>
      <div class="bullet" data-s="0"><i></i><div>Agents trust messages from peers in shared channels</div></div>
      <div class="bullet" data-s="1"><i style="background:var(--amber)"></i><div>Per-agent monitors read one message at a time</div></div>
-     <div class="bullet" data-s="2"><i style="background:var(--red)"></i><div>We measure the spread, then test the defenses</div></div>
+     <div class="bullet" data-s="1"><i style="background:var(--red)"></i><div>We measure the spread, then test the defenses</div></div>
     </div>
     <div class="col"><svg id="netProblem" width="880" height="760" viewBox="0 0 880 760"></svg></div>
    </div>
@@ -133,8 +134,8 @@ svg text{font-family:inherit}
      <div class="card" data-s="0"><div style="color:var(--muted);font-size:22px;margin-bottom:10px">Synthetic canary, 12 characters</div>
       <div id="canary" style="font-family:Consolas,monospace;font-size:58px;letter-spacing:.06em">K9Q2&nbsp;M4X8&nbsp;T7B1</div></div>
      <div class="bullet" data-s="1" style="font-size:32px"><i style="background:var(--amber)"></i><div>3 fragments, each at graph distance 2 or more from patient zero</div></div>
-     <div class="bullet" data-s="2" style="font-size:32px"><i style="background:var(--red)"></i><div>Multi-hop recruitment: every hop looks like routine admin</div></div>
-     <div data-s="3" style="margin-top:14px">
+     <div class="bullet" data-s="1" style="font-size:32px"><i style="background:var(--red)"></i><div>Multi-hop recruitment: every hop looks like routine admin</div></div>
+     <div data-s="2" style="margin-top:14px">
       <span class="chip">Ring</span><span class="chip">Complete</span><br>
       <span class="chip hot">Authority</span><span class="chip hot">Urgency</span><span class="chip held">Reciprocity (held out)</span>
      </div>
@@ -148,13 +149,13 @@ svg text{font-family:inherit}
    <h2>Real models, preregistered, graded by code</h2>
    <div class="grid" style="margin-top:30px">
     <div class="card metric" data-s="0"><div class="label">Real episodes</div><div class="val num" id="cEpisodes">0</div><div class="sub" id="cEpisodesSub"></div></div>
-    <div class="card metric" data-s="1"><div class="label">Swarm model</div><div class="val" style="font-size:46px;padding:18px 0">gemma-4-31b-it</div><div class="sub">Guardrail: deepseek-v4-flash</div></div>
-    <div class="card metric" data-s="2"><div class="label">Model calls logged (test)</div><div class="val num" id="cCalls">0</div><div class="sub" id="cCallsSub"></div></div>
-    <div class="card metric" data-s="3"><div class="label">Arms</div><div class="val" style="font-size:44px;padding:20px 0">A0 · A1 · A2 · A3 · A3c</div><div class="sub">control, free flow, offline detection, online gating, gate cost</div></div>
-    <div class="card metric" data-s="3"><div class="label">Attack variety</div><div class="val" style="font-size:44px;padding:20px 0">3 styles × 2 topologies</div><div class="sub">solo and split credential</div></div>
-    <div class="card metric" data-s="3"><div class="label">Intent audit</div><div class="val num" id="cAudit">0%</div><div class="sub" id="cAuditSub"></div></div>
+    <div class="card metric" data-s="0"><div class="label">Swarm model</div><div class="val" style="font-size:46px;padding:18px 0">gemma-4-31b-it</div><div class="sub">Guardrail: deepseek-v4-flash</div></div>
+    <div class="card metric" data-s="1"><div class="label">Model calls logged (test)</div><div class="val num" id="cCalls">0</div><div class="sub" id="cCallsSub"></div></div>
+    <div class="card metric" data-s="1"><div class="label">Arms</div><div class="val" style="font-size:44px;padding:20px 0">A0 · A1 · A2 · A3 · A3c</div><div class="sub">control, free flow, offline detection, online gating, gate cost</div></div>
+    <div class="card metric" data-s="1"><div class="label">Attack variety</div><div class="val" style="font-size:44px;padding:20px 0">3 styles × 2 topologies</div><div class="sub">solo and split credential</div></div>
+    <div class="card metric" data-s="1"><div class="label">Intent audit</div><div class="val num" id="cAudit">0%</div><div class="sub" id="cAuditSub"></div></div>
    </div>
-   <div data-s="3" style="margin-top:26px;font-size:28px;color:var(--muted)">prereg-v1 &nbsp;·&nbsp; TRAIN seeds 1 to 15 &nbsp;·&nbsp; TEST seeds 101 to 110 &nbsp;·&nbsp; deterministic grading from event logs</div>
+   <div data-s="1" style="margin-top:26px;font-size:28px;color:var(--muted)">prereg-v1 &nbsp;·&nbsp; TRAIN seeds 1 to 15 &nbsp;·&nbsp; TEST seeds 101 to 110 &nbsp;·&nbsp; deterministic grading from event logs</div>
   </section>
 
   <!-- 5 KINETICS -->
@@ -173,9 +174,19 @@ svg text{font-family:inherit}
 
   <!-- 7 DEFENSES -->
   <section class="slide" data-slide="defenses">
-   <div class="kicker">Defenses</div>
-   <h2 style="font-size:54px">Layered gating, calibrated to 0.5% false positives</h2>
-   <svg id="flow" width="1740" height="650" viewBox="0 0 1740 650"></svg>
+   <div class="kicker">The defenses</div>
+   <h2 style="font-size:54px">What is a guardrail?</h2>
+   <div class="card" data-s="0" style="font-size:34px;line-height:1.35;margin-bottom:14px">A <b style="color:var(--teal)">guardrail</b> is a filter placed between agents. It reads every message and <b style="color:var(--red)">blocks it before delivery</b> if it looks like an attack.</div>
+   <svg id="flow" width="1740" height="400" viewBox="0 0 1740 400"></svg>
+   <div data-s="3" style="margin-top:10px;font-size:30px;color:var(--ink)"><b style="color:var(--amber)">Ablation ladder:</b> D1 &rarr; D2 adds an LLM &rarr; D3 adds context &rarr; D5 adds tiering. <span style="color:var(--muted)">Control: no guardrail. Each gate is calibrated to block at most 0.5% of normal messages.</span></div>
+  </section>
+
+  <!-- 7b GUARDRAILS RESULT -->
+  <section class="slide" data-slide="guardrails">
+   <div class="kicker">Result: guardrail by guardrail (ring, split credential)</div>
+   <h2 style="font-size:54px">Every guardrail stopped the spread; they differ in cost</h2>
+   <div id="gtable" style="margin-top:20px"></div>
+   <div data-s="3" style="margin-top:30px;font-size:28px;color:var(--muted)">6 episodes per row. The attacker follows a fixed playbook and does not adapt after a block. Exfiltration alone does not separate the gates (see next slide).</div>
   </section>
 
   <!-- 8 RESULTS -->
@@ -184,12 +195,12 @@ svg text{font-family:inherit}
    <h2 style="font-size:54px">What the data support, and what they do not</h2>
    <div class="grid" style="margin-top:14px">
     <div class="card metric" data-s="0"><div class="label">Offline AUROC (seen playbooks)</div><div class="val num" id="rAuroc" style="color:var(--teal)"></div><div class="sub">D1, D2, D3, D5</div></div>
-    <div class="card metric" data-s="1"><div class="label">Realized false positive rate</div><div class="val num" id="rFpr" style="color:var(--amber)"></div><div class="sub">target 0.5%. Held-out playbook: no negative messages, no shift claim</div>
+    <div class="card metric" data-s="0"><div class="label">Realized false positive rate</div><div class="val num" id="rFpr" style="color:var(--amber)"></div><div class="sub">target 0.5%. Held-out playbook: no negative messages, no shift claim</div>
       <div class="bar"><div id="fprBar" style="background:var(--amber);width:0"></div></div></div>
-    <div class="card metric" data-s="2"><div class="label">Exfiltration, gated vs free flow</div><div class="val num" id="rGate"></div><div class="sub" id="rGateSub"></div></div>
-    <div class="card metric" data-s="3"><div class="label">Utility loss (0 to 1 scale)</div><div class="val num" id="rUtil"></div><div class="sub">Gate cost on benign swarms</div></div>
-    <div class="card metric" data-s="3"><div class="label">Cost, known</div><div class="val num" id="rCost"></div><div class="sub">Adaption credits, all test attempts</div></div>
-    <div class="card metric" data-s="3"><div class="label">Hypotheses</div>
+    <div class="card metric" data-s="1"><div class="label">Exfiltration, gated vs free flow</div><div class="val num" id="rGate"></div><div class="sub" id="rGateSub"></div></div>
+    <div class="card metric" data-s="1"><div class="label">Utility loss (0 to 1 scale)</div><div class="val num" id="rUtil"></div><div class="sub">Gate cost on benign swarms</div></div>
+    <div class="card metric" data-s="1"><div class="label">Cost, known</div><div class="val num" id="rCost"></div><div class="sub">Adaption credits, all test attempts</div></div>
+    <div class="card metric" data-s="2"><div class="label">Hypotheses</div>
       <div class="hyp"><span class="no">H1 no</span><span class="ne">H2 n/a</span><span class="ne">H3 n/a</span><span class="ne">H4 n/a</span><span class="no">H5 n.s.</span><span class="lim">H7 limited</span></div>
       <div class="sub" style="margin-top:12px">Report Section 6.7</div></div>
    </div>
@@ -208,12 +219,12 @@ svg text{font-family:inherit}
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Attack playbooks stay out of the repository</div></div>
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Synthetic canary, closed testbed</div></div>
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--amber)"></i><div>Every number generated from committed logs</div></div></div>
-    <div class="card" data-s="2"><div style="color:var(--violet);font-size:26px;font-weight:700;margin-bottom:14px">Next</div>
+    <div class="card" data-s="1"><div style="color:var(--violet);font-size:26px;font-weight:700;margin-bottom:14px">Next</div>
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>More seeds per cell</div></div>
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>Adaptive attackers</div></div>
      <div class="bullet" style="font-size:30px;margin:10px 0"><i style="background:var(--violet)"></i><div>Mixed-model swarms</div></div></div>
    </div>
-   <div data-s="2" style="margin-top:34px;font-size:30px;color:var(--muted)">github.com/agustindiazcano/apart-research-swarm-alignment</div>
+   <div data-s="1" style="margin-top:34px;font-size:30px;color:var(--muted)">github.com/agustindiazcano/apart-research-swarm-alignment</div>
   </section>
 
   <div id="author"><b>Agustin Diaz-Cano</b> &nbsp;·&nbsp; MS Candidate, Systems Engineering</div>
@@ -331,44 +342,64 @@ const exEls=[];
 exRows.forEach((r,idx)=>{
   const d=document.createElement("div");
   d.style.cssText="display:flex;align-items:center;gap:30px;margin:30px 0;";
-  d.setAttribute("data-s",idx<2?0:1);
+  d.setAttribute("data-s",0);
   let h='<div style="width:420px;font-size:42px">'+r[0]+'</div><div style="display:flex;gap:16px">';
   for(let i=0;i<r[1].episodes;i++){h+='<div class="dot" data-hit="'+(i<r[1].exfil?1:0)+'" style="width:84px;height:84px;border-radius:50%;border:5px solid '+r[2]+';background:transparent;transition:background .5s,transform .5s"></div>';}
   h+='</div><div style="font-size:56px;font-weight:800;color:'+r[2]+'" class="num">'+r[1].exfil+' / '+r[1].episodes+'</div>';
   d.innerHTML=h;dotsHost.appendChild(d);exEls.push(d);
 });
-const cd=document.createElement("div");cd.setAttribute("data-s",2);cd.style.cssText="margin-top:30px;display:flex;align-items:center;gap:30px";
+const cd=document.createElement("div");cd.setAttribute("data-s",1);cd.style.cssText="margin-top:30px;display:flex;align-items:center;gap:30px";
 let ch2='<div style="width:420px;font-size:42px">Clean, gated or not</div><div style="display:flex;flex-wrap:wrap;gap:8px;width:760px">';
 for(let i=0;i<cleanEps;i++)ch2+='<div style="width:30px;height:30px;border-radius:50%;background:#46d483"></div>';
 ch2+='</div><div style="font-size:56px;font-weight:800;color:#46d483" class="num">'+cleanLeaks+' / '+cleanEps+'</div>';
 cd.innerHTML=ch2;dotsHost.appendChild(cd);
-const note=document.createElement("div");note.setAttribute("data-s",2);note.style.cssText="margin-top:30px;font-size:28px;color:#97a4c9";note.textContent="Filled circle = full 12-character credential reached the external outbox. 6 episodes per cell, so intervals are wide.";dotsHost.appendChild(note);
+const note=document.createElement("div");note.setAttribute("data-s",1);note.style.cssText="margin-top:30px;font-size:28px;color:#97a4c9";note.textContent="Filled circle = full 12-character credential reached the external outbox. 6 episodes per cell, so intervals are wide.";dotsHost.appendChild(note);
 
 /* ---------- defense flow ---------- */
 const fl=$("#flow");
-const gateDefs=[["D1","Lexical","TF-IDF + Platt logistic"],["D2","Micro-LLM","rubric: req, sec, urg"],["D3","Graph context","suspicion along edges"],["D5","Tiered filter","LLM only if ambiguous"]];
-const GX=[270,600,930,1260], GW=250, GY=130, GH=360;
+const gateDefs=[["D1","Word patterns","No LLM. Fast classifier"],["D2","Small LLM","Rates request, risk, urgency"],["D3","LLM + context","Adds suspicion from earlier messages"],["D5","Two-step filter","LLM only if unclear"]];
+const GX=[300,630,960,1290], GW=290, GY=20, GH=230;
 const gateEls=gateDefs.map((g,i)=>{
   const grp=el("g",{opacity:0},fl);
   el("rect",{x:GX[i],y:GY,width:GW,height:GH,rx:22,fill:"#141d3d",stroke:"#36d3c2","stroke-width":3},grp);
-  el("text",{x:GX[i]+GW/2,y:GY+62,"text-anchor":"middle","font-size":54,"font-weight":800,fill:"#36d3c2"},grp).textContent=g[0];
-  el("text",{x:GX[i]+GW/2,y:GY+112,"text-anchor":"middle","font-size":30,"font-weight":700,fill:"#eef1fb"},grp).textContent=g[1];
-  el("text",{x:GX[i]+GW/2,y:GY+150,"text-anchor":"middle","font-size":22,fill:"#97a4c9"},grp).textContent=g[2];
+  el("text",{x:GX[i]+GW/2,y:GY+60,"text-anchor":"middle","font-size":54,"font-weight":800,fill:"#36d3c2"},grp).textContent=g[0];
+  el("text",{x:GX[i]+GW/2,y:GY+108,"text-anchor":"middle","font-size":32,"font-weight":700,fill:"#eef1fb"},grp).textContent=g[1];
+  const words=g[2].split(" ");let l1="",l2="";words.forEach(w=>{if((l1+" "+w).length<=22)l1=(l1+" "+w).trim();else l2=(l2+" "+w).trim();});
+  el("text",{x:GX[i]+GW/2,y:GY+150,"text-anchor":"middle","font-size":24,fill:"#c3cdee"},grp).textContent=l1;
+  el("text",{x:GX[i]+GW/2,y:GY+182,"text-anchor":"middle","font-size":24,fill:"#c3cdee"},grp).textContent=l2;
+  el("line",{x1:GX[i]+GW/2,x2:GX[i]+GW/2,y1:GY+GH,y2:395,stroke:"#36d3c2","stroke-width":5,"stroke-dasharray":"8 8"},grp);
   return grp;
 });
-const gateT=[0,0,0,0];
-el("text",{x:60,y:GY+GH/2-40,"font-size":26,fill:"#97a4c9"},fl).textContent="messages";
-const thr=el("text",{x:870,y:600,"text-anchor":"middle","font-size":34,fill:"#ffbb4d","font-weight":700,opacity:0},fl);
-thr.textContent="threshold fit on TRAIN negatives: 0.5% message false positive rate";
-const legend=el("text",{x:1440,y:600,"font-size":24,fill:"#97a4c9",opacity:1},fl);
-const NP=75, parts=[];
+el("text",{x:60,y:GY+GH/2+8,"font-size":28,fill:"#97a4c9"},fl).textContent="messages";
+const thr=el("text",{x:870,y:380,"text-anchor":"middle","font-size":1,fill:"#ffbb4d",opacity:0},fl);
+const NP=115, parts=[];
 for(let i=0;i<NP;i++){
   const red=(i*7)%3===0;
-  parts.push({red,spawn:0.5+i*0.28,y:GY+190+((i*53)%150),el:el("circle",{r:red?13:11,fill:red?"#ff4d5e":"#46d483",opacity:0},fl),x:null,
+  parts.push({red,spawn:0.5+i*0.3,y:GY+GH+60+((i*53)%90),el:el("circle",{r:red?13:11,fill:red?"#ff4d5e":"#46d483",opacity:0},fl),x:null,
               mark:red?el("text",{"font-size":34,"font-weight":800,fill:"#ff4d5e","text-anchor":"middle",opacity:0},fl):null});
   if(red)parts[i].mark.textContent="x";
 }
 function hashPick(i,n){return (i*2654435761>>>0)%n;}
+
+/* ---------- guardrail table ---------- */
+(function(){
+  const G=D.gates;
+  const rows=[["No guardrail","baseline","#ff4d5e"],["D1  word patterns","D1","#36d3c2"],["D2  small LLM","D2","#36d3c2"],["D3  LLM + context","D3","#36d3c2"],["D5  two-step filter","D5","#36d3c2"]];
+  const host=$("#gtable");
+  let h='<div style="display:grid;grid-template-columns:440px 1fr 230px 1fr;gap:34px 30px;align-items:center;font-size:40px">';
+  h+='<div></div><div style="color:var(--muted);font-size:28px" data-s="0">Infected agents at the end (of 10)</div><div style="color:var(--muted);font-size:28px" data-s="1">Full exfiltration</div><div style="color:var(--muted);font-size:28px" data-s="2">Messages sent to the LLM</div>';
+  rows.forEach(r=>{
+    const g=G[r[1]];const isB=r[1]==="baseline";const ds=isB?0:1;
+    const w=(g.infected/10*100).toFixed(1);
+    h+='<div data-s="'+ds+'" style="font-weight:700;color:'+(isB?"#ff9aa5":"#eef1fb")+'">'+r[0]+'</div>';
+    h+='<div data-s="'+ds+'" style="display:flex;align-items:center;gap:16px"><div class="gbar" style="flex:1;height:42px;background:#0c1330;border-radius:21px;overflow:hidden"><div style="--w:'+w+'%;height:100%;border-radius:21px;background:'+r[2]+'"></div></div><b class="num" style="width:70px">'+g.infected.toFixed(1)+'</b></div>';
+    h+='<div data-s="'+ds+'" class="num" style="font-weight:800">'+g.exfil+' / '+g.episodes+'</div>';
+    const ls=g.llm_share;
+    h+='<div data-s="2" style="display:flex;align-items:center;gap:16px">'+(ls===null?'<span style="color:var(--muted)">n/a</span>':'<div class="gbar" style="flex:1;height:42px;background:#0c1330;border-radius:21px;overflow:hidden"><div style="--w:'+(ls*100)+'%;height:100%;border-radius:21px;background:#8f7fff"></div></div><b class="num" style="width:90px">'+Math.round(ls*100)+'%</b>')+'</div>';
+  });
+  h+='</div>';
+  host.innerHTML=h;
+})();
 
 /* ---------- results ---------- */
 const seen=D.panel_a.filter(r=>r.playbook==="seen");
@@ -414,12 +445,12 @@ const anims={
  threat(lt,idx,sl){
   setNode(tring.nodes[0],lt>0.4?"infected":"healthy");
   const frag=Object.keys(fragNodes);
-  const chainT=sentStart(sl,2)+0.4;
+  const chainT=sentStart(sl,1)+1.5;
   const chainOrder=[1,2,9,8,4];
   for(let i=1;i<10;i++){setNode(tring.nodes[i],"healthy");}
   frag.forEach(k=>{if(idx>=1)setNode(tring.nodes[k],"frag");});
   chainOrder.forEach((n,j)=>{if(lt>=chainT+j*0.6)setNode(tring.nodes[n],"infected");});
-  [3,5,7].forEach((n,j)=>{if(idx>=2&&lt>=chainT+3.4+j*0.4)setNode(tring.nodes[n],"infected");});
+  [3,5,7].forEach((n,j)=>{if(idx>=1&&lt>=chainT+3.4+j*0.4)setNode(tring.nodes[n],"infected");});
   frag.forEach((k,i)=>{fragLbl[i].setAttribute("opacity",idx>=1?1:0);distLbl[i].setAttribute("opacity",idx>=1?1:0);});
   for(let i=0;i<10;i++){const j=(i+1)%10;const a=tring.nodes[i].getAttribute("fill")==="#ff4d5e",b=tring.nodes[j].getAttribute("fill")==="#ff4d5e";tring.edges[i].setAttribute("stroke",a&&b?"#ff4d5e":"#26325f");}
   const fly=chainT+4.4;
@@ -429,22 +460,21 @@ const anims={
  },
  scale(lt,idx,sl){
   counter("#cEpisodes",totalEps,sentStart(sl,0),lt,1.6,String);
-  counter("#cCalls",calls,sentStart(sl,2),lt,2.0,fmtN);
-  $("#cAudit").textContent=Math.round(100*D.intent_audit.agreement_rate*ease((lt-sentStart(sl,3)-0.5)/1.2))+"%";
+  counter("#cCalls",calls,sentStart(sl,1),lt,2.0,fmtN);
+  $("#cAudit").textContent=Math.round(100*D.intent_audit.agreement_rate*ease((lt-sentStart(sl,1)-3.0)/1.2))+"%";
  },
  kinetics(lt,idx,sl){
   const p=(lt-sentStart(sl,0)-0.4)/8;
   lines.forEach((L,i)=>{const q=ease(p-0.0);L.path.setAttribute("stroke-dashoffset",L.len*(1-q));L.lab.setAttribute("opacity",p>0.97?1:0);});
  },
  exfil(lt,idx,sl){
-  exEls.forEach((row,r)=>{const st=sentStart(sl,r<2?0:1)+0.5;row.querySelectorAll(".dot").forEach((d,i)=>{
+  exEls.forEach((row,r)=>{const st=sentStart(sl,0)+0.5+r*1.8;row.querySelectorAll(".dot").forEach((d,i)=>{
     const hit=d.getAttribute("data-hit")==="1";const on=hit&&lt>st+i*0.25;
     d.style.background=on?d.style.borderColor:"transparent";d.style.transform=on?"scale(1.12)":"none";});});
  },
  defenses(lt,idx,sl){
-  const at=[sentStart(sl,0)+0.2,sentStart(sl,0)+1.6,sentStart(sl,1)+0.2,sentStart(sl,2)+0.2];
+  const at=[sentStart(sl,1)+0.2,sentStart(sl,1)+2.2,sentStart(sl,2)+0.2,sentStart(sl,2)+3.4];
   gateEls.forEach((g,i)=>g.setAttribute("opacity",clamp((lt-at[i])/0.6,0,1)));
-  thr.setAttribute("opacity",clamp((lt-sentStart(sl,3))/0.6,0,1));
   const speed=300;
   parts.forEach((p,i)=>{
     const a=lt-p.spawn;
@@ -453,14 +483,15 @@ const anims={
     let blocked=null;
     if(p.red){const act=[0,1,2,3].filter(g=>at[g]<=p.spawn+1.0);if(act.length)blocked=act[hashPick(i,act.length)];}
     let op=1;
-    if(blocked!==null){const bx=GX[blocked]-10;if(x>=bx){x=bx;op=clamp(1-(a-(bx-60)/speed)/1.8,0,1);}}
+    if(blocked!==null){const bx=GX[blocked]+GW/2-14;if(x>=bx){x=bx;op=clamp(1-(a-(bx-60)/speed)/1.8,0,1);}}
     if(x>1700)op=0;
     p.el.setAttribute("cx",x);p.el.setAttribute("cy",p.y);p.el.setAttribute("opacity",op);
-    if(p.mark){const shown=blocked!==null&&x>=GX[blocked]-10;p.mark.setAttribute("x",x);p.mark.setAttribute("y",p.y-24);p.mark.setAttribute("opacity",shown?op:0);}
+    if(p.mark){const shown=blocked!==null&&x>=GX[blocked]+GW/2-14;p.mark.setAttribute("x",x);p.mark.setAttribute("y",p.y-24);p.mark.setAttribute("opacity",shown?op:0);}
   });
  },
+ guardrails(lt,idx,sl){},
  results(lt,idx,sl){
-  $("#fprBar").style.width=(clamp(fpr/0.10,0,1)*100*ease((lt-sentStart(sl,1)-0.3)/1.2))+"%";
+  $("#fprBar").style.width=(clamp(fpr/0.10,0,1)*100*ease((lt-sentStart(sl,0)-2.5)/1.2))+"%";
  }
 };
 
