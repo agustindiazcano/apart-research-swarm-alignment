@@ -1,5 +1,7 @@
 # Infection Chains in LLM Swarms: Spread, Detection and Layered Gating
 
+<p align="center"><img src="docs/assets/readme_header.png" alt="Infection Chains in LLM Swarms: Spread, Detection and Layered Gating" width="640"></p>
+
 An open testbed where an infected LLM agent recruits peers through conversation to leak a split credential, evaluated against detectors and online gates (lexical, micro-LLM guardrail, graph-contextual cascade and a layered filter). A fifth detector, orthogonal micro-verifiers (D4), is implemented and unit-tested but is not evaluated in the executed arms.
 
 Built during the Swarm Alignment Hackathon 2026 (Apart Research sprint). The submission report is [report/SWARM_CONTAGION_REPORT.pdf](report/SWARM_CONTAGION_REPORT.pdf); the status of each hypothesis is in its Section 6.7.
@@ -354,7 +356,13 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## Reproducibility and AI Usage
 
-AI assistance was utilized during development for code authoring, linting, and documentation restructuring. All research designs, mathematical formulations, implementations, and empirical results were audited and verified by the author.
+### AI-assisted development methodology (Software 3.0)
+This project was built with AI-assisted development in the Software 3.0 style: AI coding agents took part in the whole development process (implementation, tests, CI/CD, pull requests, commits and documentation), under human direction and review. Coding agents used: Codex, Claude Code and Gemini Antigravity.
 
-- Tools and models used: Claude Opus 4.6 and Gemini 3.8 Flash High (Antigravity CLI) for software engineering and documentation; Adaption `gemma-4-31b-it` (swarm agents) and `deepseek-v4-flash` (guardrail scorer) for experimental execution.
-- How to reproduce results: Detailed execution steps are documented in [report/REPRODUCTION_GUIDE.md](report/REPRODUCTION_GUIDE.md).
+- **AFAW, own methodology.** Multiple agents were orchestrated with AFAW (anti-fragile agentic workflow, PRE-EXISTING method disclosed in the table above, no code reused). Each agent works in its own git worktree and its own branch, so agents do not collide, and the human owner reviews and approves every pull request.
+- **Contracts for agent context.** Agents receive their context through contract files: `AGENTS.md` (rules), `PENDING.md` (prioritized open tasks) and `LASTCONTEXT.md` (latest state and next step). Every task updates `PENDING.md` and `LASTCONTEXT.md` so the next agent starts from the same state.
+- **Human responsibility.** All research designs, mathematical formulations, implementations and empirical results were audited and verified by the author.
+
+Models used in the experiments: Adaption `gemma-4-31b-it` (swarm agents) and `deepseek-v4-flash` (guardrail scorer).
+
+How to reproduce results: detailed execution steps are in [report/REPRODUCTION_GUIDE.md](report/REPRODUCTION_GUIDE.md).
